@@ -19,3 +19,19 @@ def register():
 
     return jsonify({'message': 'User registered successfully'})
 
+@routes.route('api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+    user = c.fetchone()
+    conn.close()
+
+    if user:
+        return jsonify({'message': 'Sesion Iniciada'})
+    else:
+        return jsonify({'message': 'Correo o clave invalido, intente de nuevo'}), 401
