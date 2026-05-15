@@ -6,5 +6,13 @@ from pathlib import Path
 
 import routes
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = os.getenv('SECRET_KEY')
+
+@app.route('/')
+def index():
+    return render_template('home.html')
+
+if __name__ == '__main__':
+    load_dotenv()
+    app.run(debug=True)
