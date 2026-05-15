@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talmocur – Viajes en bus</title>
+
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="home.css" />
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+
+      <!-- Logo -->
+      <a href="#" class="navbar__logo" aria-label="Talmocur inicio">
+        <img src="/Logo_Talmocur.png" alt="Talmocur" class="navbar__logo-img" />
+      </a>
+
+      <!-- Nav links -->
+      <nav class="navbar__nav" aria-label="Navegación principal">
+        <a href="#beneficios" class="navbar__link">Beneficios</a>
+        <a href="#quienes-somos" class="navbar__link">Quiénes somos</a>
+        <a href="#" class="navbar__btn-login" id="openLogin">
+          <i class='bx bx-user'></i>
+          Iniciar sesión
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero" aria-label="Sección principal">
+
+    <!-- Fondo con imagen + degradado -->
+    <div class="hero__bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80"
+           alt="" class="hero__bg-img" />
+      <div class="hero__bg-overlay"></div>
+    </div>
+
+    <!-- Contenido hero -->
+    <div class="hero__content">
+      <p class="hero__eyebrow">La forma más cómoda de viajar</p>
+      <h1 class="hero__title">Tu próximo viaje<br/>te está esperando</h1>
+      <p class="hero__subtitle">Buses modernos, puntualidad garantizada y los mejores precios entre Curicó y Talca.</p>
+    </div>
+
+    <!-- ── BUSCADOR DE PASAJES ── -->
+    <div class="search-bar" role="search" aria-label="Buscar pasajes">
+
+      <!-- Desde -->
+      <div class="search-bar__field">
+        <label for="origen" class="search-bar__label">
+          <i class='bx bx-map-pin'></i> Desde
+        </label>
+        <select id="origen" class="search-bar__select">
+          <option value="">Seleccionar origen</option>
+          <option value="curico" selected>Curicó</option>
+          <option value="talca">Talca</option>
+          <option value="santiago">Santiago</option>
+          <option value="rancagua">Rancagua</option>
+        </select>
+      </div>
+
+      <!-- Swap ícono -->
+      <button class="search-bar__swap" aria-label="Intercambiar origen y destino" type="button">
+        <i class='bx bx-transfer-alt'></i>
+      </button>
+
+      <!-- Hacia -->
+      <div class="search-bar__field">
+        <label for="destino" class="search-bar__label">
+          <i class='bx bx-map'></i> Hacia
+        </label>
+        <select id="destino" class="search-bar__select">
+          <option value="">Seleccionar destino</option>
+          <option value="talca" selected>Talca</option>
+          <option value="curico">Curicó</option>
+          <option value="santiago">Santiago</option>
+          <option value="rancagua">Rancagua</option>
+        </select>
+      </div>
+
+      <!-- Divisor -->
+      <div class="search-bar__divider" aria-hidden="true"></div>
+
+      <!-- Fecha -->
+      <div class="search-bar__field">
+        <label for="fecha" class="search-bar__label">
+          <i class='bx bx-calendar'></i> Fecha de salida
+        </label>
+        <input type="date" id="fecha" class="search-bar__input" />
+      </div>
+
+      <!-- Divisor -->
+      <div class="search-bar__divider" aria-hidden="true"></div>
+
+      <!-- Pasajeros -->
+      <div class="search-bar__field">
+        <label for="pasajeros" class="search-bar__label">
+          <i class='bx bx-group'></i> Pasajeros
+        </label>
+        <select id="pasajeros" class="search-bar__select">
+          <option value="adulto">1 Adulto</option>
+          <option value="adulto2">2 Adultos</option>
+          <option value="adulto_nino">1 Adulto + 1 Niño</option>
+          <option value="familia">Familia (2A + 2N)</option>
+          <option value="nino">1 Niño</option>
+        </select>
+      </div>
+
+      <!-- Botón buscar -->
+      <button class="search-bar__btn" type="button" aria-label="Buscar pasajes">
+        <i class='bx bx-search'></i>
+        <span>Buscar</span>
+      </button>
+
+    </div>
+    <!-- /search-bar -->
+
+  </section>
+
+
+  <!-- ============================================================
+       SECCIÓN: FRASE + BENEFICIOS
+       ============================================================ -->
+  <section class="features" id="beneficios" aria-label="Nuestros beneficios">
+    <div class="features__inner">
+
+      <div class="features__heading">
+        <p class="features__eyebrow">¿Por qué elegirnos?</p>
+        <h2 class="features__title">Viaja con confianza,<br/>llega a tiempo</h2>
+      </div>
+
+      <div class="features__grid">
+
+        <article class="feature-card">
+          <div class="feature-card__icon"><i class='bx bxs-time-five'></i></div>
+          <h3 class="feature-card__title">Puntualidad garantizada</h3>
+          <p class="feature-card__text">Salidas exactas en cada horario. Tu tiempo es lo más valioso.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon"><i class='bx bxs-badge-dollar'></i></div>
+          <h3 class="feature-card__title">Mejor precio</h3>
+          <p class="feature-card__text">Tarifas competitivas con descuentos para estudiantes y adultos mayores.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon"><i class='bx bxs-shield-alt-2'></i></div>
+          <h3 class="feature-card__title">Viaje seguro</h3>
+          <p class="feature-card__text">Flota moderna, conductores certificados y seguro de pasajeros incluido.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon"><i class='bx bx-wifi'></i></div>
+          <h3 class="feature-card__title">Wi-Fi a bordo</h3>
+          <p class="feature-card__text">Conectividad en todo el trayecto para que no pierdas ni un minuto.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECCIÓN: PASAJES DEL DÍA
+       ============================================================ -->
+  <section class="schedules" aria-label="Horarios de hoy">
+    <div class="schedules__inner">
+
+      <div class="schedules__heading">
+        <p class="schedules__eyebrow">Disponibilidad en tiempo real</p>
+        <h2 class="schedules__title">Pasajes de hoy</h2>
+        <p class="schedules__subtitle">Curicó → Talca · <span id="fechaHoy"></span></p>
+      </div>
+
+      <!-- Tabla de horarios -->
+      <div class="schedules__list" role="list">
+
+        <!-- Pasaje 1 -->
+        <article class="ticket-card" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">07:00</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus A1</span>
+            <span class="ticket-card__seats"><i class='bx bx-chair'></i> 14 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+        <!-- Pasaje 2 -->
+        <article class="ticket-card" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">08:30</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus B2</span>
+            <span class="ticket-card__seats"><i class='bx bx-chair'></i> 6 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+        <!-- Pasaje 3 — POCAS PLAZAS -->
+        <article class="ticket-card ticket-card--low" role="listitem">
+          <div class="ticket-card__badge">¡Últimos asientos!</div>
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">10:00</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus C3</span>
+            <span class="ticket-card__seats ticket-card__seats--low"><i class='bx bx-chair'></i> 3 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+        <!-- Pasaje 4 -->
+        <article class="ticket-card" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">12:15</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus A2</span>
+            <span class="ticket-card__seats"><i class='bx bx-chair'></i> 22 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+        <!-- Pasaje 5 — AGOTADO -->
+        <article class="ticket-card ticket-card--sold" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">14:00</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus D1</span>
+            <span class="ticket-card__seats ticket-card__seats--sold"><i class='bx bx-chair'></i> Agotado</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn ticket-card__btn--disabled" type="button" disabled>Agotado</button>
+        </article>
+
+        <!-- Pasaje 6 -->
+        <article class="ticket-card" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">16:30</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus B1</span>
+            <span class="ticket-card__seats"><i class='bx bx-chair'></i> 18 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+        <!-- Pasaje 7 -->
+        <article class="ticket-card" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">18:45</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus C1</span>
+            <span class="ticket-card__seats"><i class='bx bx-chair'></i> 30 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+        <!-- Pasaje 8 -->
+        <article class="ticket-card" role="listitem">
+          <div class="ticket-card__time">
+            <span class="ticket-card__hour">20:00</span>
+            <span class="ticket-card__duration">~45 min</span>
+          </div>
+          <div class="ticket-card__route">
+            <span class="ticket-card__city">Curicó</span>
+            <span class="ticket-card__arrow"><i class='bx bx-right-arrow-alt'></i></span>
+            <span class="ticket-card__city">Talca</span>
+          </div>
+          <div class="ticket-card__info">
+            <span class="ticket-card__bus"><i class='bx bx-bus'></i> Bus A3</span>
+            <span class="ticket-card__seats"><i class='bx bx-chair'></i> 11 asientos</span>
+          </div>
+          <div class="ticket-card__price">
+            <span class="ticket-card__amount">$2.800</span>
+            <span class="ticket-card__per">por persona</span>
+          </div>
+          <button class="ticket-card__btn" type="button">Comprar</button>
+        </article>
+
+      </div>
+      <!-- /schedules__list -->
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       FOOTER MÍNIMO
+       ============================================================ -->
+  <footer class="footer">
+    <p>© 2025 Talmocur · Todos los derechos reservados</p>
+  </footer>
+
+
+  <!-- ============================================================
+       OVERLAY + MODAL DE LOGIN (ocultos por defecto)
+       ============================================================ -->
+  <div class="overlay" id="loginOverlay" aria-hidden="true"></div>
+
+  <div class="login-modal" id="loginModal" role="dialog" aria-modal="true"
+       aria-label="Formulario de inicio de sesión" aria-hidden="true">
+
+    <!-- Columna Izquierda: Imagen -->
+    <aside class="login-image-side" aria-hidden="true">
+      <img src="/Imagen_Login.png" alt="Imagen decorativa" class="login-image" />
+      <div class="login-image-overlay"></div>
+    </aside>
+
+    <!-- Columna Derecha: Formulario -->
+    <section class="login-form-side">
+
+      <!-- Logo -->
+      <div class="login-logo-wrapper" aria-label="Logo de la empresa">
+        <div class="login-logo-placeholder">
+          <img src="/Logo_Talmocur.png" alt="Logo" />
+        </div>
+      </div>
+
+      <!-- Encabezado -->
+      <header class="login-header">
+        <h2 class="login-title">Bienvenido de vuelta!</h2>
+        <p class="login-subtitle">Ingresa tus datos para continuar</p>
+      </header>
+
+      <!-- Formulario -->
+      <div class="login-form" novalidate>
+
+        <!-- Correo -->
+        <div class="input-group">
+          <label for="email" class="input-label">Correo Electrónico</label>
+          <div class="input-wrapper">
+            <input type="email" id="email" name="email" class="input-field"
+                   placeholder="ejemplo@correo.com" autocomplete="email" />
+            <span class="input-icon" aria-hidden="true">
+              <i class='bx bx-envelope'></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="input-group">
+          <label for="password" class="input-label">Contraseña</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" name="password" class="input-field"
+                   placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="input-icon input-icon--btn"
+                    aria-label="Mostrar u ocultar contraseña" id="togglePassword">
+              <i class='bx bxs-show' id="toggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Olvidaste contraseña -->
+        <div class="forgot-wrapper">
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <!-- Botón -->
+        <button type="button" class="btn-login">Iniciar Sesión</button>
+
+        <!-- Registro -->
+        <p class="register-text">
+          ¿No tienes una cuenta?
+          <a href="#" class="register-link">Crear cuenta</a>
+        </p>
+
+      </div>
+    </section>
+
+  </div>
+  <!-- /login-modal -->
+
+  <script src="home.js"></script>
+</body>
+</html>

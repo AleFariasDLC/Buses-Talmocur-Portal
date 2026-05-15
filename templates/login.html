@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+
+  <!-- Boxicons CDN -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts: Playfair Display + DM Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       PÁGINA PRINCIPAL (fondo de ejemplo)
+       ============================================================ -->
+  <main class="background-page">
+    <h1>Página Principal</h1>
+    <p>Contenido de la aplicación...</p>
+  </main>
+
+  <!-- ============================================================
+       OVERLAY: oscurece y desenfoca el fondo
+       ============================================================ -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ============================================================
+       MODAL DE LOGIN
+       ============================================================ -->
+  <div class="login-modal" id="loginModal" role="dialog" aria-modal="true" aria-label="Formulario de inicio de sesión">
+
+    <!-- ── Columna Izquierda: Imagen ─────────────────────────── -->
+    <aside class="login-image-side" aria-hidden="true">
+      <img
+        src="/Imagen_Login.png"
+        alt="Imagen decorativa"
+        class="login-image"
+      />
+      <div class="login-image-overlay"></div>
+    </aside>
+
+    <!-- ── Columna Derecha: Formulario ───────────────────────── -->
+    <section class="login-form-side">
+
+      <!-- Logo -->
+      <div class="login-logo-wrapper" aria-label="Logo de la empresa">
+        <div class="login-logo-placeholder">
+          <!-- Reemplazar con <img src="logo.svg" alt="Logo" /> -->
+          <img src="/Logo_Talmocur.png" alt="Logo" />
+        </div>
+      </div>
+
+      <!-- Encabezado -->
+      <header class="login-header">
+        <h2 class="login-title">Bienvenido de vuelta!</h2>
+        <p class="login-subtitle">Ingresa tus datos para continuar</p>
+      </header>
+
+      <!-- Formulario -->
+      <div class="login-form" novalidate>
+
+        <!-- Campo: Correo Electrónico -->
+        <div class="input-group">
+          <label for="email" class="input-label">Correo Electrónico</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="input-field"
+              placeholder="ejemplo@correo.com"
+              autocomplete="email"
+            />
+            <span class="input-icon" aria-hidden="true">
+              <i class='bx bx-envelope'></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Campo: Contraseña -->
+        <div class="input-group">
+          <label for="password" class="input-label">Contraseña</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="input-field"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <!-- Botón toggle mostrar/ocultar contraseña -->
+            <button type="button" class="input-icon input-icon--btn" aria-label="Mostrar u ocultar contraseña" id="togglePassword">
+              <i class='bx bxs-show' id="toggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Olvidaste tu contraseña -->
+        <div class="forgot-wrapper">
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <!-- Botón Iniciar Sesión -->
+        <button type="button" class="btn-login">
+          Iniciar Sesión
+        </button>
+
+        <!-- Registro -->
+        <p class="register-text">
+          ¿No tienes una cuenta?
+          <a href="#" class="register-link">Crear cuenta</a>
+        </p>
+
+      </div>
+      <!-- /login-form -->
+
+    </section>
+    <!-- /login-form-side -->
+
+  </div>
+  <!-- /login-modal -->
+
+</body>
+</html>

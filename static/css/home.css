@@ -1,0 +1,764 @@
+/* ================================================================
+   HOME.CSS  –  Talmocur página de inicio
+   ================================================================ */
+
+
+/* ── 1. VARIABLES GLOBALES ───────────────────────────────────── */
+:root {
+  /* Marca */
+  --color-primary:        #1d4ed8;
+  --color-primary-dark:   #1e3a8a;
+  --color-primary-light:  #eff6ff;
+  --color-primary-hover:  #1e40af;
+  --color-accent:         #f59e0b;
+
+  /* Neutros */
+  --color-white:          #ffffff;
+  --color-gray-50:        #f8fafc;
+  --color-gray-100:       #f1f5f9;
+  --color-gray-200:       #e2e8f0;
+  --color-gray-400:       #94a3b8;
+  --color-gray-500:       #64748b;
+  --color-gray-700:       #334155;
+  --color-gray-900:       #0f172a;
+
+  /* Estados */
+  --color-danger:         #ef4444;
+  --color-warning:        #f59e0b;
+
+  /* Tipografía */
+  --font-display:         'Playfair Display', Georgia, serif;
+  --font-body:            'DM Sans', sans-serif;
+
+  /* Espaciado */
+  --section-padding:      80px 24px;
+  --max-width:            1100px;
+
+  /* Sombras */
+  --shadow-sm:            0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:            0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:            0 12px 40px rgba(0,0,0,.14);
+  --shadow-xl:            0 24px 60px rgba(0,0,0,.18);
+
+  /* Radios */
+  --radius-sm:            8px;
+  --radius-md:            14px;
+  --radius-lg:            20px;
+
+  /* Transición */
+  --transition:           0.22s ease;
+}
+
+
+/* ── 2. RESET & BASE ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+
+/* ── 3. NAVBAR ───────────────────────────────────────────────── */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background-color: var(--color-primary);
+  box-shadow: 0 2px 12px rgba(29, 78, 216, 0.25);
+}
+
+.navbar__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.navbar__logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Links */
+.navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.navbar__link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.88);
+  transition: color var(--transition);
+}
+
+.navbar__link:hover {
+  color: var(--color-white);
+}
+
+/* Botón iniciar sesión */
+.navbar__btn-login {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-white);
+  border-radius: 50px;
+  transition:
+    background-color var(--transition),
+    transform        var(--transition),
+    box-shadow       var(--transition);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+
+.navbar__btn-login:hover {
+  background-color: #e0e7ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.16);
+}
+
+.navbar__btn-login i {
+  font-size: 1rem;
+}
+
+
+/* ── 4. HERO ─────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px 180px;  /* bottom generoso para que el search-bar no tape texto */
+  overflow: hidden;
+}
+
+/* Imagen de fondo */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(15, 23, 42, 0.72) 0%,
+    rgba(29, 78, 216, 0.55) 100%
+  );
+}
+
+/* Texto hero */
+.hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 640px;
+  animation: fadeUp 0.7s ease both;
+}
+
+.hero__eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 14px;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.15;
+  margin-bottom: 18px;
+}
+
+.hero__subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.80);
+  line-height: 1.65;
+}
+
+
+/* ── 5. BUSCADOR ─────────────────────────────────────────────── */
+.search-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 44px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: 0 8px;
+  max-width: 960px;
+  width: 100%;
+  min-height: 72px;
+  animation: fadeUp 0.7s 0.15s ease both;
+}
+
+/* Cada campo */
+.search-bar__field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+.search-bar__label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gray-400);
+  margin-bottom: 4px;
+}
+
+.search-bar__label i {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+}
+
+.search-bar__select,
+.search-bar__input {
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--color-gray-900);
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.search-bar__select:focus,
+.search-bar__input:focus {
+  color: var(--color-primary);
+}
+
+/* Divisor vertical */
+.search-bar__divider {
+  width: 1px;
+  height: 36px;
+  background-color: var(--color-gray-200);
+  flex-shrink: 0;
+}
+
+/* Botón swap */
+.search-bar__swap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  transition:
+    background-color var(--transition),
+    transform        var(--transition);
+}
+
+.search-bar__swap:hover {
+  background-color: var(--color-primary-light);
+  transform: rotate(180deg);
+}
+
+/* Botón buscar */
+.search-bar__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 0 28px;
+  height: 52px;
+  margin: 10px 6px 10px 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--transition),
+    transform        var(--transition),
+    box-shadow       var(--transition);
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
+  white-space: nowrap;
+}
+
+.search-bar__btn:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(29, 78, 216, 0.45);
+}
+
+.search-bar__btn i {
+  font-size: 1.1rem;
+}
+
+
+/* ── 6. SECCIÓN BENEFICIOS ───────────────────────────────────── */
+.features {
+  padding: var(--section-padding);
+  background-color: var(--color-white);
+}
+
+.features__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.features__heading {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.features__eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.features__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--color-gray-900);
+  line-height: 1.2;
+}
+
+/* Grid de tarjetas */
+.features__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.feature-card {
+  padding: 32px 24px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-gray-200);
+  background-color: var(--color-gray-50);
+  transition:
+    transform    var(--transition),
+    box-shadow   var(--transition),
+    border-color var(--transition);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: #bfdbfe;
+}
+
+.feature-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.feature-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin-bottom: 8px;
+}
+
+.feature-card__text {
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+  line-height: 1.6;
+}
+
+
+/* ── 7. SECCIÓN PASAJES DEL DÍA ──────────────────────────────── */
+.schedules {
+  padding: var(--section-padding);
+  background-color: var(--color-gray-50);
+}
+
+.schedules__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.schedules__heading {
+  margin-bottom: 40px;
+}
+
+.schedules__eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.schedules__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: 4px;
+}
+
+.schedules__subtitle {
+  font-size: 0.9rem;
+  color: var(--color-gray-500);
+}
+
+/* Lista de pasajes */
+.schedules__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* ── 8. TARJETA DE PASAJE ────────────────────────────────────── */
+.ticket-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 90px 1fr 1fr 110px 130px;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 28px;
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  transition:
+    transform    var(--transition),
+    box-shadow   var(--transition),
+    border-color var(--transition);
+}
+
+.ticket-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: #bfdbfe;
+}
+
+/* Hora */
+.ticket-card__time {
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-card__hour {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  line-height: 1;
+}
+
+.ticket-card__duration {
+  font-size: 0.75rem;
+  color: var(--color-gray-400);
+  margin-top: 4px;
+}
+
+/* Ruta */
+.ticket-card__route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticket-card__city {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.ticket-card__arrow {
+  color: var(--color-primary);
+  font-size: 1.3rem;
+  display: flex;
+}
+
+/* Info (bus + asientos) */
+.ticket-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ticket-card__bus,
+.ticket-card__seats {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--color-gray-500);
+}
+
+.ticket-card__bus i,
+.ticket-card__seats i {
+  font-size: 0.95rem;
+  color: var(--color-gray-400);
+}
+
+/* Asientos pocos */
+.ticket-card__seats--low {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+.ticket-card__seats--low i {
+  color: var(--color-warning);
+}
+
+/* Asientos agotado */
+.ticket-card__seats--sold {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+.ticket-card__seats--sold i {
+  color: var(--color-danger);
+}
+
+/* Precio */
+.ticket-card__price {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.ticket-card__amount {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.ticket-card__per {
+  font-size: 0.72rem;
+  color: var(--color-gray-400);
+  margin-top: 3px;
+}
+
+/* Botón comprar */
+.ticket-card__btn {
+  padding: 10px 0;
+  width: 120px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  transition:
+    background-color var(--transition),
+    transform        var(--transition),
+    box-shadow       var(--transition);
+  box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
+}
+
+.ticket-card__btn:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(29, 78, 216, 0.38);
+}
+
+/* Botón deshabilitado */
+.ticket-card__btn--disabled {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-400);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.ticket-card__btn--disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background-color: var(--color-gray-200);
+}
+
+/* Badge "últimos asientos" */
+.ticket-card__badge {
+  position: absolute;
+  top: -1px;
+  left: 28px;
+  transform: translateY(-50%);
+  background-color: var(--color-warning);
+  color: var(--color-white);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 50px;
+}
+
+/* Variante pocas plazas */
+.ticket-card--low {
+  border-color: #fde68a;
+  background-color: #fffbeb;
+}
+
+/* Variante agotado */
+.ticket-card--sold {
+  opacity: 0.7;
+  background-color: var(--color-gray-50);
+}
+
+
+/* ── 9. FOOTER ───────────────────────────────────────────────── */
+.footer {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-gray-400);
+  border-top: 1px solid var(--color-gray-200);
+  background-color: var(--color-white);
+}
+
+
+/* ── 10. ANIMACIONES ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ── 11. RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .features__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .search-bar {
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 12px;
+    border-radius: var(--radius-md);
+  }
+
+  .search-bar__field {
+    flex: 1 1 40%;
+    padding: 8px 12px;
+  }
+
+  .search-bar__divider,
+  .search-bar__swap {
+    display: none;
+  }
+
+  .search-bar__btn {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin: 4px 0 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .ticket-card {
+    grid-template-columns: 70px 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 12px 16px;
+  }
+
+  .ticket-card__info {
+    display: none;            /* simplifica en móvil */
+  }
+
+  .ticket-card__price {
+    text-align: left;
+  }
+
+  .ticket-card__btn {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    width: 90px;
+  }
+
+  .features__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar__link {
+    display: none;
+  }
+}
