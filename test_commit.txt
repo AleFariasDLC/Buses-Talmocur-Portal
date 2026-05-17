@@ -1,5 +1,0 @@
-import talmocur
-buses = limpios
-horarios = puntuales
-clases = canceladas
-titulo = si por favor
