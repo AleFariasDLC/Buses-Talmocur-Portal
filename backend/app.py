@@ -13,6 +13,10 @@ app.secret_key = os.getenv('SECRET_KEY')
 def index():
     return render_template('home.html')
 
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
 if __name__ == '__main__':
     load_dotenv()
     app.run(debug=True)

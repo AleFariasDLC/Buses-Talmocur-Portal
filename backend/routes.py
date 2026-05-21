@@ -5,6 +5,7 @@ import os, sqlite3
 routes = Blueprint('routes', __name__)
 
 
+
 @routes.route('api/register', methods=['POST'])
 def register():
     data = request.get_json()
