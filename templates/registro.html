@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Registrarse{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Crea tu cuenta en Talmocur y comienza a gestionar tus pasajes de bus." />
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/registro.css" />
+{% endblock %}
+
+{% block content %}
+
+  <!-- ============================================================
+       HERO CON FONDO
+       ============================================================ -->
+  <section class="login-page" aria-label="Crear cuenta">
+
+    <!-- Fondo con imagen + degradado -->
+    <div class="hero__bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
+      <div class="hero__bg-overlay"></div>
+    </div>
+
+    <!-- Tarjeta de registro centrada -->
+    <div class="login-card registro-card" role="main">
+
+      <!-- Logo -->
+      <div class="login-card__logo">
+        <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="login-card__logo-img" />
+      </div>
+
+      <!-- Título -->
+      <header class="login-card__header">
+        <h1 class="login-card__title">Crea tu cuenta</h1>
+        <p class="login-card__subtitle">Completa los datos para registrarte</p>
+      </header>
+
+      <!-- Formulario -->
+      <form class="login-card__form" id="registroForm" novalidate>
+
+        <!-- Nombre completo -->
+        <div class="lc-field">
+          <label for="nombre" class="lc-label">Nombre completo</label>
+          <div class="lc-input-wrapper">
+            <input type="text" id="nombre" name="nombre" class="lc-input" placeholder="Juan Pérez" autocomplete="name"
+              required />
+            <span class="lc-icon" aria-hidden="true">
+              <i class='bx bx-user'></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Correo electrónico -->
+        <div class="lc-field">
+          <label for="email" class="lc-label">Correo electrónico</label>
+          <div class="lc-input-wrapper">
+            <input type="email" id="email" name="email" class="lc-input" placeholder="ejemplo@correo.com"
+              autocomplete="email" required />
+            <span class="lc-icon" aria-hidden="true">
+              <i class='bx bx-envelope'></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="lc-field">
+          <label for="password" class="lc-label">Contraseña</label>
+          <div class="lc-input-wrapper">
+            <input type="password" id="password" name="password" class="lc-input" placeholder="Mínimo 8 caracteres"
+              autocomplete="new-password" required />
+            <button type="button" class="lc-icon lc-icon--btn" id="togglePassword"
+              aria-label="Mostrar u ocultar contraseña">
+              <i class='bx bxs-show' id="toggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="lc-field">
+          <label for="confirmPassword" class="lc-label">Confirmar contraseña</label>
+          <div class="lc-input-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="lc-input"
+              placeholder="Repite tu contraseña" autocomplete="new-password" required />
+            <button type="button" class="lc-icon lc-icon--btn" id="toggleConfirm"
+              aria-label="Mostrar u ocultar contraseña">
+              <i class='bx bxs-show' id="toggleIconConfirm"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Botón Registrarse -->
+        <button type="submit" class="lc-btn-submit" id="btnRegistro">
+          <i class='bx bx-user-plus'></i>
+          Crear cuenta
+        </button>
+
+      </form>
+
+      <!-- Separador -->
+      <div class="lc-divider">
+        <span>o</span>
+      </div>
+
+      <!-- Link a login -->
+      <p class="lc-register-text">
+        ¿Ya tienes una cuenta?
+        <a href="/login" class="lc-register-link">Iniciar sesión</a>
+      </p>
+
+    </div>
+    <!-- /registro-card -->
+
+  </section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+  <script>
+    function setupToggle(btnId, inputId, iconId) {
+      const btn = document.getElementById(btnId);
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      btn.addEventListener('click', () => {
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        icon.className = isPassword ? 'bx bxs-hide' : 'bx bxs-show';
+      });
+    }
+    setupToggle('togglePassword', 'password', 'toggleIcon');
+    setupToggle('toggleConfirm', 'confirmPassword', 'toggleIconConfirm');
+  </script>
+{% endblock %}

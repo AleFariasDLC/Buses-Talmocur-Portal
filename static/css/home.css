@@ -6,47 +6,47 @@
 /* ── 1. VARIABLES GLOBALES ───────────────────────────────────── */
 :root {
   /* Marca */
-  --color-primary:        #1d4ed8;
-  --color-primary-dark:   #1e3a8a;
-  --color-primary-light:  #eff6ff;
-  --color-primary-hover:  #1e40af;
-  --color-accent:         #f59e0b;
+  --color-primary: #1d4ed8;
+  --color-primary-dark: #1e3a8a;
+  --color-primary-light: #eff6ff;
+  --color-primary-hover: #1e40af;
+  --color-accent: #f59e0b;
 
   /* Neutros */
-  --color-white:          #ffffff;
-  --color-gray-50:        #f8fafc;
-  --color-gray-100:       #f1f5f9;
-  --color-gray-200:       #e2e8f0;
-  --color-gray-400:       #94a3b8;
-  --color-gray-500:       #64748b;
-  --color-gray-700:       #334155;
-  --color-gray-900:       #0f172a;
+  --color-white: #ffffff;
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-700: #334155;
+  --color-gray-900: #0f172a;
 
   /* Estados */
-  --color-danger:         #ef4444;
-  --color-warning:        #f59e0b;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
 
   /* Tipografía */
-  --font-display:         'Playfair Display', Georgia, serif;
-  --font-body:            'DM Sans', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
 
   /* Espaciado */
-  --section-padding:      80px 24px;
-  --max-width:            1100px;
+  --section-padding: 80px 24px;
+  --max-width: 1100px;
 
   /* Sombras */
-  --shadow-sm:            0 1px 3px rgba(0,0,0,.08);
-  --shadow-md:            0 4px 16px rgba(0,0,0,.10);
-  --shadow-lg:            0 12px 40px rgba(0,0,0,.14);
-  --shadow-xl:            0 24px 60px rgba(0,0,0,.18);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, .08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, .10);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, .14);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, .18);
 
   /* Radios */
-  --radius-sm:            8px;
-  --radius-md:            14px;
-  --radius-lg:            20px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
 
   /* Transición */
-  --transition:           0.22s ease;
+  --transition: 0.22s ease;
 }
 
 
@@ -104,10 +104,13 @@ button {
   height: 64px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 /* Logo */
+.navbar__logo {
+  margin-right: 40px; /* empuja el nav al extremo derecho */
+}
+
 .navbar__logo-img {
   height: 36px;
   width: auto;
@@ -124,7 +127,7 @@ button {
 .navbar__link {
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255,255,255,0.88);
+  color: rgba(255, 255, 255, 0.88);
   transition: color var(--transition);
 }
 
@@ -145,15 +148,15 @@ button {
   border-radius: 50px;
   transition:
     background-color var(--transition),
-    transform        var(--transition),
-    box-shadow       var(--transition);
-  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    transform var(--transition),
+    box-shadow var(--transition);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
 }
 
 .navbar__btn-login:hover {
   background-color: #e0e7ff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .16);
 }
 
 .navbar__btn-login i {
@@ -169,7 +172,8 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120px 24px 180px;  /* bottom generoso para que el search-bar no tape texto */
+  padding: 120px 24px 180px;
+  /* bottom generoso para que el search-bar no tape texto */
   overflow: hidden;
 }
 
@@ -189,11 +193,9 @@ button {
 .hero__bg-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    160deg,
-    rgba(15, 23, 42, 0.72) 0%,
-    rgba(29, 78, 216, 0.55) 100%
-  );
+  background: linear-gradient(160deg,
+      rgba(15, 23, 42, 0.72) 0%,
+      rgba(29, 78, 216, 0.55) 100%);
 }
 
 /* Texto hero */
@@ -227,7 +229,7 @@ button {
 .hero__subtitle {
   font-size: 1rem;
   font-weight: 400;
-  color: rgba(255,255,255,0.80);
+  color: rgba(255, 255, 255, 0.80);
   line-height: 1.65;
 }
 
@@ -321,7 +323,7 @@ button {
   font-size: 1.1rem;
   transition:
     background-color var(--transition),
-    transform        var(--transition);
+    transform var(--transition);
 }
 
 .search-bar__swap:hover {
@@ -346,8 +348,8 @@ button {
   border-radius: var(--radius-md);
   transition:
     background-color var(--transition),
-    transform        var(--transition),
-    box-shadow       var(--transition);
+    transform var(--transition),
+    box-shadow var(--transition);
   box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
   white-space: nowrap;
 }
@@ -409,8 +411,8 @@ button {
   border: 1.5px solid var(--color-gray-200);
   background-color: var(--color-gray-50);
   transition:
-    transform    var(--transition),
-    box-shadow   var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition),
     border-color var(--transition);
 }
 
@@ -504,8 +506,8 @@ button {
   border: 1.5px solid var(--color-gray-200);
   border-radius: var(--radius-md);
   transition:
-    transform    var(--transition),
-    box-shadow   var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition),
     border-color var(--transition);
 }
 
@@ -580,6 +582,7 @@ button {
   color: var(--color-warning);
   font-weight: 600;
 }
+
 .ticket-card__seats--low i {
   color: var(--color-warning);
 }
@@ -589,6 +592,7 @@ button {
   color: var(--color-danger);
   font-weight: 600;
 }
+
 .ticket-card__seats--sold i {
   color: var(--color-danger);
 }
@@ -625,8 +629,8 @@ button {
   border-radius: var(--radius-sm);
   transition:
     background-color var(--transition),
-    transform        var(--transition),
-    box-shadow       var(--transition);
+    transform var(--transition),
+    box-shadow var(--transition);
   box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
 }
 
@@ -696,6 +700,7 @@ button {
     opacity: 0;
     transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -741,7 +746,8 @@ button {
   }
 
   .ticket-card__info {
-    display: none;            /* simplifica en móvil */
+    display: none;
+    /* simplifica en móvil */
   }
 
   .ticket-card__price {

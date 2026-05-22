@@ -1,44 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Talmocur – Viajes en bus</title>
+{% extends "base.html" %}
 
-  <!-- Boxicons -->
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+{% block title %}Talmocur{% endblock %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
-</head>
-<body>
-
-  <!-- ============================================================
-       NAVBAR
-       ============================================================ -->
-  <header class="navbar" id="navbar">
-    <div class="navbar__inner">
-
-      <!-- Logo -->
-      <a href="#" class="navbar__logo" aria-label="Talmocur inicio">
-        <img src="/Logo_Talmocur.png" alt="Talmocur" class="navbar__logo-img" />
-      </a>
-
-      <!-- Nav links -->
-      <nav class="navbar__nav" aria-label="Navegación principal">
-        <a href="#beneficios" class="navbar__link">Beneficios</a>
-        <a href="#quienes-somos" class="navbar__link">Quiénes somos</a>
-        <a href="/login" class="navbar__btn-login" id="openLogin">
-          <i class='bx bx-user'></i>
-          Iniciar sesión
-        </a>
-      </nav>
-
-    </div>
-  </header>
-
+{% block content %}
 
   <!-- ============================================================
        HERO
@@ -47,15 +11,14 @@
 
     <!-- Fondo con imagen + degradado -->
     <div class="hero__bg" aria-hidden="true">
-      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80"
-           alt="" class="hero__bg-img" />
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
       <div class="hero__bg-overlay"></div>
     </div>
 
     <!-- Contenido hero -->
     <div class="hero__content">
       <p class="hero__eyebrow">La forma más cómoda de viajar</p>
-      <h1 class="hero__title">Tu próximo viaje<br/>te está esperando</h1>
+      <h1 class="hero__title">Tu próximo viaje<br />te está esperando</h1>
       <p class="hero__subtitle">Buses modernos, puntualidad garantizada y los mejores precios entre Curicó y Talca.</p>
     </div>
 
@@ -143,7 +106,7 @@
 
       <div class="features__heading">
         <p class="features__eyebrow">¿Por qué elegirnos?</p>
-        <h2 class="features__title">Viaja con confianza,<br/>llega a tiempo</h2>
+        <h2 class="features__title">Viaja con confianza,<br />llega a tiempo</h2>
       </div>
 
       <div class="features__grid">
@@ -383,85 +346,9 @@
     <p>© 2025 Talmocur · Todos los derechos reservados</p>
   </footer>
 
+{% endblock %}
 
-  <!-- ============================================================
-       OVERLAY + MODAL DE LOGIN (ocultos por defecto)
-       ============================================================ -->
-  <div class="overlay" id="loginOverlay" aria-hidden="true"></div>
 
-  <div class="login-modal" id="loginModal" role="dialog" aria-modal="true"
-       aria-label="Formulario de inicio de sesión" aria-hidden="true">
-
-    <!-- Columna Izquierda: Imagen -->
-    <aside class="login-image-side" aria-hidden="true">
-      <img src="/Imagen_Login.png" alt="Imagen decorativa" class="login-image" />
-      <div class="login-image-overlay"></div>
-    </aside>
-
-    <!-- Columna Derecha: Formulario -->
-    <section class="login-form-side">
-
-      <!-- Logo -->
-      <div class="login-logo-wrapper" aria-label="Logo de la empresa">
-        <div class="login-logo-placeholder">
-          <img src="/Logo_Talmocur.png" alt="Logo" />
-        </div>
-      </div>
-
-      <!-- Encabezado -->
-      <header class="login-header">
-        <h2 class="login-title">Bienvenido de vuelta!</h2>
-        <p class="login-subtitle">Ingresa tus datos para continuar</p>
-      </header>
-
-      <!-- Formulario -->
-      <div class="login-form" novalidate>
-
-        <!-- Correo -->
-        <div class="input-group">
-          <label for="email" class="input-label">Correo Electrónico</label>
-          <div class="input-wrapper">
-            <input type="email" id="email" name="email" class="input-field"
-                   placeholder="ejemplo@correo.com" autocomplete="email" />
-            <span class="input-icon" aria-hidden="true">
-              <i class='bx bx-envelope'></i>
-            </span>
-          </div>
-        </div>
-
-        <!-- Contraseña -->
-        <div class="input-group">
-          <label for="password" class="input-label">Contraseña</label>
-          <div class="input-wrapper">
-            <input type="password" id="password" name="password" class="input-field"
-                   placeholder="••••••••" autocomplete="current-password" />
-            <button type="button" class="input-icon input-icon--btn"
-                    aria-label="Mostrar u ocultar contraseña" id="togglePassword">
-              <i class='bx bxs-show' id="toggleIcon"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Olvidaste contraseña -->
-        <div class="forgot-wrapper">
-          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
-        </div>
-
-        <!-- Botón -->
-        <button type="button" class="btn-login">Iniciar Sesión</button>
-
-        <!-- Registro -->
-        <p class="register-text">
-          ¿No tienes una cuenta?
-          <a href="#" class="register-link">Crear cuenta</a>
-        </p>
-
-      </div>
-    </section>
-
-  </div>
-  <!-- /login-modal -->
-
-  <script src="home.js"></script>
-</body>
-</html>
+{% block extra_js %}
+  <script src="/static/js/home.js"></script>
+{% endblock %}

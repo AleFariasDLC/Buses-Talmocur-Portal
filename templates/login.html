@@ -1,131 +1,108 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
+{% extends "base.html" %}
 
-  <!-- Boxicons CDN -->
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+{% block title %}Login{% endblock %}
 
-  <!-- Google Fonts: Playfair Display + DM Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+{% block meta %}
+  <meta name="description" content="Inicia sesión en Talmocur para gestionar tus pasajes de bus." />
+{% endblock %}
 
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
-</head>
-<body>
+{% block nav_login %}active-nav{% endblock %}
+
+{% block content %}
 
   <!-- ============================================================
-       PÁGINA PRINCIPAL (fondo de ejemplo)
+       HERO CON FONDO
        ============================================================ -->
-  <main class="background-page">
-    <h1>Página Principal</h1>
-    <p>Contenido de la aplicación...</p>
-  </main>
+  <section class="login-page" aria-label="Iniciar sesión">
 
-  <!-- ============================================================
-       OVERLAY: oscurece y desenfoca el fondo
-       ============================================================ -->
-  <div class="overlay" id="overlay"></div>
+    <!-- Fondo con imagen + degradado -->
+    <div class="hero__bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
+      <div class="hero__bg-overlay"></div>
+    </div>
 
-  <!-- ============================================================
-       MODAL DE LOGIN
-       ============================================================ -->
-  <div class="login-modal" id="loginModal" role="dialog" aria-modal="true" aria-label="Formulario de inicio de sesión">
+    <!-- Tarjeta de login centrada -->
+    <div class="login-card" role="main">
 
-    <!-- ── Columna Izquierda: Imagen ─────────────────────────── -->
-    <aside class="login-image-side" aria-hidden="true">
-      <img
-        src="/Imagen_Login.png"
-        alt="Imagen decorativa"
-        class="login-image"
-      />
-      <div class="login-image-overlay"></div>
-    </aside>
-
-    <!-- ── Columna Derecha: Formulario ───────────────────────── -->
-    <section class="login-form-side">
-
-      <!-- Logo -->
-      <div class="login-logo-wrapper" aria-label="Logo de la empresa">
-        <div class="login-logo-placeholder">
-          <!-- Reemplazar con <img src="logo.svg" alt="Logo" /> -->
-          <img src="/Logo_Talmocur.png" alt="Logo" />
-        </div>
+      <!-- Logo dentro del card -->
+      <div class="login-card__logo">
+        <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="login-card__logo-img" />
       </div>
 
-      <!-- Encabezado -->
-      <header class="login-header">
-        <h2 class="login-title">Bienvenido de vuelta!</h2>
-        <p class="login-subtitle">Ingresa tus datos para continuar</p>
+      <!-- Título -->
+      <header class="login-card__header">
+        <h1 class="login-card__title">Bienvenido de vuelta</h1>
+        <p class="login-card__subtitle">Ingresa tus datos en el formulario</p>
       </header>
 
       <!-- Formulario -->
-      <div class="login-form" novalidate>
+      <form class="login-card__form" id="loginForm" novalidate>
 
-        <!-- Campo: Correo Electrónico -->
-        <div class="input-group">
-          <label for="email" class="input-label">Correo Electrónico</label>
-          <div class="input-wrapper">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="input-field"
-              placeholder="ejemplo@correo.com"
-              autocomplete="email"
-            />
-            <span class="input-icon" aria-hidden="true">
+        <!-- Correo electrónico -->
+        <div class="lc-field">
+          <label for="email" class="lc-label">Correo electrónico</label>
+          <div class="lc-input-wrapper">
+            <input type="email" id="email" name="email" class="lc-input" placeholder="ejemplo@correo.com"
+              autocomplete="email" required />
+            <span class="lc-icon" aria-hidden="true">
               <i class='bx bx-envelope'></i>
             </span>
           </div>
         </div>
 
-        <!-- Campo: Contraseña -->
-        <div class="input-group">
-          <label for="password" class="input-label">Contraseña</label>
-          <div class="input-wrapper">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="input-field"
-              placeholder="••••••••"
-              autocomplete="current-password"
-            />
-            <!-- Botón toggle mostrar/ocultar contraseña -->
-            <button type="button" class="input-icon input-icon--btn" aria-label="Mostrar u ocultar contraseña" id="togglePassword">
+        <!-- Contraseña -->
+        <div class="lc-field">
+          <div class="lc-label-row">
+            <label for="password" class="lc-label">Contraseña</label>
+            <a href="#" class="lc-forgot">¿Olvidaste tu contraseña?</a>
+          </div>
+          <div class="lc-input-wrapper">
+            <input type="password" id="password" name="password" class="lc-input" placeholder="••••••••"
+              autocomplete="current-password" required />
+            <button type="button" class="lc-icon lc-icon--btn" id="togglePassword"
+              aria-label="Mostrar u ocultar contraseña">
               <i class='bx bxs-show' id="toggleIcon"></i>
             </button>
           </div>
         </div>
 
-        <!-- Olvidaste tu contraseña -->
-        <div class="forgot-wrapper">
-          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
-        </div>
-
         <!-- Botón Iniciar Sesión -->
-        <button type="button" class="btn-login">
-          Iniciar Sesión
+        <button type="submit" class="lc-btn-submit" id="btnLogin">
+          <i class='bx bx-log-in'></i>
+          Iniciar sesión
         </button>
 
-        <!-- Registro -->
-        <p class="register-text">
-          ¿No tienes una cuenta?
-          <a href="#" class="register-link">Crear cuenta</a>
-        </p>
+      </form>
 
+      <!-- Separador -->
+      <div class="lc-divider">
+        <span>o</span>
       </div>
-      <!-- /login-form -->
 
-    </section>
-    <!-- /login-form-side -->
+      <!-- Registro -->
+      <p class="lc-register-text">
+        ¿No tienes una cuenta?
+        <a href="/registro" class="lc-register-link">Registrate aquí</a>
+      </p>
 
-  </div>
-  <!-- /login-modal -->
+    </div>
+    <!-- /login-card -->
 
-</body>
-</html>
+  </section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+  <script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    toggleBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleIcon.className = isPassword ? 'bx bxs-hide' : 'bx bxs-show';
+    });
+  </script>
+{% endblock %}
