@@ -27,7 +27,7 @@
 
 /* ── 3. SWAP origen ↔ destino ────────────────────────────────── */
 (function initSwap() {
-  const btn     = document.querySelector('.search-bar__swap');
+  const btn     = document.querySelector('.buscador__swap');
   const origen  = document.getElementById('origen');
   const destino = document.getElementById('destino');
   if (!btn || !origen || !destino) return;

@@ -3,7 +3,7 @@
    ================================================================ */
 
 
-/* ── 1. VARIABLES GLOBALES ───────────────────────────────────── */
+/* ── 1. Variables globales ───────────────────────────────────── */
 :root {
   /* Marca */
   --color-primary: #1d4ed8;
@@ -50,7 +50,7 @@
 }
 
 
-/* ── 2. RESET & BASE ─────────────────────────────────────────── */
+/* ── 2. Reset & base ─────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -86,8 +86,8 @@ button {
 }
 
 
-/* ── 3. NAVBAR ───────────────────────────────────────────────── */
-.navbar {
+/* ── 3. Barra de navegacion ───────────────────────────────────────────────── */
+.barra-navegacion {
   position: fixed;
   top: 0;
   left: 0;
@@ -97,46 +97,47 @@ button {
   box-shadow: 0 2px 12px rgba(29, 78, 216, 0.25);
 }
 
-.navbar__inner {
+.barra-navegacion__interior {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 24px;
   height: 64px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 /* Logo */
-.navbar__logo {
-  margin-right: 40px; /* empuja el nav al extremo derecho */
+.barra-navegacion__logo {
+  margin-right: 40px;
 }
 
-.navbar__logo-img {
+.barra-navegacion__logo-img {
   height: 36px;
   width: auto;
   object-fit: contain;
 }
 
 /* Links */
-.navbar__nav {
+.barra-navegacion__menu {
   display: flex;
   align-items: center;
   gap: 32px;
 }
 
-.navbar__link {
+.barra-navegacion__link {
   font-size: 0.9rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.88);
   transition: color var(--transition);
 }
 
-.navbar__link:hover {
+.barra-navegacion__link:hover {
   color: var(--color-white);
 }
 
 /* Botón iniciar sesión */
-.navbar__btn-login {
+.barra-navegacion__btn-login {
   display: flex;
   align-items: center;
   gap: 7px;
@@ -153,18 +154,18 @@ button {
   box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
 }
 
-.navbar__btn-login:hover {
+.barra-navegacion__btn-login:hover {
   background-color: #e0e7ff;
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, .16);
 }
 
-.navbar__btn-login i {
+.barra-navegacion__btn-login i {
   font-size: 1rem;
 }
 
 
-/* ── 4. HERO ─────────────────────────────────────────────────── */
+/* ── 4. Hero ─────────────────────────────────────────────────── */
 .hero {
   position: relative;
   min-height: 88vh;
@@ -173,7 +174,7 @@ button {
   align-items: center;
   justify-content: center;
   padding: 120px 24px 180px;
-  /* bottom generoso para que el search-bar no tape texto */
+  /* bottom generoso para que el buscador no tape texto */
   overflow: hidden;
 }
 
@@ -204,10 +205,10 @@ button {
   z-index: 1;
   text-align: center;
   max-width: 640px;
-  animation: fadeUp 0.7s ease both;
+  animation: aparecerArriba 0.7s ease both;
 }
 
-.hero__eyebrow {
+.hero__etiqueta {
   display: inline-block;
   font-size: 0.8rem;
   font-weight: 600;
@@ -217,7 +218,7 @@ button {
   margin-bottom: 14px;
 }
 
-.hero__title {
+.hero__titulo {
   font-family: var(--font-display);
   font-size: clamp(2.2rem, 5vw, 3.6rem);
   font-weight: 700;
@@ -226,7 +227,7 @@ button {
   margin-bottom: 18px;
 }
 
-.hero__subtitle {
+.hero__subtitulo {
   font-size: 1rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.80);
@@ -234,8 +235,8 @@ button {
 }
 
 
-/* ── 5. BUSCADOR ─────────────────────────────────────────────── */
-.search-bar {
+/* ── 5. Buscador ─────────────────────────────────────────────── */
+.buscador {
   position: relative;
   z-index: 10;
   display: flex;
@@ -249,11 +250,11 @@ button {
   max-width: 960px;
   width: 100%;
   min-height: 72px;
-  animation: fadeUp 0.7s 0.15s ease both;
+  animation: aparecerArriba 0.7s 0.15s ease both;
 }
 
 /* Cada campo */
-.search-bar__field {
+.buscador__field {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -262,7 +263,7 @@ button {
   min-width: 0;
 }
 
-.search-bar__label {
+.buscador__etiqueta {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -274,13 +275,13 @@ button {
   margin-bottom: 4px;
 }
 
-.search-bar__label i {
+.buscador__etiqueta i {
   font-size: 0.9rem;
   color: var(--color-primary);
 }
 
-.search-bar__select,
-.search-bar__input {
+.buscador__select,
+.buscador__input {
   border: none;
   outline: none;
   font-family: var(--font-body);
@@ -295,21 +296,21 @@ button {
   -webkit-appearance: none;
 }
 
-.search-bar__select:focus,
-.search-bar__input:focus {
+.buscador__select:focus,
+.buscador__input:focus {
   color: var(--color-primary);
 }
 
 /* Divisor vertical */
-.search-bar__divider {
+.buscador__divisor {
   width: 1px;
   height: 36px;
   background-color: var(--color-gray-200);
   flex-shrink: 0;
 }
 
-/* Botón swap */
-.search-bar__swap {
+/* Botón intercambiar origen/destino */
+.buscador__swap {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -326,13 +327,13 @@ button {
     transform var(--transition);
 }
 
-.search-bar__swap:hover {
+.buscador__swap:hover {
   background-color: var(--color-primary-light);
   transform: rotate(180deg);
 }
 
 /* Botón buscar */
-.search-bar__btn {
+.buscador__btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -354,34 +355,34 @@ button {
   white-space: nowrap;
 }
 
-.search-bar__btn:hover {
+.buscador__btn:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(29, 78, 216, 0.45);
 }
 
-.search-bar__btn i {
+.buscador__btn i {
   font-size: 1.1rem;
 }
 
 
-/* ── 6. SECCIÓN BENEFICIOS ───────────────────────────────────── */
-.features {
+/* ── 6. Seccion Beneficios ───────────────────────────────────── */
+.beneficios {
   padding: var(--section-padding);
   background-color: var(--color-white);
 }
 
-.features__inner {
+.beneficios__interior {
   max-width: var(--max-width);
   margin: 0 auto;
 }
 
-.features__heading {
+.beneficios__header {
   text-align: center;
   margin-bottom: 56px;
 }
 
-.features__eyebrow {
+.beneficios__etiqueta {
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -390,7 +391,7 @@ button {
   margin-bottom: 10px;
 }
 
-.features__title {
+.beneficios__titulo {
   font-family: var(--font-display);
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 700;
@@ -399,13 +400,13 @@ button {
 }
 
 /* Grid de tarjetas */
-.features__grid {
+.beneficios__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
-.feature-card {
+.tarjeta-beneficio {
   padding: 32px 24px;
   border-radius: var(--radius-md);
   border: 1.5px solid var(--color-gray-200);
@@ -416,13 +417,13 @@ button {
     border-color var(--transition);
 }
 
-.feature-card:hover {
+.tarjeta-beneficio:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
   border-color: #bfdbfe;
 }
 
-.feature-card__icon {
+.tarjeta-beneficio__icono {
   width: 48px;
   height: 48px;
   border-radius: var(--radius-sm);
@@ -435,36 +436,36 @@ button {
   margin-bottom: 16px;
 }
 
-.feature-card__title {
+.tarjeta-beneficio__titulo {
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-gray-900);
   margin-bottom: 8px;
 }
 
-.feature-card__text {
+.tarjeta-beneficio__texto {
   font-size: 0.875rem;
   color: var(--color-gray-500);
   line-height: 1.6;
 }
 
 
-/* ── 7. SECCIÓN PASAJES DEL DÍA ──────────────────────────────── */
-.schedules {
+/* ── 7. Sección Horarios ─────────────────────────────── */
+.horarios {
   padding: var(--section-padding);
   background-color: var(--color-gray-50);
 }
 
-.schedules__inner {
+.horarios__interior {
   max-width: var(--max-width);
   margin: 0 auto;
 }
 
-.schedules__heading {
+.horarios__header {
   margin-bottom: 40px;
 }
 
-.schedules__eyebrow {
+.horarios__etiqueta {
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -473,7 +474,7 @@ button {
   margin-bottom: 8px;
 }
 
-.schedules__title {
+.horarios__titulo {
   font-family: var(--font-display);
   font-size: clamp(1.7rem, 3vw, 2.2rem);
   font-weight: 700;
@@ -481,21 +482,21 @@ button {
   margin-bottom: 4px;
 }
 
-.schedules__subtitle {
+.horarios__subtitulo {
   font-size: 0.9rem;
   color: var(--color-gray-500);
 }
 
 /* Lista de pasajes */
-.schedules__list {
+.horarios__lista {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 
-/* ── 8. TARJETA DE PASAJE ────────────────────────────────────── */
-.ticket-card {
+/* ── 8. Tarjeta de Pasaje ────────────────────────────────────── */
+.tarjeta-pasaje {
   position: relative;
   display: grid;
   grid-template-columns: 90px 1fr 1fr 110px 130px;
@@ -511,59 +512,59 @@ button {
     border-color var(--transition);
 }
 
-.ticket-card:hover {
+.tarjeta-pasaje:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: #bfdbfe;
 }
 
 /* Hora */
-.ticket-card__time {
+.tarjeta-pasaje__hora {
   display: flex;
   flex-direction: column;
 }
 
-.ticket-card__hour {
+.tarjeta-pasaje__hora-num {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-gray-900);
   line-height: 1;
 }
 
-.ticket-card__duration {
+.tarjeta-pasaje__duracion {
   font-size: 0.75rem;
   color: var(--color-gray-400);
   margin-top: 4px;
 }
 
 /* Ruta */
-.ticket-card__route {
+.tarjeta-pasaje__ruta {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.ticket-card__city {
+.tarjeta-pasaje__ciudad {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-gray-700);
 }
 
-.ticket-card__arrow {
+.tarjeta-pasaje__flecha {
   color: var(--color-primary);
   font-size: 1.3rem;
   display: flex;
 }
 
 /* Info (bus + asientos) */
-.ticket-card__info {
+.tarjeta-pasaje__info {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.ticket-card__bus,
-.ticket-card__seats {
+.tarjeta-pasaje__bus,
+.tarjeta-pasaje__asientos {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -571,54 +572,54 @@ button {
   color: var(--color-gray-500);
 }
 
-.ticket-card__bus i,
-.ticket-card__seats i {
+.tarjeta-pasaje__bus i,
+.tarjeta-pasaje__asientos i {
   font-size: 0.95rem;
   color: var(--color-gray-400);
 }
 
 /* Asientos pocos */
-.ticket-card__seats--low {
+.tarjeta-pasaje__asientos--pocos {
   color: var(--color-warning);
   font-weight: 600;
 }
 
-.ticket-card__seats--low i {
+.tarjeta-pasaje__asientos--pocos i {
   color: var(--color-warning);
 }
 
 /* Asientos agotado */
-.ticket-card__seats--sold {
+.tarjeta-pasaje__asientos--agotado {
   color: var(--color-danger);
   font-weight: 600;
 }
 
-.ticket-card__seats--sold i {
+.tarjeta-pasaje__asientos--agotado i {
   color: var(--color-danger);
 }
 
 /* Precio */
-.ticket-card__price {
+.tarjeta-pasaje__precio {
   display: flex;
   flex-direction: column;
   text-align: right;
 }
 
-.ticket-card__amount {
+.tarjeta-pasaje__monto {
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--color-primary);
   line-height: 1;
 }
 
-.ticket-card__per {
+.tarjeta-pasaje__por-persona {
   font-size: 0.72rem;
   color: var(--color-gray-400);
   margin-top: 3px;
 }
 
 /* Botón comprar */
-.ticket-card__btn {
+.tarjeta-pasaje__btn {
   padding: 10px 0;
   width: 120px;
   font-size: 0.88rem;
@@ -634,28 +635,28 @@ button {
   box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
 }
 
-.ticket-card__btn:hover {
+.tarjeta-pasaje__btn:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 5px 16px rgba(29, 78, 216, 0.38);
 }
 
 /* Botón deshabilitado */
-.ticket-card__btn--disabled {
+.tarjeta-pasaje__btn--deshabilitado {
   background-color: var(--color-gray-200);
   color: var(--color-gray-400);
   box-shadow: none;
   cursor: not-allowed;
 }
 
-.ticket-card__btn--disabled:hover {
+.tarjeta-pasaje__btn--deshabilitado:hover {
   transform: none;
   box-shadow: none;
   background-color: var(--color-gray-200);
 }
 
-/* Badge "últimos asientos" */
-.ticket-card__badge {
+/* Insignia "últimos asientos" */
+.tarjeta-pasaje__insignia {
   position: absolute;
   top: -1px;
   left: 28px;
@@ -671,19 +672,19 @@ button {
 }
 
 /* Variante pocas plazas */
-.ticket-card--low {
+.tarjeta-pasaje--pocas {
   border-color: #fde68a;
   background-color: #fffbeb;
 }
 
 /* Variante agotado */
-.ticket-card--sold {
+.tarjeta-pasaje--agotado {
   opacity: 0.7;
   background-color: var(--color-gray-50);
 }
 
 
-/* ── 9. FOOTER ───────────────────────────────────────────────── */
+/* ── 9. Footer ───────────────────────────────────────────────── */
 .footer {
   padding: 24px;
   text-align: center;
@@ -694,8 +695,8 @@ button {
 }
 
 
-/* ── 10. ANIMACIONES ─────────────────────────────────────────── */
-@keyframes fadeUp {
+/* ── 10. Animaciones ─────────────────────────────────────────── */
+@keyframes aparecerArriba {
   from {
     opacity: 0;
     transform: translateY(24px);
@@ -708,30 +709,30 @@ button {
 }
 
 
-/* ── 11. RESPONSIVE ──────────────────────────────────────────── */
+/* ── 11. Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .features__grid {
+  .beneficios__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .search-bar {
+  .buscador {
     flex-wrap: wrap;
     padding: 16px;
     gap: 12px;
     border-radius: var(--radius-md);
   }
 
-  .search-bar__field {
+  .buscador__field {
     flex: 1 1 40%;
     padding: 8px 12px;
   }
 
-  .search-bar__divider,
-  .search-bar__swap {
+  .buscador__divisor,
+  .buscador__swap {
     display: none;
   }
 
-  .search-bar__btn {
+  .buscador__btn {
     flex: 1 1 100%;
     justify-content: center;
     margin: 4px 0 0;
@@ -739,32 +740,32 @@ button {
 }
 
 @media (max-width: 700px) {
-  .ticket-card {
+  .tarjeta-pasaje {
     grid-template-columns: 70px 1fr auto;
     grid-template-rows: auto auto;
     gap: 12px 16px;
   }
 
-  .ticket-card__info {
+  .tarjeta-pasaje__info {
     display: none;
     /* simplifica en móvil */
   }
 
-  .ticket-card__price {
+  .tarjeta-pasaje__precio {
     text-align: left;
   }
 
-  .ticket-card__btn {
+  .tarjeta-pasaje__btn {
     grid-column: 3;
     grid-row: 1 / 3;
     width: 90px;
   }
 
-  .features__grid {
+  .beneficios__grid {
     grid-template-columns: 1fr;
   }
 
-  .navbar__link {
+  .barra-navegacion__link {
     display: none;
   }
 }

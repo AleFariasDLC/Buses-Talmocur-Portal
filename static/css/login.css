@@ -1,11 +1,11 @@
 /* ================================================================
    LOGIN.CSS
-   Estilos para el modal de inicio de sesión
+   Estilos para el login de inicio de sesión
    ================================================================ */
 
 
 /* ── 1. PÁGINA COMPLETA ──────────────────────────────────────── */
-.login-page {
+.pagina-login {
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -15,21 +15,21 @@
   /* 100px top para dejar espacio al navbar */
 }
 
-/* Reutiliza el fondo del hero */
-.login-page .hero__bg {
+/* Fondo con imagen de bus */
+.pagina-login .hero__bg {
   position: absolute;
   inset: 0;
   z-index: 0;
 }
 
-.login-page .hero__bg-img {
+.pagina-login .hero__bg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.login-page .hero__bg-overlay {
+.pagina-login .hero__bg-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
@@ -39,7 +39,7 @@
 
 
 /* ── 2. TARJETA LOGIN ────────────────────────────────────────── */
-.login-card {
+.tarjeta-login {
   position: relative;
   z-index: 1;
   background: #ffffff;
@@ -48,10 +48,10 @@
   padding: 44px 48px 40px;
   width: 100%;
   max-width: 440px;
-  animation: cardFadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: aparecerTarjeta 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes cardFadeIn {
+@keyframes aparecerTarjeta {
   from {
     opacity: 0;
     transform: translateY(24px);
@@ -64,14 +64,14 @@
 }
 
 
-/* ── 3. LOGO DENTRO DEL CARD ─────────────────────────────────── */
-.login-card__logo {
+/* ── 3. LOGO DENTRO DE LA TARJETA ─────────────────────────────── */
+.tarjeta-login__logo {
   display: flex;
   justify-content: center;
   margin-bottom: 28px;
 }
 
-.login-card__logo-img {
+.tarjeta-login__logo-img {
   height: 52px;
   width: auto;
   object-fit: contain;
@@ -79,12 +79,12 @@
 
 
 /* ── 4. ENCABEZADO ───────────────────────────────────────────── */
-.login-card__header {
+.tarjeta-login__encabezado {
   text-align: center;
   margin-bottom: 28px;
 }
 
-.login-card__title {
+.tarjeta-login__titulo {
   font-family: var(--font-body);
   font-size: 1.6rem;
   font-weight: 700;
@@ -93,7 +93,7 @@
   line-height: 1.2;
 }
 
-.login-card__subtitle {
+.tarjeta-login__subtitulo {
   font-size: 0.9rem;
   color: var(--color-gray-500);
   font-weight: 400;
@@ -101,7 +101,7 @@
 
 
 /* ── 5. FORMULARIO ───────────────────────────────────────────── */
-.login-card__form {
+.tarjeta-login__form {
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -114,8 +114,8 @@
   gap: 6px;
 }
 
-/* Fila label + olvidaste -->  */
-.lc-label-row {
+/* Fila etiqueta + olvidaste */
+.lc-label-fila {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -193,8 +193,8 @@
 }
 
 
-/* ── 6. OLVIDASTE CONTRASEÑA ─────────────────────────────────── */
-.lc-forgot {
+/* ── 6. ENLACE OLVIDÉ CONTRASEÑA ─────────────────────────────── */
+.lc-olvidaste {
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--color-gray-500);
@@ -202,7 +202,7 @@
   transition: color 0.18s ease;
 }
 
-.lc-forgot:hover {
+.lc-olvidaste:hover {
   color: var(--color-primary);
   text-decoration: underline;
 }
@@ -250,7 +250,7 @@
 
 
 /* ── 8. SEPARADOR ────────────────────────────────────────────── */
-.lc-divider {
+.separador {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -259,8 +259,8 @@
   font-size: 0.8rem;
 }
 
-.lc-divider::before,
-.lc-divider::after {
+.separador::before,
+.separador::after {
   content: '';
   flex: 1;
   height: 1px;
@@ -268,29 +268,29 @@
 }
 
 
-/* ── 9. LINK REGISTRO ────────────────────────────────────────── */
-.lc-register-text {
+/* ── 9. ENLACE REGISTRO ──────────────────────────────────────── */
+.texto-registro {
   text-align: center;
   font-size: 0.85rem;
   color: var(--color-gray-500);
   margin: 0;
 }
 
-.lc-register-link {
+.enlace-registro {
   color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.18s ease;
 }
 
-.lc-register-link:hover {
+.enlace-registro:hover {
   color: var(--color-primary-hover);
   text-decoration: underline;
 }
 
 
 /* ── 10. ESTADO ACTIVO NAVBAR ────────────────────────────────── */
-.active-nav {
+.nav-activo {
   background-color: var(--color-primary) !important;
   color: #ffffff !important;
 }
@@ -298,15 +298,15 @@
 
 /* ── 11. RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .login-card {
+  .tarjeta-login {
     padding: 36px 24px 32px;
   }
 
-  .login-card__title {
+  .tarjeta-login__titulo {
     font-size: 1.35rem;
   }
 
-  .login-page {
+  .pagina-login {
     padding: 90px 16px 40px;
   }
 }
