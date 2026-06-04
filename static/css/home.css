@@ -165,6 +165,125 @@ button {
 }
 
 
+/* ── 3b. Menú de usuario (logueado) ─────────────────────────── */
+.usuario-menu {
+  position: relative;
+}
+
+.usuario-menu__btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-white);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition:
+    background-color var(--transition),
+    box-shadow var(--transition);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+
+.usuario-menu__btn:hover {
+  background-color: #e0e7ff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .16);
+}
+
+.usuario-menu__btn i {
+  font-size: 1rem;
+}
+
+.usuario-menu__flecha {
+  font-size: 1.1rem !important;
+  transition: transform var(--transition);
+}
+
+/* Rotar flecha cuando está abierto */
+.usuario-menu__dropdown--abierto ~ .usuario-menu__btn .usuario-menu__flecha,
+.usuario-menu__btn[aria-expanded="true"] .usuario-menu__flecha {
+  transform: rotate(180deg);
+}
+
+/* Dropdown */
+.usuario-menu__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-gray-200);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+}
+
+.usuario-menu__dropdown--abierto {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Opciones del dropdown */
+.usuario-menu__opcion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 18px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.usuario-menu__opcion:hover {
+  background-color: var(--color-gray-50);
+  color: var(--color-primary);
+}
+
+.usuario-menu__opcion i {
+  font-size: 1.1rem;
+  color: var(--color-gray-400);
+  transition: color 0.15s ease;
+}
+
+.usuario-menu__opcion:hover i {
+  color: var(--color-primary);
+}
+
+/* Separador visual entre opciones */
+.usuario-menu__opcion--logout {
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.usuario-menu__opcion--logout:hover {
+  color: var(--color-danger);
+}
+
+.usuario-menu__opcion--logout:hover i {
+  color: var(--color-danger);
+}
+
+
 /* ── 4. Hero ─────────────────────────────────────────────────── */
 .hero {
   position: relative;
@@ -768,4 +887,35 @@ button {
   .barra-navegacion__link {
     display: none;
   }
+}
+
+
+/* ── 12. Mensajes de feedback (éxito / error) ────────────────── */
+.msg-error,
+.msg-exito {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  animation: aparecerArriba 0.3s ease both;
+}
+
+.msg-error {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.msg-exito {
+  background-color: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+/* Botón deshabilitado global */
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

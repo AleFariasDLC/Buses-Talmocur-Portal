@@ -42,10 +42,34 @@
       <nav class="barra-navegacion__menu" aria-label="Navegación principal">
         <a href="/#beneficios" class="barra-navegacion__link {% block nav_beneficios %}{% endblock %}">Beneficios</a>
         <a href="/#quienes-somos" class="barra-navegacion__link {% block nav_quienes %}{% endblock %}">Quiénes somos</a>
+
+        {% if usuario_logueado %}
+        <!-- ── Usuario logueado: dropdown ── -->
+        <div class="usuario-menu" id="usuarioMenu">
+          <button class="usuario-menu__btn" id="btnUsuarioMenu" aria-expanded="false" aria-haspopup="true">
+            <i class='bx bx-user'></i>
+            <span class="usuario-menu__nombre">{{ usuario_nombre.split(' ')[0] }}</span>
+            <i class='bx bx-chevron-down usuario-menu__flecha'></i>
+          </button>
+          <div class="usuario-menu__dropdown" id="usuarioDropdown">
+            <a href="/perfil" class="usuario-menu__opcion">
+              <i class='bx bx-id-card'></i>
+              Ver perfil
+            </a>
+            <button class="usuario-menu__opcion usuario-menu__opcion--logout" id="btnCerrarSesion">
+              <i class='bx bx-log-out'></i>
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+        {% else %}
+        <!-- ── No logueado: botón login ── -->
         <a href="/login" class="barra-navegacion__btn-login {% block nav_login %}{% endblock %}">
           <i class='bx bx-user'></i>
           Iniciar sesión
         </a>
+        {% endif %}
+
       </nav>
 
     </div>
@@ -57,6 +81,9 @@
        ============================================================ -->
   {% block content %}{% endblock %}
 
+
+  <!-- JS global del navbar -->
+  <script src="/static/js/navbar.js"></script>
 
   <!-- JS adicional por template -->
   {% block extra_js %}{% endblock %}
