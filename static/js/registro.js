@@ -24,7 +24,7 @@
         uppercase: { regex: /[A-Z]/, message: 'Una letra mayúscula' },
         lowercase: { regex: /[a-z]/, message: 'Una letra minúscula' },
         number: { regex: /[0-9]/, message: 'Un número' },
-        special: { regex: /[!@#$%^&*(),.?":{}|<>]/, message: 'Un carácter especial' }
+        special: { regex: /[!@#$%^&*()-_,.?":{}|<>]/, message: 'Un carácter especial' }
     };
     passwordInput.addEventListener('input', () => {
         const value = passwordInput.value;
@@ -65,6 +65,23 @@
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!regex.test(emailInput.value)) {
             errorMsg.textContent = 'Correo electrónico no válido';
+            errorMsg.style.color = 'red';
+        } else {
+            errorMsg.textContent = '';
+            errorMsg.style.color = 'green';
+        }
+    });
+})();
+
+/* ── 5. Evitar correos repetidos (simulación) ─────────────────────── */
+(function initDuplicateEmailCheck() {
+  const emailInput = document.getElementById('email');
+  if (!emailInput) return;
+    const errorMsg = document.getElementById('emailError');
+    const existingEmails = ['user1@example.com', 'user2@example.com']; // Simulación de correos existentes
+    emailInput.addEventListener('input', () => {
+        if (existingEmails.includes(emailInput.value)) {
+            errorMsg.textContent = 'Este correo electrónico ya está en uso';
             errorMsg.style.color = 'red';
         } else {
             errorMsg.textContent = '';
