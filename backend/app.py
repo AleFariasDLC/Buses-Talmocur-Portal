@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session
+from flask import Flask, render_template, redirect, make_response, session
 import os
 import secrets
 from dotenv import load_dotenv
@@ -37,11 +37,23 @@ def index():
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    # Ruta solo para invitados: si ya hay sesión activa, redirigir al home
+    if 'user_id' in session:
+        return redirect('/')
+    # no-store: le dice al navegador que nunca guarde esta página en caché,
+    # así el botón "volver" no puede mostrar una versión obsoleta con datos del formulario
+    response = make_response(render_template('login.html'))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 @app.route('/registro')
 def registro():
-    return render_template('registro.html')
+    # Ruta solo para invitados: si ya hay sesión activa, redirigir al home
+    if 'user_id' in session:
+        return redirect('/')
+    response = make_response(render_template('registro.html'))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 @app.route('/perfil')
 def perfil():

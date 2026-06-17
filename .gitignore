@@ -1,7 +1,9 @@
+# Bases de datos SQLite
 data.db
+talmocur.db
+*.db
 \__pycache__
 *.pyc
 .env
 .pylintrc
-\.pytest_cache
-data/usuarios.json
+\.pytest_cache

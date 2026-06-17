@@ -11,7 +11,7 @@ Endpoints:
 from flask import Blueprint, request, jsonify, session
 import bcrypt
 
-import db_json
+import db_sqlite as db_json
 import utils
 
 routes = Blueprint('routes', __name__)
