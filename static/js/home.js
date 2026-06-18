@@ -25,18 +25,46 @@
 })();
 
 
-/* ── 3. SWAP origen ↔ destino ────────────────────────────────── */
+/* ── 3. SWAP origen ↔ destino + filtrado inteligente ────────── */
 (function initSwap() {
   const btn     = document.querySelector('.buscador__swap');
   const origen  = document.getElementById('origen');
   const destino = document.getElementById('destino');
   if (!btn || !origen || !destino) return;
 
+  /**
+   * Sincroniza las opciones del select destino para que no incluya
+   * la ciudad actualmente seleccionada como origen.
+   */
+  function sincronizarDestino() {
+    const valorOrigen  = origen.value;
+    const valorDestino = destino.value;
+
+    // Recorrer las opciones del destino y ocultar la que coincide con origen
+    Array.from(destino.options).forEach(opt => {
+      if (opt.value === '' ) { opt.hidden = false; return; }
+      opt.hidden = (opt.value === valorOrigen);
+    });
+
+    // Si el destino actual es el mismo que el origen, limpiar la selección
+    if (destino.value === valorOrigen) {
+      destino.value = '';
+    }
+  }
+
+  // Sincronizar al cambiar origen
+  origen.addEventListener('change', sincronizarDestino);
+
+  // Botón intercambiar
   btn.addEventListener('click', () => {
     const temp    = origen.value;
     origen.value  = destino.value;
     destino.value = temp;
+    sincronizarDestino();
   });
+
+  // Ejecutar al cargar para estado inicial correcto
+  sincronizarDestino();
 })();
 
 

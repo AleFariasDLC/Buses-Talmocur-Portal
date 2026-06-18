@@ -1,9 +1,16 @@
-# Bases de datos SQLite
-data.db
-talmocur.db
+# ── Base de datos SQLite ──────────────────────────────────────────
+# El archivo .db es local de cada desarrollador y NO se sube al repo.
+# Se genera automáticamente al ejecutar la app por primera vez.
+data/talmocur.db
+data/*.db
 *.db
-\__pycache__
+
+# ── Python ───────────────────────────────────────────────────────
+__pycache__/
 *.pyc
+*.pyo
+
+# ── Entorno y configuración local ────────────────────────────────
 .env
 .pylintrc
-\.pytest_cache
+.pytest_cache/

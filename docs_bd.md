@@ -5,10 +5,10 @@
 | Componente | Tecnología |
 |---|---|
 | ORM (mapeo Python ↔ SQL) | SQLAlchemy 2.0 |
-| Motor de BD (desarrollo) | SQLite (`backend/talmocur.db`) |
+| Motor de BD (desarrollo) | SQLite (`data/talmocur.db`) |
 | Migración futura posible | PostgreSQL / MySQL (solo cambiar 1 línea en `database.py`) |
 
-El archivo de la base de datos se genera automáticamente en `backend/talmocur.db` al correr el servidor por primera vez. No se sube al repositorio (está en `.gitignore`).
+El archivo de la base de datos se genera automáticamente en `data/talmocur.db` al correr el servidor por primera vez. **No se sube al repositorio** (está en `.gitignore`). La carpeta `data/` sí existe en el repo gracias a un archivo `.gitkeep`.
 
 ---
 
@@ -70,8 +70,9 @@ Define la ruta que puede seguir un bus: de dónde sale y a dónde llega.
 | `origen` | String(100) | Ciudad o terminal de salida |
 | `destino` | String(100) | Ciudad o terminal de llegada |
 | `tipo` | String(20) | `"ida"` o `"ida_y_vuelta"` |
+| `precio_base` | Float | Tarifa base de la ruta en pesos CLP |
 
-> Un `Recorrido` es solo la definición del trayecto. Los horarios concretos van en `horario_viaje`.
+> Un `Recorrido` es solo la definición del trayecto. Los horarios concretos van en `horario_viaje`. El `precio_base` del recorrido se usa para mostrar tarifas en `/tarifas`.
 
 ---
 
@@ -218,8 +219,8 @@ db.close()
 | Archivo | Rol |
 |---|---|
 | `backend/models.py` | Define todas las tablas como clases Python |
-| `backend/database.py` | Crea la conexión a la BD y expone `obtener_sesion()` |
+| `backend/database.py` | Crea la conexión a la BD en `data/` y expone `obtener_sesion()` |
 | `backend/db_sqlite.py` | Funciones CRUD para usuarios (login, registro) |
-| `backend/routes.py` | Endpoints Flask que usan `db_sqlite` |
-| `backend/migrar_json_a_db.py` | Script one-shot ya ejecutado — no volver a correr |
-| `backend/talmocur.db` | Archivo de la BD (no subir al repo) |
+| `backend/seed_db.py` | Puebla la BD con datos iniciales (recorridos). Se ejecuta automáticamente al iniciar la app |
+| `backend/routes.py` | Endpoints Flask que usan `db_sqlite` para autenticación |
+| `data/talmocur.db` | Archivo de la BD — generado automáticamente, **no subir al repo** |

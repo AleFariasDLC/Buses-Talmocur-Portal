@@ -84,6 +84,8 @@ class Recorrido(Base):
     destino      = Column(String(100), nullable=False)
     tipo         = Column(String(20),  nullable=False, default="ida")
     # tipo: "ida" | "ida_y_vuelta"
+    precio_base  = Column(Float,       nullable=False, default=0.0)
+    # tarifa base de la ruta (en pesos CLP)
 
     horarios = relationship("HorarioViaje", back_populates="recorrido")
 

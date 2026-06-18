@@ -69,9 +69,10 @@ promoviendo el trabajo colaborativo y la distribución eficiente de responsabili
 - Git
 - pip (incluido con Python)
 
-> **Nota sobre la base de datos:** el archivo `talmocur.db` está excluido del repositorio
-> (ver `.gitignore`). **No es necesario crearlo manualmente**: la app lo genera
-> automáticamente con todas sus tablas la primera vez que se ejecuta.
+> **Nota sobre la base de datos:** el archivo `data/talmocur.db` está excluido del
+> repositorio (ver `.gitignore`). **No hay que crearlo manualmente**: la app lo genera
+> automáticamente en la carpeta `data/` la primera vez que se ejecuta, junto con todas
+> sus tablas y los datos iniciales (recorridos Curicó ↔ Talca).
 
 ### Pasos
 
@@ -105,9 +106,12 @@ cd backend
 python app.py
 ```
 
-> Al iniciar, verás en consola `[BD] Base de datos nueva creada con todas las tablas.`
-> (o `[BD] Base de datos ya existente — tablas verificadas correctamente.` si ya existe).
-> Esto confirma que la BD está lista.
+> Al iniciar verás uno de estos mensajes en consola:
+> - `[BD] Base de datos nueva creada en: ...\data\talmocur.db` → primera ejecución, todo listo.
+> - `[BD] Base de datos ya existente — tablas verificadas correctamente.` → BD ya existe, sin cambios.
+
+> ⚠️ **Importante:** siempre ejecuta `python app.py` **desde dentro de la carpeta `backend/`**.
+> Si lo ejecutas desde la raíz del proyecto, Python no encontrará los módulos correctamente.
 
 6. Abrir en el navegador:
 ```
@@ -132,16 +136,21 @@ Buses-Talmocur-Portal/
 ├── backend/
 │   ├── app.py              # Servidor Flask principal (punto de entrada)
 │   ├── routes.py           # Rutas API (registro, login, logout, /api/me)
-│   ├── database.py         # Configuración de SQLAlchemy y creación de tablas
+│   ├── database.py         # Conexión SQLAlchemy → apunta a /data/talmocur.db
 │   ├── models.py           # Modelos ORM (tablas de la BD)
 │   ├── db_sqlite.py        # Funciones CRUD para usuarios
+│   ├── seed_db.py          # Script auxiliar para poblar la BD manualmente
 │   └── utils.py            # Funciones de validación (email, contraseña)
+├── data/
+│   ├── .gitkeep            # Mantiene la carpeta en el repo (la BD no se sube)
+│   └── talmocur.db         # ← generado automáticamente, NO está en el repo
 ├── templates/
 │   ├── base.html           # Template base (navbar y layout común)
 │   ├── home.html           # Página principal
 │   ├── login.html          # Inicio de sesión
 │   ├── registro.html       # Registro de usuarios
-│   └── perfil.html         # Perfil del usuario
+│   ├── perfil.html         # Perfil del usuario
+│   └── tarifas.html        # Página de tarifas
 ├── static/
 │   ├── css/                # Hojas de estilo
 │   ├── js/                 # Scripts del frontend
@@ -175,10 +184,25 @@ La app usa **SQLite + SQLAlchemy**. Las tablas se crean automáticamente al inic
 
 ## Estado Actual del Proyecto
 
-El proyecto se encuentra en fase de **desarrollo activo**. Las vistas de Home, Login,
-Registro y Perfil están implementadas. El sistema de autenticación (registro, inicio y
-cierre de sesión) está funcional con base de datos SQLite. La base de datos se inicializa
-automáticamente al arrancar la aplicación.
+El proyecto se encuentra en fase de **desarrollo activo — integración con base de datos**.
+
+**Completado:**
+- Vistas de Home, Login, Registro, Perfil y Tarifas implementadas
+- Sistema de autenticación funcional (registro, inicio y cierre de sesión con bcrypt)
+- Base de datos SQLite integrada con SQLAlchemy — se crea automáticamente al arrancar
+- Página de Tarifas conectada a la BD (muestra datos reales de recorridos)
+- Buscador del Home con listas de origen/destino cargadas dinámicamente desde la BD
+- Datos iniciales de recorridos Curicó ↔ Talca poblados automáticamente
+
+**En progreso:**
+- Poblamiento de datos adicionales (horarios, buses, etc.)
+- Visualización de horarios reales en el Home
+- Conexión del buscador con resultados reales de la BD
+
+**Pendiente:**
+- Panel de administración
+- Flujo de compra de pasajes
+- Distinción de roles (pasajero / admin) en la interfaz
 
 ## Capturas de Pantalla
 
