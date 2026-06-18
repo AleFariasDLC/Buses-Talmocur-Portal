@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Tu perfil en Talmocur." />
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/perfil.css" />
+{% endblock %}
+
+{% block content %}
+
+  <!-- ============================================================
+       HERO CON FONDO
+       ============================================================ -->
+  <section class="pagina-perfil" aria-label="Perfil de usuario">
+
+    <!-- Fondo con imagen + degradado -->
+    <div class="hero__bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
+      <div class="hero__bg-overlay"></div>
+    </div>
+
+    <!-- Tarjeta de perfil centrada -->
+    <div class="tarjeta-perfil" role="main">
+
+      <!-- Logo -->
+      <div class="tarjeta-perfil__logo">
+        <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="tarjeta-perfil__logo-img" />
+      </div>
+
+      <!-- Título -->
+      <header class="tarjeta-perfil__header">
+        <h1 class="tarjeta-perfil__titulo">Perfil</h1>
+        <p class="tarjeta-perfil__subtitulo">Esta sección está en desarrollo</p>
+      </header>
+
+      <!-- Ícono decorativo -->
+      <div class="tarjeta-perfil__icono-dev">
+        <i class='bx bx-hard-hat'></i>
+      </div>
+
+      <p class="tarjeta-perfil__mensaje">
+        Pronto podrás ver y editar tu información personal desde aquí.
+      </p>
+
+      <!-- Botón volver -->
+      <a href="/" class="lc-btn-submit tarjeta-perfil__btn-volver">
+        <i class='bx bx-home'></i>
+        Volver al inicio
+      </a>
+
+    </div>
+
+  </section>
+
+{% endblock %}
