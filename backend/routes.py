@@ -11,7 +11,7 @@ Endpoints:
 from flask import Blueprint, request, jsonify, session
 import bcrypt
 
-import db_sqlite as db_json
+import db_sqlite as db
 import utils
 
 routes = Blueprint('routes', __name__)
@@ -39,7 +39,7 @@ def register():
         return jsonify({'error': resultado_email}), 400
 
     # Verificar que el email no esté registrado
-    if db_json.buscar_usuario_por_email(email):
+    if db.buscar_usuario_por_email(email):
         return jsonify({'error': 'Ya existe una cuenta con este correo electrónico.'}), 409
 
     # Validar contraseña
@@ -57,7 +57,7 @@ def register():
         bcrypt.gensalt()
     ).decode('utf-8')
 
-    usuario = db_json.crear_usuario(nombre, email, password_hash)
+    usuario = db.crear_usuario(nombre, email, password_hash)
 
     return jsonify({
         'message': 'Cuenta creada exitosamente.',
@@ -77,7 +77,7 @@ def login():
         return jsonify({'error': 'Correo y contraseña son obligatorios.'}), 400
 
     # Buscar usuario
-    usuario = db_json.buscar_usuario_por_email(email)
+    usuario = db.buscar_usuario_por_email(email)
     if not usuario:
         return jsonify({'error': 'Correo o contraseña incorrectos.'}), 401
 
@@ -117,7 +117,7 @@ def me():
     if not user_id:
         return jsonify({'error': 'No hay sesión activa.'}), 401
 
-    usuario = db_json.buscar_usuario_por_id(user_id)
+    usuario = db.buscar_usuario_por_id(user_id)
     if not usuario:
         session.clear()
         return jsonify({'error': 'Usuario no encontrado.'}), 404

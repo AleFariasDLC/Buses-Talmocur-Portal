@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, make_response, session
+from flask import Flask, render_template, redirect, make_response, session, jsonify
 import os
 import secrets
 from dotenv import load_dotenv
@@ -9,8 +9,14 @@ load_dotenv()
 # Inicializar la base de datos: crea el archivo .db y todas las tablas
 # si no existen. Esto permite que cualquier colaborador que clone el repo
 # pueda ejecutar la app directamente sin pasos manuales adicionales.
-from database import crear_tablas
+from database import crear_tablas, obtener_sesion
+from models import Recorrido
 crear_tablas()
+
+# Seed automático: puebla la BD con datos iniciales si está vacía.
+# Centralizado en seed_db.py para mantener el código limpio.
+from seed_db import seed as _seed_inicial
+_seed_inicial()
 
 from routes import routes
 
@@ -39,7 +45,14 @@ def inject_usuario():
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    db = obtener_sesion()
+    try:
+        # Obtener ciudades únicas de origen para el buscador
+        recorridos = db.query(Recorrido).all()
+        origenes = sorted({r.origen for r in recorridos})
+    finally:
+        db.close()
+    return render_template('home.html', origenes=origenes)
 
 @app.route('/login')
 def login():
@@ -60,6 +73,28 @@ def registro():
     response = make_response(render_template('registro.html'))
     response.headers['Cache-Control'] = 'no-store'
     return response
+
+@app.route('/tarifas')
+def tarifas():
+    db = obtener_sesion()
+    try:
+        recorridos = db.query(Recorrido).order_by(Recorrido.id_recorrido).all()
+    finally:
+        db.close()
+    return render_template('tarifas.html', recorridos=recorridos)
+
+
+@app.route('/api/origenes')
+def api_origenes():
+    """Devuelve las ciudades de origen y destino disponibles en la BD."""
+    db = obtener_sesion()
+    try:
+        recorridos = db.query(Recorrido).all()
+        origenes  = sorted({r.origen  for r in recorridos})
+        destinos  = sorted({r.destino for r in recorridos})
+        return jsonify({'origenes': origenes, 'destinos': destinos})
+    finally:
+        db.close()
 
 @app.route('/perfil')
 def perfil():

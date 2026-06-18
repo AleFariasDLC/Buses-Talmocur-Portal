@@ -1,8 +1,8 @@
 """
 db_sqlite.py — Módulo CRUD para usuarios usando SQLAlchemy + SQLite.
 
-Expone exactamente las mismas funciones que db_json.py para que
-routes.py no necesite cambios importantes.
+Expone las funciones de acceso a datos de usuarios que utiliza routes.py
+para el registro, login y consulta de perfil.
 """
 
 from database import obtener_sesion

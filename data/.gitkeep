@@ -1,0 +1,3 @@
+# Este archivo existe para que Git rastree la carpeta /data aunque esté vacía.
+# El archivo talmocur.db (base de datos SQLite) se genera automáticamente
+# al ejecutar la app y está excluido del repositorio por .gitignore.

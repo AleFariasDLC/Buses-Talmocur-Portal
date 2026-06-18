@@ -32,10 +32,9 @@
         </label>
         <select id="origen" class="buscador__select">
           <option value="">Seleccionar origen</option>
-          <option value="curico" selected>Curicó</option>
-          <option value="talca">Talca</option>
-          <option value="santiago">Santiago</option>
-          <option value="rancagua">Rancagua</option>
+          {% for ciudad in origenes %}
+          <option value="{{ ciudad }}">{{ ciudad }}</option>
+          {% endfor %}
         </select>
       </div>
 
@@ -51,10 +50,9 @@
         </label>
         <select id="destino" class="buscador__select">
           <option value="">Seleccionar destino</option>
-          <option value="talca" selected>Talca</option>
-          <option value="curico">Curicó</option>
-          <option value="santiago">Santiago</option>
-          <option value="rancagua">Rancagua</option>
+          {% for ciudad in origenes %}
+          <option value="{{ ciudad }}">{{ ciudad }}</option>
+          {% endfor %}
         </select>
       </div>
 
