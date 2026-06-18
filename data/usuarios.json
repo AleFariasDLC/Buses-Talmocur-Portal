@@ -1,0 +1,11 @@
+{
+  "usuarios": [
+    {
+      "id": "06c5b239-069d-4946-929c-b49e30884e63",
+      "nombre": "TestAle",
+      "email": "aletest@gmail.com",
+      "password_hash": "$2b$12$ai4eVkjjEfLXRGaeVwrEq.tirTWYsGuzhs3lLVDIrurCw1pXrIDnq",
+      "fecha_registro": "2026-06-05T09:10:03.515907"
+    }
+  ]
+}

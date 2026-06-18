@@ -1,0 +1,702 @@
+/* ================================================================
+   ASIENTOS.CSS  - Talmocur - Pagina de seleccion de asientos
+   ================================================================ */
+
+
+/* ---- 1. Pagina completa ---------------------------------------- */
+.sa-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8f4ff 50%, #f0f9ff 100%);
+  padding-top: 64px;
+}
+
+
+/* ---- 2. Topbar de contexto ------------------------------------- */
+.sa-topbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 32px;
+  background-color: var(--color-white);
+  border-bottom: 1.5px solid var(--color-gray-200);
+  box-shadow: 0 2px 12px rgba(29, 78, 216, 0.07);
+}
+
+.sa-topbar__back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 50px;
+  border: 1.5px solid #bfdbfe;
+  background-color: var(--color-primary-light);
+  transition: background-color var(--transition), transform var(--transition);
+  flex-shrink: 0;
+}
+
+.sa-topbar__back:hover {
+  background-color: #dbeafe;
+  transform: translateX(-2px);
+}
+
+.sa-topbar__back i { font-size: 1rem; }
+
+.sa-topbar__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.sa-topbar__ruta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.sa-topbar__ruta i {
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.sa-topbar__detalles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--color-gray-500);
+}
+
+.sa-topbar__sep { color: var(--color-gray-400); }
+
+.sa-topbar__hora {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.sa-topbar__precio-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.sa-topbar__precio-label {
+  font-size: 0.72rem;
+  color: var(--color-gray-400);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sa-topbar__precio-valor {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+
+/* ---- 3. Layout principal (MAPA GRANDE | asientos) -------------- */
+.sa-layout {
+  display: grid;
+  /* Mapa ocupa 3 fracciones, asientos solo 2 → mapa ~60% del ancho */
+  grid-template-columns: 3fr 2fr;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+  align-items: start;
+}
+
+
+/* ---- 4. Panel izquierdo: MAPA (mas grande) --------------------- */
+.sa-mapa {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1.5px solid var(--color-gray-200);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 88px;          /* queda fijo debajo de navbar + topbar */
+}
+
+/* Header del panel de mapa */
+.sa-mapa__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 22px 12px;
+  border-bottom: 1.5px solid var(--color-gray-100);
+  flex-wrap: wrap;
+}
+
+.sa-mapa__icono {
+  font-size: 1.4rem;
+  color: var(--color-primary);
+}
+
+.sa-mapa__titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0;
+  margin-right: auto;
+}
+
+/* Chips de ciudad en el header */
+.sa-mapa__header-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sa-mapa__ciudad-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.sa-mapa__ciudad-chip--origen {
+  background-color: #dbeafe;
+  color: var(--color-primary);
+}
+
+.sa-mapa__ciudad-chip--destino {
+  background-color: #fce7f3;
+  color: #be185d;
+}
+
+.sa-mapa__arrow {
+  font-size: 1.1rem;
+  color: var(--color-gray-400);
+}
+
+.sa-mapa__badge {
+  padding: 4px 10px;
+  background: var(--color-gray-100);
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+}
+
+/* Contenedor del mapa Leaflet */
+.sa-mapa__leaflet {
+  width: 100%;
+  height: 520px;          /* altura fija que Leaflet necesita */
+  min-height: 400px;
+  background: #e8ecef;    /* color terreno mientras carga */
+  display: block;
+}
+
+/* Estilos Leaflet adicionales (popups, etc.) */
+.sa-mapa__leaflet .leaflet-popup-content {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+}
+
+.sa-mapa__leaflet .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+/* Detalles del viaje (debajo del mapa) */
+.sa-mapa__detalles {
+  padding: 14px 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  border-top: 1.5px solid var(--color-gray-100);
+  background: var(--color-gray-50);
+}
+
+.sa-mapa__detalle-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.sa-mapa__detalle-item > i {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.sa-mapa__detalle-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sa-mapa__detalle-label {
+  font-size: 0.7rem;
+  color: var(--color-gray-400);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sa-mapa__detalle-val {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+/* Leyenda de pines (negros y rojos) */
+.sa-mapa__leyenda {
+  padding: 10px 22px 14px;
+  display: flex;
+  gap: 20px;
+  border-top: 1.5px solid var(--color-gray-100);
+  flex-wrap: wrap;
+  background: var(--color-white);
+}
+
+.sa-mapa__leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.79rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+/* Pin negro (teardrop) en miniaturas */
+.sa-mapa__leyenda-pin {
+  width: 12px;
+  height: 18px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  clip-path: polygon(50% 100%, 0% 30%, 0% 0%, 100% 0%, 100% 30%);
+  flex-shrink: 0;
+}
+
+.sa-mapa__leyenda-pin--negro {
+  background: #1a1a1a;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+.sa-mapa__leyenda-pin--rojo {
+  background: #35e53b;
+  box-shadow: 0 2px 5px rgba(229,57,53,0.5);
+}
+
+.sa-mapa__leyenda-linea {
+  display: inline-block;
+  width: 28px;
+  height: 5px;
+  border-radius: 3px;
+  background: #1a73e8;
+  box-shadow: 0 1px 4px rgba(26,115,232,0.45);
+  flex-shrink: 0;
+}
+
+
+/* ---- 5. Panel derecho: SELECCION DE ASIENTOS (mas pequeno) ---- */
+.sa-asientos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sa-asientos__header { padding: 2px 0; }
+
+.sa-asientos__titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0 0 4px;
+}
+
+.sa-asientos__subtitulo {
+  font-size: 0.83rem;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+
+/* ---- 6. Leyenda de estados de asientos ------------------------- */
+.sa-leyenda {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.sa-leyenda__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.81rem;
+  color: var(--color-gray-700);
+  font-weight: 500;
+}
+
+.sa-leyenda__muestra {
+  width: 26px;
+  height: 22px;
+  border-radius: 5px;
+  border: 2px solid transparent;
+}
+
+.sa-leyenda__muestra--libre {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+}
+
+.sa-leyenda__muestra--seleccionado {
+  background: #dbeafe;
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.22);
+}
+
+.sa-leyenda__muestra--ocupado {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  position: relative;
+  overflow: hidden;
+}
+
+.sa-leyenda__muestra--ocupado::after {
+  content: 'x';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+
+/* ---- 7. Vista del bus ------------------------------------------ */
+.sa-bus {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1.5px solid var(--color-gray-200);
+  overflow: hidden;
+}
+
+.sa-bus__frente {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 22px;
+  background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+  color: white;
+}
+
+.sa-bus__volante,
+.sa-bus__puerta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sa-bus__volante i,
+.sa-bus__puerta i { font-size: 1.05rem; }
+
+.sa-bus__cabina { padding: 16px 22px; }
+
+/* Etiquetas columnas A B / C D */
+.sa-bus__labels-col {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr 24px 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 7px;
+  padding: 0 2px;
+}
+
+.sa-bus__labels-col span {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sa-bus__filas {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Fila individual */
+.sa-fila {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr 24px 1fr 1fr;
+  gap: 5px;
+  align-items: center;
+}
+
+.sa-fila__num {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-gray-400);
+  text-align: center;
+}
+
+/* Asiento */
+.sa-asiento {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 7px 7px 9px 9px;
+  border: 2px solid transparent;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+  outline: none;
+  user-select: none;
+}
+
+.sa-asiento::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 10%;
+  width: 80%;
+  height: 5px;
+  border-radius: 4px 4px 0 0;
+  transition: background-color 0.16s ease;
+}
+
+/* Estado: Libre */
+.sa-asiento--libre {
+  background-color: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0369a1;
+}
+.sa-asiento--libre::before { background-color: #7dd3fc; }
+.sa-asiento--libre:hover {
+  background-color: #bae6fd;
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+.sa-asiento--libre:hover::before { background-color: #38bdf8; }
+
+/* Estado: Seleccionado */
+.sa-asiento--seleccionado {
+  background-color: #1d4ed8;
+  border-color: #1e3a8a;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(29, 78, 216, 0.40);
+}
+.sa-asiento--seleccionado::before { background-color: #1e3a8a; }
+.sa-asiento--seleccionado:hover {
+  background-color: #1e40af;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(29, 78, 216, 0.45);
+}
+
+/* Estado: Ocupado */
+.sa-asiento--ocupado {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+.sa-asiento--ocupado::before { background-color: #e2e8f0; }
+.sa-asiento--ocupado::after {
+  content: 'x';
+  position: absolute;
+  font-size: 1rem;
+  color: #94a3b8;
+  font-weight: 700;
+}
+.sa-asiento--ocupado .sa-asiento__num { display: none; }
+
+.sa-asiento__num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Parte trasera */
+.sa-bus__trasera {
+  padding: 8px 22px;
+  background: linear-gradient(90deg, #334155 0%, #475569 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sa-bus__trasera-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+
+/* ---- 8. Panel resumen / confirmacion --------------------------- */
+.sa-resumen {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-gray-200);
+  box-shadow: var(--shadow-md);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sa-resumen__vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 0;
+  color: var(--color-gray-400);
+}
+
+.sa-resumen__vacio i { font-size: 2.2rem; }
+.sa-resumen__vacio p { font-size: 0.88rem; font-weight: 600; margin: 0; }
+.sa-resumen__vacio small { font-size: 0.76rem; }
+
+.sa-resumen__seleccion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sa-resumen__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+.sa-resumen__fila:last-child { border-bottom: none; }
+
+.sa-resumen__etiqueta {
+  font-size: 0.8rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+.sa-resumen__valor {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.sa-resumen__valor--precio {
+  font-size: 1.08rem;
+  color: var(--color-primary);
+}
+
+/* Boton confirmar */
+.sa-btn-confirmar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: var(--color-white);
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
+}
+
+.sa-btn-confirmar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(29, 78, 216, 0.45);
+}
+
+.sa-btn-confirmar:disabled {
+  background: linear-gradient(135deg, #94a3b8, #b0bec5);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.sa-btn-confirmar i { font-size: 1.1rem; }
+
+
+/* ---- 9. Animacion de la linea de ruta -------------------------- */
+@keyframes rutaDash {
+  from { stroke-dashoffset: 2000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+#rutaBus {
+  stroke-dasharray: 2000;
+  animation: rutaDash 2.2s ease forwards;
+}
+
+
+/* ---- 10. Responsive -------------------------------------------- */
+@media (max-width: 1100px) {
+  .sa-layout {
+    grid-template-columns: 3fr 2fr;
+    padding: 16px 16px 40px;
+  }
+}
+
+@media (max-width: 860px) {
+  .sa-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sa-mapa {
+    position: static;
+  }
+
+  .sa-mapa__svg {
+    max-height: 340px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sa-topbar {
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .sa-bus__cabina { padding: 12px 14px; }
+
+  .sa-asiento { height: 35px; }
+
+  .sa-mapa__header-chips { display: none; }
+}

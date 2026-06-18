@@ -737,8 +737,12 @@ button {
   margin-top: 3px;
 }
 
-/* Botón comprar */
+/* Botón comprar (también aplica a <a> usadas como botones) */
 .tarjeta-pasaje__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 10px 0;
   width: 120px;
   font-size: 0.88rem;
@@ -752,6 +756,7 @@ button {
     transform var(--transition),
     box-shadow var(--transition);
   box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
+  text-decoration: none;
 }
 
 .tarjeta-pasaje__btn:hover {

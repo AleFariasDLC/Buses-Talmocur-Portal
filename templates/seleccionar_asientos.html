@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Seleccionar Asientos · Talmocur{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Selecciona tu asiento en el bus Talmocur para tu viaje entre Curico y Talca." />
+{% endblock %}
+
+{% block extra_css %}
+  <!-- Leaflet.js CSS (local, sin dependencia de internet) -->
+  <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="/static/css/asientos.css" />
+{% endblock %}
+
+{% block content %}
+
+<main class="sa-page">
+
+  <!-- TOPBAR -->
+  <div class="sa-topbar">
+    <a href="/" class="sa-topbar__back" aria-label="Volver">
+      <i class='bx bx-arrow-back'></i>
+      <span>Volver</span>
+    </a>
+    <div class="sa-topbar__info">
+      <span class="sa-topbar__ruta">Curico <i class='bx bx-right-arrow-alt'></i> Talca</span>
+      <span class="sa-topbar__detalles">
+        <span id="top-hora" class="sa-topbar__hora"></span>
+        <span class="sa-topbar__sep">·</span>
+        <span id="top-bus" class="sa-topbar__bus"></span>
+      </span>
+    </div>
+    <div class="sa-topbar__precio-wrap">
+      <span class="sa-topbar__precio-label">Precio por asiento</span>
+      <span id="top-precio" class="sa-topbar__precio-valor"></span>
+    </div>
+  </div>
+
+  <!-- LAYOUT PRINCIPAL: MAPA (grande, izquierda) | ASIENTOS (derecha) -->
+  <div class="sa-layout">
+
+    <!-- =====================================================
+         PANEL IZQUIERDO — MAPA INTERACTIVO (Leaflet)
+         ===================================================== -->
+    <aside class="sa-mapa" aria-label="Mapa de ruta">
+
+      <div class="sa-mapa__header">
+        <i class='bx bx-map-alt sa-mapa__icono'></i>
+        <h2 class="sa-mapa__titulo">Ruta del viaje</h2>
+      </div>
+
+      <!-- Mapa interactivo Leaflet + OpenStreetMap (con zoom real) -->
+      <div id="mapaLeaflet" class="sa-mapa__leaflet"
+           aria-label="Mapa interactivo de ruta Curico a Talca"></div>
+
+      <!-- Detalles del viaje debajo del mapa -->
+      <div class="sa-mapa__detalles">
+        <div class="sa-mapa__detalle-item">
+          <i class='bx bx-time'></i>
+          <div>
+            <span class="sa-mapa__detalle-label">Duracion estimada</span>
+            <span class="sa-mapa__detalle-val">60 minutos</span>
+          </div>
+        </div>
+        <div class="sa-mapa__detalle-item">
+          <i class='bx bx-trip'></i>
+          <div>
+            <span class="sa-mapa__detalle-label">Distancia</span>
+            <span class="sa-mapa__detalle-val">64 km</span>
+          </div>
+        </div>
+        <div class="sa-mapa__detalle-item">
+          <i class='bx bx-bus'></i>
+          <div>
+            <span class="sa-mapa__detalle-label">Numero de bus</span>
+            <span id="detalle-bus" class="sa-mapa__detalle-val"></span>
+          </div>
+        </div>
+        <div class="sa-mapa__detalle-item">
+          <i class='bx bx-alarm'></i>
+          <div>
+            <span class="sa-mapa__detalle-label">Hora de salida</span>
+            <span id="detalle-hora" class="sa-mapa__detalle-val"></span>
+          </div>
+        </div>
+        <div class="sa-mapa__detalle-item">
+          <i class='bx bx-time-five'></i>
+          <div>
+            <span class="sa-mapa__detalle-label">Hora de llegada</span>
+            <span id="detalle-hora-llegada" class="sa-mapa__detalle-val"></span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- =====================================================
+         PANEL DERECHO — SELECCION DE ASIENTOS
+         ===================================================== -->
+    <section class="sa-asientos" aria-label="Seleccion de asientos">
+
+      <div class="sa-asientos__header">
+        <h2 class="sa-asientos__titulo">Selecciona tu asiento</h2>
+        <p class="sa-asientos__subtitulo">Haz clic en un asiento disponible para seleccionarlo</p>
+      </div>
+
+      <!-- Leyenda de estados -->
+      <div class="sa-leyenda" role="legend" aria-label="Leyenda de asientos">
+        <div class="sa-leyenda__item">
+          <div class="sa-leyenda__muestra sa-leyenda__muestra--libre"></div>
+          <span>Disponible</span>
+        </div>
+        <div class="sa-leyenda__item">
+          <div class="sa-leyenda__muestra sa-leyenda__muestra--seleccionado"></div>
+          <span>Seleccionado</span>
+        </div>
+        <div class="sa-leyenda__item">
+          <div class="sa-leyenda__muestra sa-leyenda__muestra--ocupado"></div>
+          <span>Ocupado</span>
+        </div>
+      </div>
+
+      <!-- Vista del bus -->
+      <div class="sa-bus">
+
+        <div class="sa-bus__frente">
+          <div class="sa-bus__volante">
+            <i class='bx bx-radio-circle'></i>
+            <span>Conductor</span>
+          </div>
+          <div class="sa-bus__puerta">
+            <i class='bx bx-door-open'></i>
+            <span>Entrada</span>
+          </div>
+        </div>
+
+        <div class="sa-bus__cabina">
+          <div class="sa-bus__labels-col" aria-hidden="true">
+            <span></span>
+            <span>A</span>
+            <span>B</span>
+            <span></span>
+            <span>C</span>
+            <span>D</span>
+          </div>
+          <div class="sa-bus__filas" id="filasAsientos" role="list"
+               aria-label="Asientos del bus"></div>
+        </div>
+
+        <div class="sa-bus__trasera">
+          <span class="sa-bus__trasera-label">Parte trasera</span>
+        </div>
+
+      </div>
+
+      <!-- Panel resumen -->
+      <div class="sa-resumen" id="resumenPanel">
+
+        <div class="sa-resumen__vacio" id="resumenVacio">
+          <i class='bx bx-chair'></i>
+          <p>Ningun asiento seleccionado</p>
+          <small>Haz clic en un asiento disponible</small>
+        </div>
+
+        <div class="sa-resumen__seleccion" id="resumenSeleccion" style="display:none;">
+          <div class="sa-resumen__fila">
+            <span class="sa-resumen__etiqueta">Asiento seleccionado</span>
+            <span class="sa-resumen__valor" id="resumenAsientoNum">-</span>
+          </div>
+          <div class="sa-resumen__fila">
+            <span class="sa-resumen__etiqueta">Precio</span>
+            <span class="sa-resumen__valor sa-resumen__valor--precio" id="resumenPrecio">-</span>
+          </div>
+          <div class="sa-resumen__fila">
+            <span class="sa-resumen__etiqueta">Ruta</span>
+            <span class="sa-resumen__valor">Curico - Talca</span>
+          </div>
+          <div class="sa-resumen__fila">
+            <span class="sa-resumen__etiqueta">Salida</span>
+            <span class="sa-resumen__valor" id="resumenHora">-</span>
+          </div>
+        </div>
+
+        <button class="sa-btn-confirmar" id="btnConfirmar" disabled>
+          <i class='bx bx-check-circle'></i>
+          Confirmar compra
+        </button>
+
+      </div>
+
+    </section>
+
+  </div><!-- /sa-layout -->
+
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+  <!-- Leaflet.js (local, con zoom e interactividad) -->
+  <script src="/static/leaflet/leaflet.js"></script>
+  <script src="/static/js/asientos.js"></script>
+{% endblock %}

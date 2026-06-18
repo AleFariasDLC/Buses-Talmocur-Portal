@@ -65,5 +65,10 @@ def registro():
 def perfil():
     return render_template('perfil.html')
 
+@app.route('/seleccionar-asientos')
+def seleccionar_asientos():
+    return render_template('seleccionar_asientos.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
