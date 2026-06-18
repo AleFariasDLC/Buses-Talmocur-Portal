@@ -6,6 +6,12 @@ from dotenv import load_dotenv
 # Cargar variables de entorno antes de crear la app
 load_dotenv()
 
+# Inicializar la base de datos: crea el archivo .db y todas las tablas
+# si no existen. Esto permite que cualquier colaborador que clone el repo
+# pueda ejecutar la app directamente sin pasos manuales adicionales.
+from database import crear_tablas
+crear_tablas()
+
 from routes import routes
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')

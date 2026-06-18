@@ -56,14 +56,22 @@ promoviendo el trabajo colaborativo y la distribución eficiente de responsabili
 | Python 🐍 | 3.12 | Lenguaje del backend |
 | Flask | 3.1.3 | Framework web |
 | Bootstrap | 5.3 | Framework CSS |
+| SQLite | 3 | Base de datos local (no requiere instalación extra) |
+| SQLAlchemy | 2.0.36 | ORM para gestionar la base de datos desde Python |
+| bcrypt | 4.3.0 | Hashing seguro de contraseñas |
+| python-dotenv | 1.2.2 | Gestión de variables de entorno (.env) |
 | VS Code | — | IDE de desarrollo |
-| Base de datos | Por definir | En evaluación |
 
 ## Instalación y Ejecución
 
 ### Requisitos previos
-- Python 3.12
+- Python 3.12 (o superior)
 - Git
+- pip (incluido con Python)
+
+> **Nota sobre la base de datos:** el archivo `talmocur.db` está excluido del repositorio
+> (ver `.gitignore`). **No es necesario crearlo manualmente**: la app lo genera
+> automáticamente con todas sus tablas la primera vez que se ejecuta.
 
 ### Pasos
 
@@ -77,48 +85,100 @@ git clone https://github.com/Benjamin-Hidalgo/Buses-Talmocur-Portal.git
 cd Buses-Talmocur-Portal
 ```
 
-3. Instalar las dependencias:
+3. (Opcional) Crear un entorno virtual:
+```bash
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+```
+
+4. Instalar las dependencias:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Ejecutar la aplicación:
+5. Ejecutar la aplicación:
 ```bash
 cd backend
 python app.py
 ```
 
-5. Abrir en el navegador:
+> Al iniciar, verás en consola `[BD] Base de datos nueva creada con todas las tablas.`
+> (o `[BD] Base de datos ya existente — tablas verificadas correctamente.` si ya existe).
+> Esto confirma que la BD está lista.
+
+6. Abrir en el navegador:
 ```
 http://127.0.0.1:5000
 ```
+
+### Variables de entorno (opcional)
+
+Para configurar una `SECRET_KEY` fija (útil en producción o para mantener sesiones
+entre reinicios del servidor), crea un archivo `.env` dentro de `backend/`:
+
+```env
+SECRET_KEY=tu_clave_secreta_aqui
+```
+
+Si no existe el `.env`, la app genera una clave aleatoria en cada arranque (modo desarrollo).
 
 ## Estructura del Proyecto
 
 ```
 Buses-Talmocur-Portal/
 ├── backend/
-│   ├── app.py              # Servidor Flask principal
-│   ├── routes.py           # Rutas de la API
-│   └── utils.py            # Funciones de validación
+│   ├── app.py              # Servidor Flask principal (punto de entrada)
+│   ├── routes.py           # Rutas API (registro, login, logout, /api/me)
+│   ├── database.py         # Configuración de SQLAlchemy y creación de tablas
+│   ├── models.py           # Modelos ORM (tablas de la BD)
+│   ├── db_sqlite.py        # Funciones CRUD para usuarios
+│   └── utils.py            # Funciones de validación (email, contraseña)
 ├── templates/
 │   ├── base.html           # Template base (navbar y layout común)
 │   ├── home.html           # Página principal
 │   ├── login.html          # Inicio de sesión
-│   └── registro.html       # Registro de usuarios
+│   ├── registro.html       # Registro de usuarios
+│   └── perfil.html         # Perfil del usuario
 ├── static/
 │   ├── css/                # Hojas de estilo
 │   ├── js/                 # Scripts del frontend
 │   └── image/              # Logos e imágenes
 ├── requisitos.md           # Requisitos funcionales y no funcionales
 ├── diagramaER_baseDeDatos.md  # Diagrama entidad-relación
+├── docs_bd.md              # Documentación detallada de la base de datos
+├── esquema_relacional_v2.md   # Esquema relacional actualizado
 ├── requirements.txt        # Dependencias de Python
 └── README.md
 ```
 
+> **La base de datos (`talmocur.db`) no está en el repositorio** y se crea
+> automáticamente en `backend/` al ejecutar la app por primera vez.
+
+## Modelos de la Base de Datos
+
+La app usa **SQLite + SQLAlchemy**. Las tablas se crean automáticamente al iniciar:
+
+| Tabla | Descripción |
+|:------|:------------|
+| `usuario` | Cuentas de usuario (pasajeros y administradores) |
+| `bus` | Flota de buses con patente, capacidad y estado |
+| `asiento` | Asientos físicos de cada bus |
+| `recorrido` | Rutas origen → destino |
+| `horario_viaje` | Horarios recurrentes con precio base |
+| `compra` | Transacciones de compra de pasajes |
+| `asiento_comprado` | Asientos incluidos en cada compra |
+| `suspension` | Bloqueos temporales de horarios |
+| `aviso` | Notificaciones del administrador |
+
 ## Estado Actual del Proyecto
 
-El proyecto se encuentra en fase de **desarrollo frontend**. Se completaron las vistas de Home, Login y Registro de forma visual. El equipo está a la espera de la implementación de la base de datos para comenzar con la autenticación de usuarios y la gestión de horarios y precios de buses.
+El proyecto se encuentra en fase de **desarrollo activo**. Las vistas de Home, Login,
+Registro y Perfil están implementadas. El sistema de autenticación (registro, inicio y
+cierre de sesión) está funcional con base de datos SQLite. La base de datos se inicializa
+automáticamente al arrancar la aplicación.
 
 ## Capturas de Pantalla
 
