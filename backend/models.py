@@ -14,7 +14,7 @@ Base = declarative_base()
 
 
 # ─────────────────────────────────────────────
-# 1. Usuario  (autenticación — reemplaza usuarios.json)
+# 1. Usuario  (autenticación de pasajeros y administradores)
 # ─────────────────────────────────────────────
 class Usuario(Base):
     __tablename__ = "usuario"
