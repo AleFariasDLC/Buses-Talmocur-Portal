@@ -84,6 +84,11 @@ def tarifas():
     return render_template('tarifas.html', recorridos=recorridos)
 
 
+@app.route('/quienes-somos')
+def quienes_somos():
+    return render_template('quienes_somos.html')
+
+
 @app.route('/api/origenes')
 def api_origenes():
     """Devuelve las ciudades de origen y destino disponibles en la BD."""

@@ -525,6 +525,115 @@ button {
   gap: 24px;
 }
 
+.quienes-somos {
+  padding: var(--section-padding);
+  background-color: var(--color-gray-50);
+}
+
+.quienes-somos__interior {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.quienes-somos__header {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.pagina-hero {
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px 120px;
+  overflow: hidden;
+}
+
+.pagina-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.pagina-hero__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pagina-hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg,
+      rgba(15, 23, 42, 0.68) 0%,
+      rgba(29, 78, 216, 0.50) 100%);
+}
+
+.pagina-hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 640px;
+  animation: aparecerArriba 0.7s ease both;
+}
+
+.pagina-hero .hero__etiqueta,
+.pagina-hero .hero__titulo,
+.pagina-hero .hero__subtitulo {
+  color: var(--color-white);
+}
+
+.pagina-hero .hero__subtitulo {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.quienes-somos__texto {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 1rem;
+  color: var(--color-gray-500);
+  line-height: 1.8;
+  margin-top: 14px;
+}
+
+.quienes-somos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.quienes-somos__card {
+  padding: 28px 24px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-gray-200);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition);
+}
+
+.quienes-somos__card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: #bfdbfe;
+}
+
+.quienes-somos__card-titulo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: 10px;
+}
+
+.quienes-somos__card-texto {
+  font-size: 0.95rem;
+  color: var(--color-gray-500);
+  line-height: 1.75;
+}
+
 .tarjeta-beneficio {
   padding: 32px 24px;
   border-radius: var(--radius-md);
@@ -835,7 +944,8 @@ button {
 
 /* ── 11. Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .beneficios__grid {
+  .beneficios__grid,
+  .quienes-somos__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -891,6 +1001,10 @@ button {
 
   .barra-navegacion__link {
     display: none;
+  }
+
+  .quienes-somos__grid {
+    grid-template-columns: 1fr;
   }
 }
 

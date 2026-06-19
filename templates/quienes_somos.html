@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Quiénes somos - Talmocur{% endblock %}
+
+{% block content %}
+  <section class="pagina-hero quienes-somos__hero" aria-label="Quiénes somos">
+
+    <div class="pagina-hero__bg" aria-hidden="true">
+      <img src="https://static.theclinic.cl/media/2017/07/Pelea-Conductores-Londres-Bus-Talmocur.jpg" alt="Bus moderno en carretera" class="pagina-hero__bg-img" />
+      <div class="pagina-hero__bg-overlay"></div>
+    </div>
+
+    <div class="pagina-hero__content">
+      <p class="hero__etiqueta">Quiénes somos</p>
+      <h1 class="hero__titulo">Viajamos contigo con responsabilidad, comodidad y estilo</h1>
+      <p class="hero__subtitulo">En Talmocur combinamos una flota moderna, atención local y una experiencia pensada para quienes se desplazan entre Curicó y Talca.</p>
+    </div>
+
+  </section>
+
+  <section class="quienes-somos pagina" aria-label="Información sobre la empresa">
+    <div class="quienes-somos__interior">
+      <div class="quienes-somos__header">
+        <p class="beneficios__etiqueta">Nuestra historia</p>
+        <h2 class="beneficios__titulo">¿Quienes Somos?</h2>
+        <p class="quienes-somos__texto">Talmocur somos tu empresa de buses interprovincial, la que te conecta desde Talca hasta Curico te ofrecemos servicios diarios, tambien contamos con buses de calidad asegurando un viaje seguro y comodo para ti.</p>
+      </div>
+
+      <div class="quienes-somos__grid quienes-somos__grid--pagina">
+        <article class="quienes-somos__card">
+          <h2 class="quienes-somos__card-titulo">Nuestra propuesta</h2>
+          <p class="quienes-somos__card-texto">Ofrecemos salidas dirias y continuas, con precios accesibles y descuentos por estudiantes o adultos mayores.</p>
+        </article>
+
+        <article class="quienes-somos__card">
+          <h2 class="quienes-somos__card-titulo">Calidad y seguridad</h2>
+          <p class="quienes-somos__card-texto">Cada bus tiene una garantia de seguridad, ofrecemos asientos de calidad, y una experiencia agradable en el viaje.</p>
+        </article>
+
+        <article class="quienes-somos__card">
+          <h2 class="quienes-somos__card-titulo">Compromiso local</h2>
+          <p class="quienes-somos__card-texto">Nos dedicamos a facilitar los desplazamientos diarios de estudiantes, trabajadores y familias, dentro de la region del Maule, Chile .</p>
+        </article>
+      </div>
+    </div>
+  </section>
+{% endblock %}
