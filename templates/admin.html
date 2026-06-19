@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Administrador – Talmocur</title>
+
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts: DM Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet" />
+
+  <!-- CSS base -->
+  <link rel="stylesheet" href="/static/css/home.css" />
+
+  <!-- CSS del panel admin -->
+  <link rel="stylesheet" href="/static/css/admin.css" />
+</head>
+
+<body>
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <header class="barra-navegacion" id="navbar">
+    <div class="barra-navegacion__interior">
+
+      <!-- Logo -->
+      <a href="/" class="barra-navegacion__logo" aria-label="Talmocur inicio">
+        <img src="/static/image/logo_blanco_sin_fondo.png" alt="Talmocur" class="barra-navegacion__logo-img" />
+      </a>
+
+      <!-- Nav links -->
+      <nav class="barra-navegacion__menu" aria-label="Navegación principal">
+        <a href="/#beneficios" class="barra-navegacion__link">Beneficios</a>
+        <a href="/#quienes-somos" class="barra-navegacion__link">Quiénes somos</a>
+        <a href="/tarifas" class="barra-navegacion__link">Tarifas</a>
+
+        <!-- Botón Panel de administrador (activo) -->
+        <a href="/admin" class="barra-navegacion__btn-admin barra-navegacion__btn-admin--activo">
+          <i class='bx bx-shield-quarter'></i>
+          Panel de administrador
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <!-- ============================================================
+       CONTENIDO PRINCIPAL
+       ============================================================ -->
+  <main class="admin-page">
+
+    <!-- Encabezado del panel -->
+    <section class="admin-header">
+      <div class="admin-header__interior">
+        <div class="admin-header__texto">
+          <span class="admin-header__eyebrow">
+            <i class='bx bx-shield-quarter'></i>
+            Administración
+          </span>
+          <h1 class="admin-header__titulo">Panel de control</h1>
+          <p class="admin-header__subtitulo">Gestiona la flota, recorridos y comunicaciones de Talmocur.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <div class="admin-cuerpo">
+
+      <!-- ===========================================================
+           SECCIÓN 1: FLOTA DE BUSES
+           =========================================================== -->
+      <section class="admin-seccion" id="flota">
+
+        <!-- Encabezado de sección -->
+        <div class="admin-seccion__header">
+          <div class="admin-seccion__header-texto">
+            <h2 class="admin-seccion__titulo">
+              <i class='bx bx-bus'></i>
+              Flota de buses
+            </h2>
+            <p class="admin-seccion__subtitulo">{{ total_buses }} buses registrados en el sistema</p>
+          </div>
+          <button class="admin-btn admin-btn--primario" id="btnAgregarBus">
+            <i class='bx bx-plus'></i>
+            Agregar bus
+          </button>
+        </div>
+
+        <!-- Lista de buses -->
+        <div class="buses-lista">
+
+          <!-- ── Tarjeta Bus 1 ── -->
+          <div class="bus-card">
+
+            <!-- Cabecera de la tarjeta -->
+            <div class="bus-card__cabecera">
+              <div class="bus-card__id-wrap">
+                <span class="bus-card__id">Bus #01</span>
+                <span class="bus-card__estado bus-card__estado--activo">
+                  <i class='bx bx-radio-circle-marked'></i>
+                  En recorrido
+                </span>
+              </div>
+              <div class="bus-card__acciones">
+                <button class="admin-btn admin-btn--icono admin-btn--secundario" title="Editar bus">
+                  <i class='bx bx-edit'></i>
+                  Editar
+                </button>
+                <button class="admin-btn admin-btn--icono admin-btn--peligro" title="Eliminar bus">
+                  <i class='bx bx-trash'></i>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+
+            <!-- Info del bus -->
+            <div class="bus-card__info">
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-user'></i>
+                  Chofer
+                </span>
+                <span class="bus-card__dato-valor">Carlos Muñoz</span>
+              </div>
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-chair'></i>
+                  Asientos
+                </span>
+                <span class="bus-card__dato-valor">42 asientos</span>
+              </div>
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-hash'></i>
+                  Patente
+                </span>
+                <span class="bus-card__dato-valor">BJKP 42</span>
+              </div>
+            </div>
+
+            <!-- Botón recorridos -->
+            <div class="bus-card__pie">
+              <button class="admin-btn admin-btn--ghost admin-btn--recorridos">
+                <i class='bx bx-map-alt'></i>
+                Ver recorridos y horarios
+                <i class='bx bx-chevron-down'></i>
+              </button>
+            </div>
+
+          </div>
+
+
+          <!-- ── Tarjeta Bus 2 ── -->
+          <div class="bus-card">
+
+            <div class="bus-card__cabecera">
+              <div class="bus-card__id-wrap">
+                <span class="bus-card__id">Bus #02</span>
+                <span class="bus-card__estado bus-card__estado--inactivo">
+                  <i class='bx bx-radio-circle'></i>
+                  Fuera de recorrido
+                </span>
+              </div>
+              <div class="bus-card__acciones">
+                <button class="admin-btn admin-btn--icono admin-btn--secundario" title="Editar bus">
+                  <i class='bx bx-edit'></i>
+                  Editar
+                </button>
+                <button class="admin-btn admin-btn--icono admin-btn--peligro" title="Eliminar bus">
+                  <i class='bx bx-trash'></i>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+
+            <div class="bus-card__info">
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-user'></i>
+                  Chofer
+                </span>
+                <span class="bus-card__dato-valor">Roberto Herrera</span>
+              </div>
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-chair'></i>
+                  Asientos
+                </span>
+                <span class="bus-card__dato-valor">38 asientos</span>
+              </div>
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-hash'></i>
+                  Patente
+                </span>
+                <span class="bus-card__dato-valor">CDLM 19</span>
+              </div>
+            </div>
+
+            <div class="bus-card__pie">
+              <button class="admin-btn admin-btn--ghost admin-btn--recorridos">
+                <i class='bx bx-map-alt'></i>
+                Ver recorridos y horarios
+                <i class='bx bx-chevron-down'></i>
+              </button>
+            </div>
+
+          </div>
+
+
+          <!-- ── Tarjeta Bus 3 ── -->
+          <div class="bus-card">
+
+            <div class="bus-card__cabecera">
+              <div class="bus-card__id-wrap">
+                <span class="bus-card__id">Bus #03</span>
+                <span class="bus-card__estado bus-card__estado--activo">
+                  <i class='bx bx-radio-circle-marked'></i>
+                  En recorrido
+                </span>
+              </div>
+              <div class="bus-card__acciones">
+                <button class="admin-btn admin-btn--icono admin-btn--secundario" title="Editar bus">
+                  <i class='bx bx-edit'></i>
+                  Editar
+                </button>
+                <button class="admin-btn admin-btn--icono admin-btn--peligro" title="Eliminar bus">
+                  <i class='bx bx-trash'></i>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+
+            <div class="bus-card__info">
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-user'></i>
+                  Chofer
+                </span>
+                <span class="bus-card__dato-valor">Andrés Soto</span>
+              </div>
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-chair'></i>
+                  Asientos
+                </span>
+                <span class="bus-card__dato-valor">45 asientos</span>
+              </div>
+              <div class="bus-card__dato">
+                <span class="bus-card__dato-etiqueta">
+                  <i class='bx bx-hash'></i>
+                  Patente
+                </span>
+                <span class="bus-card__dato-valor">FRWT 88</span>
+              </div>
+            </div>
+
+            <div class="bus-card__pie">
+              <button class="admin-btn admin-btn--ghost admin-btn--recorridos">
+                <i class='bx bx-map-alt'></i>
+                Ver recorridos y horarios
+                <i class='bx bx-chevron-down'></i>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+        <!-- /buses-lista -->
+
+      </section>
+
+
+      <!-- ===========================================================
+           SECCIÓN 2: ENVIAR AVISO A USUARIOS
+           =========================================================== -->
+      <section class="admin-seccion" id="avisos">
+
+        <div class="admin-seccion__header">
+          <div class="admin-seccion__header-texto">
+            <h2 class="admin-seccion__titulo">
+              <i class='bx bx-broadcast'></i>
+              Avisos a usuarios
+            </h2>
+            <p class="admin-seccion__subtitulo">Envía una alerta o comunicado a todos los usuarios de la plataforma.</p>
+          </div>
+        </div>
+
+        <div class="aviso-form-card">
+
+          <!-- Tipo de aviso -->
+          <div class="aviso-form__grupo">
+            <label class="aviso-form__label" for="tipoAviso">Tipo de aviso</label>
+            <div class="aviso-form__tipo-grid">
+              <label class="aviso-tipo-opcion aviso-tipo-opcion--alerta">
+                <input type="radio" name="tipoAviso" value="alerta" checked />
+                <span class="aviso-tipo-opcion__inner">
+                  <i class='bx bx-error'></i>
+                  <span>Alerta</span>
+                </span>
+              </label>
+              <label class="aviso-tipo-opcion aviso-tipo-opcion--info">
+                <input type="radio" name="tipoAviso" value="info" />
+                <span class="aviso-tipo-opcion__inner">
+                  <i class='bx bx-info-circle'></i>
+                  <span>Información</span>
+                </span>
+              </label>
+              <label class="aviso-tipo-opcion aviso-tipo-opcion--precio">
+                <input type="radio" name="tipoAviso" value="precio" />
+                <span class="aviso-tipo-opcion__inner">
+                  <i class='bx bx-dollar-circle'></i>
+                  <span>Cambio de tarifa</span>
+                </span>
+              </label>
+              <label class="aviso-tipo-opcion aviso-tipo-opcion--emergencia">
+                <input type="radio" name="tipoAviso" value="emergencia" />
+                <span class="aviso-tipo-opcion__inner">
+                  <i class='bx bx-alarm-exclamation'></i>
+                  <span>Emergencia</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Título del mensaje -->
+          <div class="aviso-form__grupo">
+            <label class="aviso-form__label" for="tituloAviso">Título</label>
+            <input
+              type="text"
+              id="tituloAviso"
+              class="aviso-form__input"
+              placeholder="Ej: Suspensión temporal de recorridos"
+              maxlength="80"
+            />
+          </div>
+
+          <!-- Cuerpo del mensaje -->
+          <div class="aviso-form__grupo">
+            <label class="aviso-form__label" for="mensajeAviso">
+              Mensaje
+              <span class="aviso-form__contador" id="contadorMensaje">0 / 300</span>
+            </label>
+            <textarea
+              id="mensajeAviso"
+              class="aviso-form__textarea"
+              placeholder="Escribe el detalle del aviso aquí…"
+              maxlength="300"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Acciones -->
+          <div class="aviso-form__acciones">
+            <button class="admin-btn admin-btn--ghost" type="button">
+              <i class='bx bx-trash'></i>
+              Limpiar
+            </button>
+            <button class="admin-btn admin-btn--primario" type="button" id="btnEnviarAviso">
+              <i class='bx bx-send'></i>
+              Enviar aviso
+            </button>
+          </div>
+
+        </div>
+        <!-- /aviso-form-card -->
+
+      </section>
+
+    </div>
+    <!-- /admin-cuerpo -->
+
+  </main>
+
+
+  <!-- Footer -->
+  <footer class="footer">
+    © 2025 Talmocur. Panel de administración interno.
+  </footer>
+
+
+  <!-- JS navbar -->
+  <script src="/static/js/navbar.js"></script>
+
+  <!-- Contador de caracteres (pequeño script inline) -->
+  <script>
+    const textarea = document.getElementById('mensajeAviso');
+    const contador = document.getElementById('contadorMensaje');
+    if (textarea && contador) {
+      textarea.addEventListener('input', () => {
+        contador.textContent = `${textarea.value.length} / 300`;
+      });
+    }
+  </script>
+
+</body>
+
+</html>

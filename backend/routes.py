@@ -92,13 +92,15 @@ def login():
     session['user_id'] = usuario['id']
     session['user_nombre'] = usuario['nombre']
     session['user_email'] = usuario['email']
+    session['user_rol'] = usuario['rol']
 
     return jsonify({
         'message': 'Sesión iniciada correctamente.',
         'usuario': {
             'id': usuario['id'],
             'nombre': usuario['nombre'],
-            'email': usuario['email']
+            'email': usuario['email'],
+            'rol': usuario['rol']
         }
     }), 200
 

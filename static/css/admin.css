@@ -1,0 +1,579 @@
+/* ================================================================
+   ADMIN.CSS  –  Talmocur panel de administrador
+   Requiere home.css cargado antes (variables, navbar, footer)
+   ================================================================ */
+
+
+/* ── Botón "Panel de administrador" en navbar ────────────────── */
+.barra-navegacion__btn-admin {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50px;
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.barra-navegacion__btn-admin:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.barra-navegacion__btn-admin--activo {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border-color: var(--color-white);
+}
+
+.barra-navegacion__btn-admin--activo:hover {
+  background-color: #e0e7ff;
+  border-color: #e0e7ff;
+  color: var(--color-primary-dark);
+}
+
+.barra-navegacion__btn-admin i {
+  font-size: 1.05rem;
+}
+
+
+/* ── Layout base de la página ────────────────────────────────── */
+.admin-page {
+  padding-top: 64px; /* altura del navbar fijo */
+  min-height: 100vh;
+  background-color: var(--color-gray-50);
+}
+
+
+/* ── Encabezado del panel ────────────────────────────────────── */
+.admin-header {
+  background: linear-gradient(135deg,
+      var(--color-gray-900) 0%,
+      var(--color-primary-dark) 100%);
+  padding: 44px 24px 40px;
+}
+
+.admin-header__interior {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  animation: aparecerArriba 0.55s ease both;
+}
+
+.admin-header__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 10px;
+}
+
+.admin-header__eyebrow i {
+  font-size: 1rem;
+}
+
+.admin-header__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.admin-header__subtitulo {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+
+/* ── Cuerpo con las secciones ────────────────────────────────── */
+.admin-cuerpo {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+
+/* ── Sección genérica ────────────────────────────────────────── */
+.admin-seccion {
+  animation: aparecerArriba 0.55s 0.08s ease both;
+}
+
+.admin-seccion__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.admin-seccion__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: 4px;
+}
+
+.admin-seccion__titulo i {
+  font-size: 1.3rem;
+  color: var(--color-primary);
+}
+
+.admin-seccion__subtitulo {
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+  padding-left: 34px; /* alineado con el texto del título, después del icono */
+}
+
+
+/* ── Botones generales del panel ─────────────────────────────── */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition),
+    color var(--transition);
+  white-space: nowrap;
+}
+
+.admin-btn i {
+  font-size: 1rem;
+}
+
+/* Primario */
+.admin-btn--primario {
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
+}
+
+.admin-btn--primario:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(29, 78, 216, 0.38);
+}
+
+/* Secundario (editar) */
+.admin-btn--secundario {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  border: 1.5px solid #bfdbfe;
+}
+
+.admin-btn--secundario:hover {
+  background-color: #dbeafe;
+  transform: translateY(-1px);
+}
+
+/* Peligro (eliminar) */
+.admin-btn--peligro {
+  color: #dc2626;
+  background-color: #fef2f2;
+  border: 1.5px solid #fecaca;
+}
+
+.admin-btn--peligro:hover {
+  background-color: #fee2e2;
+  transform: translateY(-1px);
+}
+
+/* Ghost */
+.admin-btn--ghost {
+  color: var(--color-gray-700);
+  background-color: transparent;
+  border: 1.5px solid var(--color-gray-200);
+}
+
+.admin-btn--ghost:hover {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-gray-400);
+}
+
+/* Botón con solo icono (tamaño reducido) */
+.admin-btn--icono {
+  padding: 8px 14px;
+  font-size: 0.82rem;
+}
+
+
+/* ── Lista de buses ───────────────────────────────────────────── */
+.buses-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+
+/* ── Tarjeta de bus ──────────────────────────────────────────── */
+.bus-card {
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition:
+    box-shadow var(--transition),
+    border-color var(--transition);
+}
+
+.bus-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #bfdbfe;
+}
+
+
+/* Cabecera de la tarjeta */
+.bus-card__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--color-gray-100);
+  flex-wrap: wrap;
+}
+
+.bus-card__id-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bus-card__id {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  letter-spacing: 0.01em;
+}
+
+/* Badge de estado */
+.bus-card__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 50px;
+}
+
+.bus-card__estado i {
+  font-size: 0.85rem;
+}
+
+.bus-card__estado--activo {
+  color: #15803d;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+}
+
+.bus-card__estado--inactivo {
+  color: var(--color-gray-500);
+  background-color: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+}
+
+/* Botones de acción */
+.bus-card__acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* Info del bus */
+.bus-card__info {
+  display: flex;
+  gap: 0;
+  padding: 0 24px;
+}
+
+.bus-card__dato {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 16px 24px 16px 0;
+  margin-right: 24px;
+  border-right: 1px solid var(--color-gray-100);
+}
+
+.bus-card__dato:last-child {
+  border-right: none;
+}
+
+.bus-card__dato-etiqueta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-gray-400);
+}
+
+.bus-card__dato-etiqueta i {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+
+.bus-card__dato-valor {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+
+/* Pie de tarjeta con botón de recorridos */
+.bus-card__pie {
+  padding: 12px 24px;
+  background-color: var(--color-gray-50);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.admin-btn--recorridos {
+  width: 100%;
+  justify-content: center;
+  color: var(--color-primary);
+  border-color: #bfdbfe;
+  background-color: var(--color-primary-light);
+  font-size: 0.85rem;
+  padding: 9px 20px;
+}
+
+.admin-btn--recorridos:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.admin-btn--recorridos .bx-chevron-down {
+  margin-left: auto;
+  font-size: 1.1rem;
+  transition: transform var(--transition);
+}
+
+
+/* ── Formulario de aviso ─────────────────────────────────────── */
+.aviso-form-card {
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.aviso-form__grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aviso-form__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  letter-spacing: 0.02em;
+}
+
+.aviso-form__contador {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-gray-400);
+}
+
+/* Grid de tipos */
+.aviso-form__tipo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.aviso-tipo-opcion {
+  cursor: pointer;
+}
+
+.aviso-tipo-opcion input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.aviso-tipo-opcion__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  background-color: var(--color-gray-50);
+  transition:
+    border-color var(--transition),
+    background-color var(--transition),
+    color var(--transition),
+    box-shadow var(--transition);
+  text-align: center;
+}
+
+.aviso-tipo-opcion__inner i {
+  font-size: 1.3rem;
+}
+
+.aviso-tipo-opcion input:checked + .aviso-tipo-opcion__inner {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+}
+
+/* Variantes de color por tipo */
+.aviso-tipo-opcion--alerta input:checked + .aviso-tipo-opcion__inner {
+  border-color: #d97706;
+  background-color: #fffbeb;
+  color: #92400e;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+}
+
+.aviso-tipo-opcion--emergencia input:checked + .aviso-tipo-opcion__inner {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+  color: #991b1b;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.aviso-tipo-opcion--precio input:checked + .aviso-tipo-opcion__inner {
+  border-color: #059669;
+  background-color: #f0fdf4;
+  color: #065f46;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+}
+
+/* Input y textarea */
+.aviso-form__input,
+.aviso-form__textarea {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-gray-900);
+  background-color: var(--color-gray-50);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  padding: 11px 16px;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background-color var(--transition);
+  width: 100%;
+  resize: vertical;
+}
+
+.aviso-form__input::placeholder,
+.aviso-form__textarea::placeholder {
+  color: var(--color-gray-400);
+}
+
+.aviso-form__input:focus,
+.aviso-form__textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.10);
+}
+
+/* Acciones del form */
+.aviso-form__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .bus-card__info {
+    flex-wrap: wrap;
+    padding: 0 18px;
+  }
+
+  .bus-card__dato {
+    flex: 1 1 40%;
+    padding: 14px 12px 14px 0;
+  }
+
+  .aviso-form__tipo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bus-card__cabecera {
+    padding: 14px 18px;
+  }
+
+  .bus-card__pie {
+    padding: 10px 18px;
+  }
+
+  .aviso-form-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-seccion__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-btn--primario {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .aviso-form__tipo-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bus-card__acciones {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

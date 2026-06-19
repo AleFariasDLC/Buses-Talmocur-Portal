@@ -6,17 +6,12 @@ from dotenv import load_dotenv
 # Cargar variables de entorno antes de crear la app
 load_dotenv()
 
-# Inicializar la base de datos: crea el archivo .db y todas las tablas
-# si no existen. Esto permite que cualquier colaborador que clone el repo
-# pueda ejecutar la app directamente sin pasos manuales adicionales.
-from database import crear_tablas, obtener_sesion
-from models import Recorrido
-crear_tablas()
-
-# Seed automático: puebla la BD con datos iniciales si está vacía.
-# Centralizado en seed_db.py para mantener el código limpio.
+# Inicializar y poblar la base de datos con el seed automático (si está vacía).
+# Centralizado en seed_db.py para mantener el código limpio y evitar ejecuciones redundantes.
+from database import obtener_sesion
+from models import Recorrido, Bus
 from seed_db import seed as _seed_inicial
-_seed_inicial()
+_seed_inicial(quiet=False)
 
 from routes import routes
 
@@ -38,7 +33,8 @@ def inject_usuario():
         return {
             'usuario_logueado': True,
             'usuario_nombre': session.get('user_nombre', ''),
-            'usuario_email': session.get('user_email', '')
+            'usuario_email': session.get('user_email', ''),
+            'usuario_rol': session.get('user_rol', 'pasajero')
         }
     return {'usuario_logueado': False}
 
@@ -103,6 +99,19 @@ def perfil():
 @app.route('/seleccionar-asientos')
 def seleccionar_asientos():
     return render_template('seleccionar_asientos.html')
+
+@app.route('/admin')
+def admin_dashboard():
+    if 'user_id' not in session or session.get('user_rol') != 'admin':
+        return redirect('/login')
+    db = obtener_sesion()
+    try:
+        total_buses = db.query(Bus).count()
+    finally:
+        db.close()
+    return render_template('admin.html', total_buses=total_buses)
+
+
 
 
 if __name__ == '__main__':

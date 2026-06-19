@@ -41,7 +41,7 @@ engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 
-def crear_tablas():
+def crear_tablas(quiet=False):
     """Crea todas las tablas en la base de datos si no existen.
 
     Se llama automáticamente al iniciar la app. Si las tablas ya existen,
@@ -53,10 +53,15 @@ def crear_tablas():
 
     Base.metadata.create_all(engine)
 
-    if tablas_existentes:
-        print("[BD] Base de datos ya existente — tablas verificadas correctamente.")
-    else:
-        print(f"[BD] Base de datos nueva creada en: {_RUTA_DB}")
+    # Evitar duplicados debido al reloader de Flask (Werkzeug) en modo debug
+    is_reloader_parent = (os.environ.get('WERKZEUG_RUN_MAIN') is None and 
+                          os.environ.get('FLASK_USE_RELOADER') == 'true')
+
+    if not is_reloader_parent:
+        if not tablas_existentes:
+            print(f"[BD] Base de datos nueva creada en: {_RUTA_DB}")
+        elif not quiet:
+            print("[BD] Base de datos ya existente — tablas verificadas correctamente.")
 
 
 def obtener_sesion():

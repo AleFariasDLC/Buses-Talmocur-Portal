@@ -57,11 +57,18 @@
               <i class='bx bx-id-card'></i>
               Ver perfil
             </a>
+            {% if usuario_rol == 'admin' %}
+            <a href="/admin" class="usuario-menu__opcion">
+              <i class='bx bx-shield-quarter'></i>
+              Panel Admin
+            </a>
+            {% endif %}
             <button class="usuario-menu__opcion usuario-menu__opcion--logout" id="btnCerrarSesion">
               <i class='bx bx-log-out'></i>
               Cerrar sesión
             </button>
           </div>
+
         </div>
         {% else %}
         <!-- ── No logueado: botón login ── -->

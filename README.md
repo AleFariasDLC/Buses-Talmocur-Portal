@@ -150,7 +150,10 @@ Buses-Talmocur-Portal/
 │   ├── login.html          # Inicio de sesión
 │   ├── registro.html       # Registro de usuarios
 │   ├── perfil.html         # Perfil del usuario
+│   ├── seleccionar_asientos.html # Selección de asientos para compras
+│   ├── admin.html          # Vista panel de administración
 │   └── tarifas.html        # Página de tarifas
+
 ├── static/
 │   ├── css/                # Hojas de estilo
 │   ├── js/                 # Scripts del frontend
@@ -164,7 +167,7 @@ Buses-Talmocur-Portal/
 ```
 
 > **La base de datos (`talmocur.db`) no está en el repositorio** y se crea
-> automáticamente en `backend/` al ejecutar la app por primera vez.
+> automáticamente en la carpeta `data/` al ejecutar la app por primera vez.
 
 ## Modelos de la Base de Datos
 
