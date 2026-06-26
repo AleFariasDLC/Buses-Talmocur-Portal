@@ -8,6 +8,8 @@ Endpoints:
     GET  /api/me        — Obtener datos del usuario logueado
 """
 
+from datetime import datetime, date
+
 from flask import Blueprint, request, jsonify, session
 import bcrypt
 
@@ -24,6 +26,7 @@ def register():
 
     # Extraer campos
     nombre = data.get('nombre', '').strip()
+    fecha_nacimiento_raw = data.get('fechaNacimiento', '').strip()
     email = data.get('email', '').strip()
     password = data.get('password', '')
     confirm_password = data.get('confirmPassword', '')
@@ -32,6 +35,19 @@ def register():
     # Nombre requerido
     if not nombre:
         return jsonify({'error': 'El nombre completo es obligatorio.'}), 400
+
+    # Validar fecha de nacimiento
+    fecha_nacimiento = None
+    if not fecha_nacimiento_raw:
+        return jsonify({'error': 'La fecha de nacimiento es obligatoria.'}), 400
+
+    try:
+        fecha_nacimiento = datetime.strptime(fecha_nacimiento_raw, '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({'error': 'La fecha de nacimiento no es válida.'}), 400
+
+    if fecha_nacimiento > date.today():
+        return jsonify({'error': 'La fecha de nacimiento no puede estar en el futuro.'}), 400
 
     # Validar email
     resultado_email = utils.validar_email(email)
@@ -57,7 +73,7 @@ def register():
         bcrypt.gensalt()
     ).decode('utf-8')
 
-    usuario = db.crear_usuario(nombre, email, password_hash)
+    usuario = db.crear_usuario(nombre, email, password_hash, fecha_nacimiento)
 
     return jsonify({
         'message': 'Cuenta creada exitosamente.',

@@ -2,7 +2,7 @@
 # Este archivo crea la conexión a la base de datos y genera las tablas.
 
 import os
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 from models import Base
 
@@ -52,6 +52,7 @@ def crear_tablas(quiet=False):
     tablas_existentes = inspector.get_table_names()
 
     Base.metadata.create_all(engine)
+    _asegurar_columna_fecha_nacimiento()
 
     # Evitar duplicados debido al reloader de Flask (Werkzeug) en modo debug
     is_reloader_parent = (os.environ.get('WERKZEUG_RUN_MAIN') is None and 
@@ -62,6 +63,18 @@ def crear_tablas(quiet=False):
             print(f"[BD] Base de datos nueva creada en: {_RUTA_DB}")
         elif not quiet:
             print("[BD] Base de datos ya existente — tablas verificadas correctamente.")
+
+
+def _asegurar_columna_fecha_nacimiento():
+    """Añade la columna fecha_nacimiento a usuarios existentes si hace falta."""
+    inspector = inspect(engine)
+    if 'usuario' not in inspector.get_table_names():
+        return
+
+    columnas = {columna['name'] for columna in inspector.get_columns('usuario')}
+    if 'fecha_nacimiento' not in columnas:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE usuario ADD COLUMN fecha_nacimiento DATE"))
 
 
 def obtener_sesion():

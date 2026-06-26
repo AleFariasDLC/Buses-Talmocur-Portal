@@ -35,7 +35,7 @@ def buscar_usuario_por_id(user_id: str) -> dict | None:
         db.close()
 
 
-def crear_usuario(nombre: str, email: str, password_hash: str) -> dict:
+def crear_usuario(nombre: str, email: str, password_hash: str, fecha_nacimiento=None) -> dict:
     """Crea un nuevo usuario y lo guarda en la BD.
 
     Args:
@@ -57,6 +57,7 @@ def crear_usuario(nombre: str, email: str, password_hash: str) -> dict:
             email=email.strip().lower(),
             password_hash=password_hash,
             fecha_registro=datetime.now(timezone.utc),
+            fecha_nacimiento=fecha_nacimiento,
             rol="pasajero",
         )
         db.add(nuevo)
@@ -86,7 +87,7 @@ def actualizar_usuario(user_id: str, campos: dict) -> dict | None:
         if not usuario:
             return None
 
-        campos_permitidos = {"nombre", "email", "password_hash", "rol"}
+        campos_permitidos = {"nombre", "email", "password_hash", "fecha_nacimiento", "rol"}
         for clave, valor in campos.items():
             if clave in campos_permitidos:
                 setattr(usuario, clave, valor)
@@ -114,6 +115,8 @@ def _a_dict(usuario: Usuario, incluir_hash: bool = True) -> dict:
         "email":          usuario.email,
         "fecha_registro": usuario.fecha_registro.isoformat()
                           if usuario.fecha_registro else None,
+        "fecha_nacimiento": usuario.fecha_nacimiento.isoformat()
+                             if usuario.fecha_nacimiento else None,
         "rol":            usuario.rol,
     }
     if incluir_hash:

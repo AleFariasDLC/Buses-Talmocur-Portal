@@ -102,6 +102,12 @@
     gap: 18px;
 }
 
+.info-msg {
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    min-height: 1rem;
+}
+
 /* Grupo de campo */
 .lc-field {
     display: flex;

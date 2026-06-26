@@ -12,7 +12,8 @@ USUARIO_VALIDO = {
     'nombre': 'Juan Pérez',
     'email': 'juan@correo.com',
     'password': 'MiClave123!',
-    'confirmPassword': 'MiClave123!'
+    'confirmPassword': 'MiClave123!',
+    'fechaNacimiento': '1995-06-20'
 }
 
 

@@ -57,7 +57,38 @@
 /* ── 3. (Validación de confirmar contraseña se hace solo al submit) ── */
 
 
-/* ── 4. VALIDACIÓN DE CORREO ELECTRÓNICO ─────────────────────── */
+/* ── 4. FECHA DE NACIMIENTO Y EDAD ─────────────────────────── */
+(function initBirthDate() {
+  const birthInput = document.getElementById('fechaNacimiento');
+  const edadInfo = document.getElementById('edadInfo');
+  if (!birthInput || !edadInfo) return;
+
+  const calcularEdad = () => {
+    const value = birthInput.value;
+    if (!value) {
+      edadInfo.textContent = '';
+      return;
+    }
+
+    const nacimiento = new Date(`${value}T00:00:00`);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mesDiferencia = hoy.getMonth() - nacimiento.getMonth();
+
+    if (mesDiferencia < 0 || (mesDiferencia === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad -= 1;
+    }
+
+    edadInfo.textContent = `Edad: ${edad} años`;
+    edadInfo.style.color = 'var(--color-primary)';
+  };
+
+  birthInput.addEventListener('change', calcularEdad);
+  birthInput.addEventListener('input', calcularEdad);
+  calcularEdad();
+})();
+
+/* ── 5. VALIDACIÓN DE CORREO ELECTRÓNICO ─────────────────────── */
 (function initEmailValidation() {
   const emailInput = document.getElementById('email');
   if (!emailInput) return;
@@ -74,7 +105,7 @@
     });
 })();
 
-/* ── 5. ENVÍO DEL FORMULARIO AL BACKEND ──────────────────────── */
+/* ── 6. ENVÍO DEL FORMULARIO AL BACKEND ──────────────────────── */
 (function initFormSubmit() {
   const form = document.getElementById('registroForm');
   if (!form) return;
@@ -84,6 +115,7 @@
 
     // Obtener valores
     const nombre          = document.getElementById('nombre').value.trim();
+    const fechaNacimiento = document.getElementById('fechaNacimiento').value;
     const email           = document.getElementById('email').value.trim();
     const password        = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
@@ -103,7 +135,7 @@
     if (confirmError) confirmError.textContent = '';
 
     // Validación rápida del lado del cliente
-    if (!nombre || !email || !password || !confirmPassword) {
+    if (!nombre || !fechaNacimiento || !email || !password || !confirmPassword) {
       msgContainer.textContent = 'Todos los campos son obligatorios.';
       msgContainer.className = 'msg-error';
       return;
@@ -125,7 +157,7 @@
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, email, password, confirmPassword })
+        body: JSON.stringify({ nombre, fechaNacimiento, email, password, confirmPassword })
       });
 
       const data = await response.json();

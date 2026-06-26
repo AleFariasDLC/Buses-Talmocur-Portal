@@ -58,6 +58,12 @@ class TestRegistroExitoso:
         assert 'id' in data['usuario']
         assert len(data['usuario']['id']) > 0
 
+    def test_registro_guarda_fecha_nacimiento(self, client):
+        """La fecha de nacimiento se persiste en el usuario creado."""
+        response = registrar_usuario(client)
+        data = response.get_json()
+        assert data['usuario']['fecha_nacimiento'] == '1995-06-20'
+
 
 # ═══════════════════════════════════════════════════════════════════
 #  NOMBRE INVÁLIDO

@@ -2,7 +2,7 @@
 # Define todas las tablas de la base de datos como clases Python.
 # SQLAlchemy las traduce automáticamente a SQL.
 
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, Float,
@@ -24,6 +24,7 @@ class Usuario(Base):
     email          = Column(String(100), nullable=False, unique=True)
     password_hash  = Column(String(200), nullable=False)
     fecha_registro = Column(DateTime,    default=datetime.utcnow)
+    fecha_nacimiento = Column(Date, nullable=True)
     rol            = Column(String(20),  nullable=False, default="pasajero")
     # rol: "pasajero" | "admin"
 
