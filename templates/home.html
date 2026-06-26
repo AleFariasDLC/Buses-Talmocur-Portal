@@ -4,26 +4,26 @@
 
 {% block content %}
 
-  <!-- ============================================================
+<!-- ============================================================
        HERO
        ============================================================ -->
-  <section class="hero" aria-label="Sección principal">
+<section class="hero" aria-label="Sección principal">
 
-    <!-- Fondo con imagen + degradado -->
-    <div class="hero__bg" aria-hidden="true">
-      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
-      <div class="hero__bg-overlay"></div>
-    </div>
+  <!-- Fondo con imagen + degradado -->
+  <div class="hero__bg" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
+    <div class="hero__bg-overlay"></div>
+  </div>
 
-    <!-- Contenido portada -->
-    <div class="hero__content">
-      <p class="hero__etiqueta">La forma más cómoda de viajar</p>
-      <h1 class="hero__titulo">Tu próximo viaje<br />te está esperando</h1>
-      <p class="hero__subtitulo">Buses modernos, puntualidad garantizada y los mejores precios entre Curicó y Talca.</p>
-    </div>
+  <!-- Contenido portada -->
+  <div class="hero__content">
+    <p class="hero__etiqueta">La forma más cómoda de viajar</p>
+    <h1 class="hero__titulo">Tu próximo viaje<br />te está esperando</h1>
+    <p class="hero__subtitulo">Buses modernos, puntualidad garantizada y los mejores precios entre Curicó y Talca.</p>
+  </div>
 
-    <!-- ── BUSCADOR DE PASAJES ── -->
-    <div class="buscador" role="search" aria-label="Buscar pasajes">
+  <!-- ── BUSCADOR DE PASAJES ── -->
+  <div class="buscador" role="search" aria-label="Buscar pasajes">
 
       <!-- Desde -->
       <div class="buscador__field">
@@ -38,10 +38,10 @@
         </select>
       </div>
 
-      <!-- Intercambiar ícono -->
-      <button class="buscador__swap" aria-label="Intercambiar origen y destino" type="button">
-        <i class='bx bx-transfer-alt'></i>
-      </button>
+    <!-- Intercambiar ícono -->
+    <button class="buscador__swap" aria-label="Intercambiar origen y destino" type="button">
+      <i class='bx bx-transfer-alt'></i>
+    </button>
 
       <!-- Hacia -->
       <div class="buscador__field">
@@ -56,297 +56,306 @@
         </select>
       </div>
 
-      <!-- Divisor -->
-      <div class="buscador__divisor" aria-hidden="true"></div>
+    <!-- Divisor -->
+    <div class="buscador__divisor" aria-hidden="true"></div>
 
-      <!-- Fecha -->
-      <div class="buscador__field">
-        <label for="fecha" class="buscador__etiqueta">
-          <i class='bx bx-calendar'></i> Fecha de salida
-        </label>
-        <input type="date" id="fecha" class="buscador__input" />
-      </div>
-
-      <!-- Divisor -->
-      <div class="buscador__divisor" aria-hidden="true"></div>
-
-      <!-- Pasajeros -->
-      <div class="buscador__field">
-        <label for="pasajeros" class="buscador__etiqueta">
-          <i class='bx bx-group'></i> Pasajeros
-        </label>
-        <select id="pasajeros" class="buscador__select">
-          <option value="adulto">1 Adulto</option>
-          <option value="adulto2">2 Adultos</option>
-          <option value="adulto_nino">1 Adulto + 1 Niño</option>
-          <option value="familia">Familia (2A + 2N)</option>
-          <option value="nino">1 Niño</option>
-        </select>
-      </div>
-
-      <!-- Botón buscar -->
-      <button class="buscador__btn" type="button" aria-label="Buscar pasajes">
-        <i class='bx bx-search'></i>
-        <span>Buscar</span>
-      </button>
-
+    <!-- Fecha -->
+    <div class="buscador__field">
+      <label for="fecha" class="buscador__etiqueta">
+        <i class='bx bx-calendar'></i> Fecha de salida
+      </label>
+      <input type="date" id="fecha" class="buscador__input" />
     </div>
-    <!-- /buscador -->
 
-  </section>
+    <!-- Divisor -->
+    <div class="buscador__divisor" aria-hidden="true"></div>
+
+    <!-- Pasajeros -->
+    <div class="buscador__field">
+      <label for="pasajeros" class="buscador__etiqueta">
+        <i class='bx bx-group'></i> Pasajeros
+      </label>
+      <select id="pasajeros" class="buscador__select">
+        <option value="adulto">1 Adulto</option>
+        <option value="adulto2">2 Adultos</option>
+        <option value="adulto_nino">1 Adulto + 1 Niño</option>
+        <option value="familia">Familia (2A + 2N)</option>
+        <option value="nino">1 Niño</option>
+      </select>
+    </div>
+
+    <!-- Botón buscar -->
+    <button class="buscador__btn" type="button" aria-label="Buscar pasajes">
+      <i class='bx bx-search'></i>
+      <span>Buscar</span>
+    </button>
+
+  </div>
+  <!-- /buscador -->
+
+</section>
 
 
-  <!-- ============================================================
+<!-- ============================================================
        SECCIÓN: FRASE + BENEFICIOS
        ============================================================ -->
-  <section class="beneficios" id="beneficios" aria-label="Nuestros beneficios">
-    <div class="beneficios__interior">
+<section class="beneficios" id="beneficios" aria-label="Nuestros beneficios">
+  <div class="beneficios__interior">
 
-      <div class="beneficios__header">
-        <p class="beneficios__etiqueta">¿Por qué elegirnos?</p>
-        <h2 class="beneficios__titulo">Viaja con confianza,<br />llega a tiempo</h2>
-      </div>
-
-      <div class="beneficios__grid">
-
-        <article class="tarjeta-beneficio">
-          <div class="tarjeta-beneficio__icono"><i class='bx bxs-time-five'></i></div>
-          <h3 class="tarjeta-beneficio__titulo">Puntualidad garantizada</h3>
-          <p class="tarjeta-beneficio__texto">Salidas exactas en cada horario. Tu tiempo es lo más valioso.</p>
-        </article>
-
-        <article class="tarjeta-beneficio">
-          <div class="tarjeta-beneficio__icono"><i class='bx bxs-badge-dollar'></i></div>
-          <h3 class="tarjeta-beneficio__titulo">Mejor precio</h3>
-          <p class="tarjeta-beneficio__texto">Tarifas competitivas con descuentos para estudiantes y adultos mayores.</p>
-        </article>
-
-        <article class="tarjeta-beneficio">
-          <div class="tarjeta-beneficio__icono"><i class='bx bxs-shield-alt-2'></i></div>
-          <h3 class="tarjeta-beneficio__titulo">Viaje seguro</h3>
-          <p class="tarjeta-beneficio__texto">Flota moderna, conductores certificados y seguro de pasajeros incluido.</p>
-        </article>
-
-        <article class="tarjeta-beneficio">
-          <div class="tarjeta-beneficio__icono"><i class='bx bx-wifi'></i></div>
-          <h3 class="tarjeta-beneficio__titulo">Wi-Fi a bordo</h3>
-          <p class="tarjeta-beneficio__texto">Conectividad en todo el trayecto para que no pierdas ni un minuto.</p>
-        </article>
-
-      </div>
+    <div class="beneficios__header">
+      <p class="beneficios__etiqueta">¿Por qué elegirnos?</p>
+      <h2 class="beneficios__titulo">Viaja con confianza,<br />llega a tiempo</h2>
     </div>
-  </section>
+
+    <div class="beneficios__grid">
+
+      <article class="tarjeta-beneficio">
+        <div class="tarjeta-beneficio__icono"><i class='bx bxs-time-five'></i></div>
+        <h3 class="tarjeta-beneficio__titulo">Puntualidad garantizada</h3>
+        <p class="tarjeta-beneficio__texto">Salidas exactas en cada horario. Tu tiempo es lo más valioso.</p>
+      </article>
+
+      <article class="tarjeta-beneficio">
+        <div class="tarjeta-beneficio__icono"><i class='bx bxs-badge-dollar'></i></div>
+        <h3 class="tarjeta-beneficio__titulo">Mejor precio</h3>
+        <p class="tarjeta-beneficio__texto">Tarifas competitivas con descuentos para estudiantes y adultos mayores.</p>
+      </article>
+
+      <article class="tarjeta-beneficio">
+        <div class="tarjeta-beneficio__icono"><i class='bx bxs-shield-alt-2'></i></div>
+        <h3 class="tarjeta-beneficio__titulo">Viaje seguro</h3>
+        <p class="tarjeta-beneficio__texto">Flota moderna, conductores certificados y seguro de pasajeros incluido.</p>
+      </article>
+
+      <article class="tarjeta-beneficio">
+        <div class="tarjeta-beneficio__icono"><i class='bx bx-wifi'></i></div>
+        <h3 class="tarjeta-beneficio__titulo">Wi-Fi a bordo</h3>
+        <p class="tarjeta-beneficio__texto">Conectividad en todo el trayecto para que no pierdas ni un minuto.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
 
 
-  <!-- ============================================================
+<!-- ============================================================
        SECCIÓN: PASAJES DEL DÍA
        ============================================================ -->
-  <section class="horarios" aria-label="Horarios de hoy">
-    <div class="horarios__interior">
+<section class="horarios" aria-label="Horarios de hoy">
+  <div class="horarios__interior">
 
-      <div class="horarios__header">
-        <p class="horarios__etiqueta">Disponibilidad en tiempo real</p>
-        <h2 class="horarios__titulo">Pasajes de hoy</h2>
-        <p class="horarios__subtitulo">Curicó → Talca · <span id="fechaHoy"></span></p>
-      </div>
+    <div class="horarios__header">
+      <p class="horarios__etiqueta">Disponibilidad en tiempo real</p>
+      <h2 class="horarios__titulo">Pasajes de hoy</h2>
+      <p class="horarios__subtitulo">Curicó → Talca · <span id="fechaHoy"></span></p>
+    </div>
 
-      <!-- Tabla de horarios -->
-      <div class="horarios__lista" role="list">
+    <!-- Tabla de horarios -->
+    <div class="horarios__lista" role="list">
 
-        <!-- Pasaje 1 -->
-        <article class="tarjeta-pasaje" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">07:00</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A1</span>
-            <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 14 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=A1&hora=07:00&precio=2800&asientos=14" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
+      <!-- Pasaje 1 -->
+      <article class="tarjeta-pasaje" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">07:00</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A1</span>
+          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 14 asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=A1&hora=07:00&precio=2800&asientos=14"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
-        <!-- Pasaje 2 -->
-        <article class="tarjeta-pasaje" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">08:30</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus B2</span>
-            <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 6 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=B2&hora=08:30&precio=2800&asientos=6" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
+      <!-- Pasaje 2 -->
+      <article class="tarjeta-pasaje" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">08:30</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus B2</span>
+          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 6 asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=B2&hora=08:30&precio=2800&asientos=6"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
-        <!-- Pasaje 3 — POCAS PLAZAS -->
-        <article class="tarjeta-pasaje tarjeta-pasaje--pocas" role="listitem">
-          <div class="tarjeta-pasaje__insignia">¡Últimos asientos!</div>
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">10:00</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus C3</span>
-            <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--pocos"><i class='bx bx-chair'></i> 3 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=C3&hora=10:00&precio=2800&asientos=3" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
+      <!-- Pasaje 3 — POCAS PLAZAS -->
+      <article class="tarjeta-pasaje tarjeta-pasaje--pocas" role="listitem">
+        <div class="tarjeta-pasaje__insignia">¡Últimos asientos!</div>
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">10:00</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus C3</span>
+          <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--pocos"><i class='bx bx-chair'></i> 3
+            asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=C3&hora=10:00&precio=2800&asientos=3"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
-        <!-- Pasaje 4 -->
-        <article class="tarjeta-pasaje" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">12:15</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A2</span>
-            <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 22 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=A2&hora=12:15&precio=2800&asientos=22" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
+      <!-- Pasaje 4 -->
+      <article class="tarjeta-pasaje" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">12:15</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A2</span>
+          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 22 asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=A2&hora=12:15&precio=2800&asientos=22"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
-        <!-- Pasaje 5 — AGOTADO -->
-        <article class="tarjeta-pasaje tarjeta-pasaje--agotado" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">14:00</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus D1</span>
-            <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--agotado"><i class='bx bx-chair'></i> Agotado</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <button class="tarjeta-pasaje__btn tarjeta-pasaje__btn--deshabilitado" type="button" disabled>Agotado</button>
-        </article>
+      <!-- Pasaje 5 — AGOTADO -->
+      <article class="tarjeta-pasaje tarjeta-pasaje--agotado" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">14:00</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus D1</span>
+          <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--agotado"><i class='bx bx-chair'></i>
+            Agotado</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <button class="tarjeta-pasaje__btn tarjeta-pasaje__btn--deshabilitado" type="button" disabled>Agotado</button>
+      </article>
 
-        <!-- Pasaje 6 -->
-        <article class="tarjeta-pasaje" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">16:30</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus B1</span>
-            <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 18 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=B1&hora=16:30&precio=2800&asientos=18" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
+      <!-- Pasaje 6 -->
+      <article class="tarjeta-pasaje" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">16:30</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus B1</span>
+          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 18 asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=B1&hora=16:30&precio=2800&asientos=18"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
-        <!-- Pasaje 7 -->
-        <article class="tarjeta-pasaje" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">18:45</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus C1</span>
-            <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 30 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=C1&hora=18:45&precio=2800&asientos=30" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
+      <!-- Pasaje 7 -->
+      <article class="tarjeta-pasaje" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">18:45</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus C1</span>
+          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 30 asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=C1&hora=18:45&precio=2800&asientos=30"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
-        <!-- Pasaje 8 -->
-        <article class="tarjeta-pasaje" role="listitem">
-          <div class="tarjeta-pasaje__hora">
-            <span class="tarjeta-pasaje__hora-num">20:00</span>
-            <span class="tarjeta-pasaje__duracion">~45 min</span>
-          </div>
-          <div class="tarjeta-pasaje__ruta">
-            <span class="tarjeta-pasaje__ciudad">Curicó</span>
-            <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-            <span class="tarjeta-pasaje__ciudad">Talca</span>
-          </div>
-          <div class="tarjeta-pasaje__info">
-            <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A3</span>
-            <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 11 asientos</span>
-          </div>
-          <div class="tarjeta-pasaje__precio">
-            <span class="tarjeta-pasaje__monto">$2.800</span>
-            <span class="tarjeta-pasaje__por-persona">por persona</span>
-          </div>
-          <a href="/seleccionar-asientos?bus=A3&hora=20:00&precio=2800&asientos=11" class="tarjeta-pasaje__btn">Comprar</a>
-        </article>
-
-      </div>
-      <!-- /horarios__lista -->
+      <!-- Pasaje 8 -->
+      <article class="tarjeta-pasaje" role="listitem">
+        <div class="tarjeta-pasaje__hora">
+          <span class="tarjeta-pasaje__hora-num">20:00</span>
+          <span class="tarjeta-pasaje__duracion">~45 min</span>
+        </div>
+        <div class="tarjeta-pasaje__ruta">
+          <span class="tarjeta-pasaje__ciudad">Curicó</span>
+          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+          <span class="tarjeta-pasaje__ciudad">Talca</span>
+        </div>
+        <div class="tarjeta-pasaje__info">
+          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A3</span>
+          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 11 asientos</span>
+        </div>
+        <div class="tarjeta-pasaje__precio">
+          <span class="tarjeta-pasaje__monto">$2.800</span>
+          <span class="tarjeta-pasaje__por-persona">por persona</span>
+        </div>
+        <a href="/compra-pasajes-asientos?bus=A3&hora=20:00&precio=2800&asientos=11"
+          class="tarjeta-pasaje__btn">Comprar</a>
+      </article>
 
     </div>
-  </section>
+    <!-- /horarios__lista -->
+
+  </div>
+</section>
 
 
-  <!-- ============================================================
+<!-- ============================================================
        PIE DE PÁGINA MÍNIMO
        ============================================================ -->
-  <footer class="footer">
-    <p>© 2026 Talmocur · Todos los derechos reservados</p>
-  </footer>
+<footer class="footer">
+  <p>© 2026 Talmocur · Todos los derechos reservados</p>
+</footer>
 
 {% endblock %}
 
 
 {% block extra_js %}
-  <script src="/static/js/home.js"></script>
+<script src="/static/js/home.js"></script>
 {% endblock %}
