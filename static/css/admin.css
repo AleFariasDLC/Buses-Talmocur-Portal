@@ -577,3 +577,219 @@
     justify-content: flex-end;
   }
 }
+
+
+/* ── Campo de duración ────────────────────────────────────────── */
+.aviso-form__duracion-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aviso-form__input--duracion {
+  max-width: 120px;
+  text-align: center;
+}
+
+.aviso-form__duracion-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+}
+
+.aviso-form__hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-gray-400);
+}
+
+
+/* ── Modo edición ─────────────────────────────────────────────── */
+.aviso-modo-edicion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  flex-wrap: wrap;
+}
+
+.aviso-modo-edicion i {
+  font-size: 1.1rem;
+}
+
+.aviso-modo-edicion__cancelar {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  background: none;
+  border: 1.5px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.aviso-modo-edicion__cancelar:hover {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-700);
+}
+
+
+/* ── Feedback inline ─────────────────────────────────────────── */
+.aviso-feedback {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.aviso-feedback--exito {
+  background-color: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  color: #15803d;
+}
+
+.aviso-feedback--error {
+  background-color: #fef2f2;
+  border: 1.5px solid #fecaca;
+  color: #dc2626;
+}
+
+
+/* ── Panel lista de avisos (desplegable) ─────────────────────── */
+.avisos-lista-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, margin-bottom 0.3s ease;
+  margin-bottom: 0;
+}
+
+.avisos-lista-panel--abierto {
+  max-height: 600px;
+  margin-bottom: 8px;
+}
+
+.avisos-lista-panel__interior {
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+}
+
+.avisos-lista__cargando {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+}
+
+.avisos-lista__vacia {
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+  text-align: center;
+  padding: 16px 0;
+}
+
+/* Icono girar del botón "Ver avisos" */
+#iconVerAvisos {
+  font-size: 1.1rem;
+  transition: transform var(--transition);
+}
+
+
+/* ── Tabla de avisos ─────────────────────────────────────────── */
+.avisos-tabla {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.avisos-tabla__fila {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-gray-100);
+  flex-wrap: wrap;
+}
+
+.avisos-tabla__fila:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.avisos-tabla__tipo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 130px;
+}
+
+.avisos-tabla__tipo i {
+  font-size: 1.1rem;
+}
+
+.avisos-tabla__info {
+  flex: 1;
+  min-width: 160px;
+}
+
+.avisos-tabla__titulo {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-gray-800);
+  margin-bottom: 2px;
+}
+
+.avisos-tabla__meta {
+  font-size: 0.75rem;
+  color: var(--color-gray-400);
+}
+
+.avisos-tabla__estado {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.avisos-tabla__estado--vigente {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.avisos-tabla__estado--expirado {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-400);
+  border: 1px solid var(--color-gray-200);
+}
+
+.avisos-tabla__acciones {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .avisos-tabla__fila {
+    gap: 10px;
+  }
+  .avisos-tabla__tipo {
+    min-width: 100px;
+  }
+}
+

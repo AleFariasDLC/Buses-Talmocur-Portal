@@ -288,11 +288,35 @@
               <i class='bx bx-broadcast'></i>
               Avisos a usuarios
             </h2>
-            <p class="admin-seccion__subtitulo">Envía una alerta o comunicado a todos los usuarios de la plataforma.</p>
+            <p class="admin-seccion__subtitulo">Crea y gestiona comunicados que se muestran a todos los usuarios al iniciar sesión.</p>
+          </div>
+          <button class="admin-btn admin-btn--ghost" type="button" id="btnVerAvisos">
+            <i class='bx bx-list-ul'></i>
+            Ver avisos
+            <i class='bx bx-chevron-down' id="iconVerAvisos"></i>
+          </button>
+        </div>
+
+        <!-- ── Lista de avisos (desplegable) ── -->
+        <div class="avisos-lista-panel" id="avisosListaPanel">
+          <div class="avisos-lista-panel__interior">
+            <p class="avisos-lista__cargando" id="avisosListaCargando">
+              <i class='bx bx-loader-alt bx-spin'></i> Cargando avisos…
+            </p>
+            <div id="avisosListaContenido"></div>
           </div>
         </div>
 
         <div class="aviso-form-card">
+
+          <!-- Indicador modo edición -->
+          <div class="aviso-modo-edicion" id="avisoModoEdicion" style="display:none;">
+            <i class='bx bx-edit'></i>
+            Editando aviso — <span id="avisoEditandoTitulo"></span>
+            <button class="aviso-modo-edicion__cancelar" type="button" id="btnCancelarEdicion">
+              <i class='bx bx-x'></i> Cancelar
+            </button>
+          </div>
 
           <!-- Tipo de aviso -->
           <div class="aviso-form__grupo">
@@ -356,9 +380,29 @@
             ></textarea>
           </div>
 
+          <!-- Duración -->
+          <div class="aviso-form__grupo">
+            <label class="aviso-form__label" for="duracionAviso">
+              Duración del aviso
+              <span class="aviso-form__hint">días desde hoy que estará visible</span>
+            </label>
+            <div class="aviso-form__duracion-wrap">
+              <input
+                type="number"
+                id="duracionAviso"
+                class="aviso-form__input aviso-form__input--duracion"
+                placeholder="1"
+                min="1"
+                max="365"
+                value="1"
+              />
+              <span class="aviso-form__duracion-label">días</span>
+            </div>
+          </div>
+
           <!-- Acciones -->
           <div class="aviso-form__acciones">
-            <button class="admin-btn admin-btn--ghost" type="button">
+            <button class="admin-btn admin-btn--ghost" type="button" id="btnLimpiarAviso">
               <i class='bx bx-trash'></i>
               Limpiar
             </button>
@@ -368,10 +412,14 @@
             </button>
           </div>
 
+          <!-- Feedback -->
+          <div class="aviso-feedback" id="avisoFeedback" style="display:none;"></div>
+
         </div>
         <!-- /aviso-form-card -->
 
       </section>
+
 
     </div>
     <!-- /admin-cuerpo -->
@@ -388,15 +436,237 @@
   <!-- JS navbar -->
   <script src="/static/js/navbar.js"></script>
 
-  <!-- Contador de caracteres (pequeño script inline) -->
+  <!-- JS panel de admin: gestión de avisos -->
   <script>
-    const textarea = document.getElementById('mensajeAviso');
-    const contador = document.getElementById('contadorMensaje');
+  (function initAdminAvisos() {
+
+    // ── Referencias al DOM ────────────────────────────────────────
+    const textarea       = document.getElementById('mensajeAviso');
+    const contador       = document.getElementById('contadorMensaje');
+    const btnEnviar      = document.getElementById('btnEnviarAviso');
+    const btnLimpiar     = document.getElementById('btnLimpiarAviso');
+    const btnVerAvisos   = document.getElementById('btnVerAvisos');
+    const iconVerAvisos  = document.getElementById('iconVerAvisos');
+    const listaPanel     = document.getElementById('avisosListaPanel');
+    const listaContenido = document.getElementById('avisosListaContenido');
+    const listaCargando  = document.getElementById('avisosListaCargando');
+    const modoEdicion    = document.getElementById('avisoModoEdicion');
+    const editandoTitulo = document.getElementById('avisoEditandoTitulo');
+    const btnCancelar    = document.getElementById('btnCancelarEdicion');
+    const feedback       = document.getElementById('avisoFeedback');
+    const tituloInput    = document.getElementById('tituloAviso');
+    const duracionInput  = document.getElementById('duracionAviso');
+
+    let editandoId = null;   // null = modo creación, número = modo edición
+    let listaCargada = false;
+
+    // ── Contador de caracteres ────────────────────────────────────
     if (textarea && contador) {
       textarea.addEventListener('input', () => {
         contador.textContent = `${textarea.value.length} / 300`;
       });
     }
+
+    // ── Tipo de aviso seleccionado ────────────────────────────────
+    function getTipo() {
+      const sel = document.querySelector('input[name="tipoAviso"]:checked');
+      return sel ? sel.value : 'info';
+    }
+
+    function setTipo(tipo) {
+      const radio = document.querySelector(`input[name="tipoAviso"][value="${tipo}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    // ── Feedback visual ───────────────────────────────────────────
+    function mostrarFeedback(msg, tipo) {
+      feedback.textContent = msg;
+      feedback.className = `aviso-feedback aviso-feedback--${tipo}`;
+      feedback.style.display = 'block';
+      setTimeout(() => { feedback.style.display = 'none'; }, 4000);
+    }
+
+    // ── Limpiar formulario ────────────────────────────────────────
+    function limpiarForm() {
+      tituloInput.value    = '';
+      textarea.value       = '';
+      duracionInput.value  = '1';
+      contador.textContent = '0 / 300';
+      setTipo('alerta');
+      editandoId = null;
+      modoEdicion.style.display = 'none';
+      btnEnviar.innerHTML = "<i class='bx bx-send'></i> Enviar aviso";
+    }
+
+    if (btnLimpiar) btnLimpiar.addEventListener('click', limpiarForm);
+    if (btnCancelar) btnCancelar.addEventListener('click', limpiarForm);
+
+    // ── Enviar / Actualizar aviso ─────────────────────────────────
+    if (btnEnviar) {
+      btnEnviar.addEventListener('click', async () => {
+        const titulo      = tituloInput.value.trim();
+        const mensaje     = textarea.value.trim();
+        const tipo        = getTipo();
+        const duracion    = parseInt(duracionInput.value, 10) || 1;
+
+        if (!titulo || !mensaje) {
+          mostrarFeedback('El título y el mensaje son obligatorios.', 'error');
+          return;
+        }
+
+        const url    = editandoId ? `/api/avisos/${editandoId}` : '/api/avisos';
+        const method = editandoId ? 'PUT' : 'POST';
+
+        try {
+          const res  = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ titulo, mensaje, tipo, duracion_dias: duracion })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            mostrarFeedback(data.error || 'Error al guardar el aviso.', 'error');
+            return;
+          }
+
+          mostrarFeedback(
+            editandoId ? 'Aviso actualizado correctamente.' : 'Aviso creado correctamente.',
+            'exito'
+          );
+          limpiarForm();
+          if (listaCargada) cargarLista();   // refresca la lista si está abierta
+
+        } catch {
+          mostrarFeedback('Error de red. Intenta de nuevo.', 'error');
+        }
+      });
+    }
+
+    // ── Panel lista de avisos ─────────────────────────────────────
+    const TIPO_META = {
+      alerta:     { icono: 'bx-error',            color: '#d97706', label: 'Alerta' },
+      info:       { icono: 'bx-info-circle',      color: '#1d4ed8', label: 'Información' },
+      precio:     { icono: 'bx-dollar-circle',    color: '#059669', label: 'Cambio de tarifa' },
+      emergencia: { icono: 'bx-alarm-exclamation',color: '#dc2626', label: 'Emergencia' },
+    };
+
+    async function cargarLista() {
+      listaCargando.style.display = 'flex';
+      listaContenido.innerHTML = '';
+      try {
+        const res  = await fetch('/api/avisos');
+        const data = await res.json();
+
+        listaCargando.style.display = 'none';
+
+        if (!data.avisos || data.avisos.length === 0) {
+          listaContenido.innerHTML = '<p class="avisos-lista__vacia">No hay avisos registrados aún.</p>';
+          return;
+        }
+
+        const tabla = document.createElement('div');
+        tabla.className = 'avisos-tabla';
+
+        data.avisos.forEach(aviso => {
+          const meta = TIPO_META[aviso.tipo] || TIPO_META.info;
+          const estadoClass = aviso.vigente ? 'vigente' : 'expirado';
+          const estadoLabel = aviso.vigente ? 'Vigente' : 'Expirado';
+
+          const fila = document.createElement('div');
+          fila.className = 'avisos-tabla__fila';
+          fila.innerHTML = `
+            <div class="avisos-tabla__tipo" style="color:${meta.color};">
+              <i class='bx ${meta.icono}'></i>
+              <span>${meta.label}</span>
+            </div>
+            <div class="avisos-tabla__info">
+              <p class="avisos-tabla__titulo">${aviso.titulo}</p>
+              <p class="avisos-tabla__meta">${aviso.fecha_creacion} · ${aviso.duracion_dias} día(s)</p>
+            </div>
+            <span class="avisos-tabla__estado avisos-tabla__estado--${estadoClass}">${estadoLabel}</span>
+            <div class="avisos-tabla__acciones">
+              <button class="admin-btn admin-btn--icono admin-btn--secundario btn-editar-aviso"
+                      data-id="${aviso.id_aviso}" title="Editar">
+                <i class='bx bx-edit'></i> Editar
+              </button>
+              <button class="admin-btn admin-btn--icono admin-btn--peligro btn-eliminar-aviso"
+                      data-id="${aviso.id_aviso}" data-titulo="${aviso.titulo}" title="Eliminar">
+                <i class='bx bx-trash'></i> Eliminar
+              </button>
+            </div>
+          `;
+          tabla.appendChild(fila);
+        });
+
+        listaContenido.appendChild(tabla);
+
+        // Eventos editar
+        listaContenido.querySelectorAll('.btn-editar-aviso').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id    = parseInt(btn.dataset.id, 10);
+            const aviso = data.avisos.find(a => a.id_aviso === id);
+            if (!aviso) return;
+
+            editandoId = id;
+            tituloInput.value   = aviso.titulo;
+            textarea.value      = aviso.mensaje;
+            duracionInput.value = aviso.duracion_dias;
+            contador.textContent = `${aviso.mensaje.length} / 300`;
+            setTipo(aviso.tipo);
+
+            editandoTitulo.textContent = aviso.titulo;
+            modoEdicion.style.display  = 'flex';
+            btnEnviar.innerHTML = "<i class='bx bx-save'></i> Actualizar aviso";
+
+            // Scroll al formulario
+            document.querySelector('.aviso-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        });
+
+        // Eventos eliminar
+        listaContenido.querySelectorAll('.btn-eliminar-aviso').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id     = parseInt(btn.dataset.id, 10);
+            const titulo = btn.dataset.titulo;
+            if (!confirm(`¿Eliminar el aviso "${titulo}"? Esta acción no se puede deshacer.`)) return;
+
+            try {
+              const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+              if (res.ok) {
+                mostrarFeedback('Aviso eliminado.', 'exito');
+                cargarLista();
+              } else {
+                const d = await res.json();
+                mostrarFeedback(d.error || 'Error al eliminar.', 'error');
+              }
+            } catch {
+              mostrarFeedback('Error de red.', 'error');
+            }
+          });
+        });
+
+      } catch {
+        listaCargando.style.display = 'none';
+        listaContenido.innerHTML = '<p class="avisos-lista__vacia">Error al cargar los avisos.</p>';
+      }
+    }
+
+    // Toggle del panel
+    if (btnVerAvisos) {
+      btnVerAvisos.addEventListener('click', () => {
+        const abierto = listaPanel.classList.toggle('avisos-lista-panel--abierto');
+        iconVerAvisos.style.transform = abierto ? 'rotate(180deg)' : '';
+        if (abierto && !listaCargada) {
+          listaCargada = true;
+          cargarLista();
+        } else if (abierto) {
+          cargarLista();  // refresca cada vez que se abre
+        }
+      });
+    }
+
+  })();
   </script>
 
 </body>
