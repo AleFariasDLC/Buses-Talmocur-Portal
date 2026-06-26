@@ -1,0 +1,387 @@
+/* ================================================================
+   BOLETA.CSS
+   Estilos para la boleta de compra
+   ================================================================ */
+
+.boleta-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px 64px;
+}
+
+/* ── Hero section ─────────────────────────────────────────────── */
+.boleta-hero {
+  display: grid;
+  gap: 12px;
+  padding: 32px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #0f172a 0%, #1a73e8 100%);
+  color: #fff;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.boleta-hero__kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: .78rem;
+  opacity: .82;
+}
+
+.boleta-hero__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.2;
+}
+
+.boleta-hero__subtitle {
+  margin: 0;
+  opacity: 0.95;
+  font-size: 1rem;
+}
+
+/* ── Container ─────────────────────────────────────────────── */
+.boleta-container {
+  display: grid;
+  gap: 24px;
+}
+
+/* ── Card de boleta (imprimible) ─────────────────────────────── */
+.boleta-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+/* ── Header de boleta ─────────────────────────────────────────── */
+.boleta-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.boleta-logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.boleta-header__info {
+  flex: 1;
+}
+
+.boleta-empresa {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.boleta-subtitulo {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* ── Referencias (número y fecha) ─────────────────────────────── */
+.boleta-ref {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 14px;
+}
+
+.boleta-ref__label {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.boleta-ref__value {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0f172a;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Secciones de boleta ──────────────────────────────────────── */
+.boleta-seccion {
+  margin-bottom: 28px;
+}
+
+.boleta-seccion__titulo {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  color: #0f172a;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* ── Grid de items ────────────────────────────────────────────── */
+.boleta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.boleta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.boleta-item--full {
+  grid-column: 1 / -1;
+}
+
+.boleta-item__label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.boleta-item__value {
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+/* ── Observaciones ───────────────────────────────────────────── */
+.boleta-observaciones {
+  margin: 0;
+  padding: 16px;
+  background: #fef3c7;
+  border-left: 4px solid #fbbf24;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ── Footer de boleta (QR y precio) ──────────────────────────── */
+.boleta-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  margin: 32px 0;
+  padding: 24px 0;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.boleta-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.boleta-qr__label {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.boleta-qr {
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e1;
+}
+
+.boleta-qr canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.boleta-qr__numero {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+}
+
+.boleta-precio-total {
+  text-align: right;
+}
+
+.boleta-precio__label {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.boleta-precio__value {
+  margin: 0;
+  font-size: 2rem;
+  color: #1a73e8;
+  font-weight: 700;
+}
+
+/* ── Divisor ─────────────────────────────────────────────────── */
+.boleta-divisor {
+  margin: 20px 0;
+  border-top: 2px dashed #cbd5e1;
+}
+
+/* ── Pie de boleta ───────────────────────────────────────────── */
+.boleta-pie {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.boleta-pie p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* ── Acciones ────────────────────────────────────────────────── */
+.boleta-acciones {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.boleta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.boleta-btn--print {
+  background: #1a73e8;
+  color: #fff;
+}
+
+.boleta-btn--print:hover {
+  background: #1557b0;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(26, 115, 232, 0.3);
+}
+
+.boleta-btn--home {
+  background: #eef4ff;
+  color: #1a73e8;
+}
+
+.boleta-btn--home:hover {
+  background: #dce9ff;
+  transform: translateY(-2px);
+}
+
+/* ── Print styles ────────────────────────────────────────────── */
+@media print {
+  body,
+  .boleta-page {
+    background: #fff;
+  }
+
+  .boleta-hero,
+  .boleta-acciones {
+    display: none;
+  }
+
+  .boleta-card {
+    box-shadow: none;
+    border: none;
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .boleta-header {
+    border-bottom-color: #0f172a;
+  }
+
+  .boleta-footer {
+    border-color: #0f172a;
+  }
+
+  .boleta-divisor {
+    border-color: #0f172a;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .boleta-page {
+    padding: 24px 16px 48px;
+  }
+
+  .boleta-card {
+    padding: 24px;
+  }
+
+  .boleta-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .boleta-precio-total {
+    text-align: center;
+  }
+
+  .boleta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .boleta-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .boleta-ref {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .boleta-card {
+    padding: 16px;
+  }
+
+  .boleta-hero {
+    padding: 20px;
+  }
+
+  .boleta-precio__value {
+    font-size: 1.6rem;
+  }
+}

@@ -51,7 +51,7 @@
       <h2 class="cp-card__title" id="datos-compra-title">Datos del pasajero</h2>
       <p class="cp-card__text">Ingresa la información requerida para emitir el pasaje.</p>
 
-      <form class="cp-form" action="#" method="post">
+      <form class="cp-form" id="compraForm" action="#" method="post">
         <div class="cp-form__grid">
           <div class="cp-field cp-field--full">
             <label for="nombre">Nombre completo</label>
@@ -100,4 +100,8 @@
     </section>
   </div>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/compra_pasajes.js"></script>
 {% endblock %}

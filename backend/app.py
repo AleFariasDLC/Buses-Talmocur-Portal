@@ -110,6 +110,10 @@ def seleccionar_asientos():
 def compra_pasajes():
     return render_template('compra_pasajes.html')
 
+@app.route('/boleta')
+def boleta():
+    return render_template('boleta.html')
+
 @app.route('/admin')
 def admin_dashboard():
     if 'user_id' not in session or session.get('user_rol') != 'admin':
