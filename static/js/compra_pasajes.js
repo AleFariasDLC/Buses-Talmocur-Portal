@@ -7,10 +7,23 @@
   const form = document.getElementById('compraForm');
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  const busSeleccionado = sessionStorage.getItem('busSeleccionado') || 'A1';
+  const horaSeleccionada = sessionStorage.getItem('horaSeleccionada') || '07:00';
+  const precioSeleccionado = sessionStorage.getItem('precioSeleccionado') || '2800';
+  const asientoSeleccionado = sessionStorage.getItem('asientoSeleccionado') || 'Por definir';
+
+  const resumenItems = document.querySelectorAll('.cp-summary__item strong');
+  if (resumenItems.length >= 5) {
+    resumenItems[0].textContent = 'Curicó → Talca';
+    resumenItems[1].textContent = `Bus ${busSeleccionado}`;
+    resumenItems[2].textContent = horaSeleccionada;
+    resumenItems[3].textContent = asientoSeleccionado === 'Por definir' ? 'Por definir' : `N.º ${asientoSeleccionado}`;
+    resumenItems[4].textContent = `$${parseInt(precioSeleccionado).toLocaleString('es-CL')}`;
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Obtener datos del formulario
     const datosCompra = {
       nombre: document.getElementById('nombre').value.trim(),
       rut: document.getElementById('rut').value.trim(),
@@ -18,30 +31,52 @@
       telefono: document.getElementById('telefono').value.trim(),
       tipoPasaje: document.getElementById('tipo-pasaje').value,
       observaciones: document.getElementById('observaciones').value.trim(),
-      // Datos del resumen (obtenidos del DOM)
-      origen: document.querySelector('.cp-summary__item:nth-child(1) strong')?.textContent || 'Curicó',
-      destino: document.querySelector('.cp-summary__item:nth-child(2) strong')?.textContent || 'Talca',
-      bus: document.querySelector('.cp-summary__item:nth-child(2) strong')?.textContent || 'Bus A1',
-      horaSalida: document.querySelector('.cp-summary__item:nth-child(3) strong')?.textContent || '07:00',
-      horaLlegada: calcularHoraLlegada('07:00', 60),
-      asiento: document.querySelector('.cp-summary__item:nth-child(4) strong')?.textContent || 'Por definir',
-      precio: document.querySelector('.cp-summary__item:nth-child(5) strong')?.textContent?.replace(/\D/g, '') || '2800'
+      origen: 'Curicó',
+      destino: 'Talca',
+      bus: `Bus ${busSeleccionado}`,
+      horaSalida: horaSeleccionada,
+      horaLlegada: calcularHoraLlegada(horaSeleccionada, 60),
+      asiento: asientoSeleccionado === 'Por definir' ? 'Por definir' : `N.º ${asientoSeleccionado}`,
+      precio: precioSeleccionado
     };
 
-    // Validar campos obligatorios
     if (!datosCompra.nombre || !datosCompra.rut || !datosCompra.email) {
       alert('Por favor, completa todos los campos obligatorios.');
       return;
     }
 
-    // Guardar datos en localStorage
-    localStorage.setItem('datosCompra', JSON.stringify(datosCompra));
+    try {
+      const response = await fetch('/api/confirmar-compra', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patente: busSeleccionado,
+          horaSalida: horaSeleccionada,
+          asiento: asientoSeleccionado,
+          nombre: datosCompra.nombre,
+          rut: datosCompra.rut,
+          email: datosCompra.email,
+          telefono: datosCompra.telefono,
+          tipoPasaje: datosCompra.tipoPasaje,
+          observaciones: datosCompra.observaciones,
+          precio: precioSeleccionado,
+          fechaViaje: new Date().toISOString().slice(0, 10),
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || 'No se pudo confirmar la compra');
+      }
 
-    // Mostrar mensaje de éxito y redirigir
-    mostrarMensajeExito();
-    setTimeout(() => {
-      window.location.href = '/boleta';
-    }, 1500);
+      localStorage.setItem('datosCompra', JSON.stringify(datosCompra));
+      localStorage.setItem('compraConfirmada', JSON.stringify(payload));
+      mostrarMensajeExito();
+      setTimeout(() => {
+        window.location.href = '/boleta';
+      }, 1500);
+    } catch (error) {
+      alert(error.message);
+    }
   });
 
   /**

@@ -42,9 +42,13 @@ def client(monkeypatch):
     # `from database import obtener_sesion` (copia la referencia).
     import database
     import db_sqlite
+    import routes
+    import seed_db
 
     monkeypatch.setattr(database, 'obtener_sesion', lambda: TestSession())
     monkeypatch.setattr(db_sqlite, 'obtener_sesion', lambda: TestSession())
+    monkeypatch.setattr(routes, 'obtener_sesion', lambda: TestSession())
+    monkeypatch.setattr(seed_db, 'obtener_sesion', lambda: TestSession())
 
     from app import app
     app.config['TESTING'] = True

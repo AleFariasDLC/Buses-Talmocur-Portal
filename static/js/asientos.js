@@ -8,11 +8,11 @@ const params       = new URLSearchParams(window.location.search);
 const busId        = params.get('bus')    || 'A1';
 const hora         = params.get('hora')   || '07:00';
 const precio       = params.get('precio') || '2800';
-const asientosDisp = parseInt(params.get('asientos') || '20', 10);
-
-const TOTAL_ASIENTOS = 40;   // capacidad total del bus (10 filas × 4 asientos)
+const TOTAL_ASIENTOS = 40;
 const PRECIO_FMT     = `$${parseInt(precio).toLocaleString('es-CL')}`;
 
+let estadoAsientos = [];
+let asientoSeleccionado = null;
 
 /* ── 2. Rellenar topbar e info del mapa ──────────────────────── */
 document.getElementById('top-hora').textContent    = hora;
@@ -29,39 +29,31 @@ function calcularHoraLlegada(horaSalida, minutosViaje) {
   const minLlegada  = String(totalMin % 60).padStart(2, '0');
   return `${horaLlegada}:${minLlegada}`;
 }
-const horaLlegada = calcularHoraLlegada(hora, 60);   // ← cambia 60 por los minutos reales
+const horaLlegada = calcularHoraLlegada(hora, 60);
 document.getElementById('detalle-hora-llegada').textContent = horaLlegada;
 
+async function cargarAsientos() {
+  const contenedor = document.getElementById('filasAsientos');
+  contenedor.innerHTML = '<p class="sa-cargando">Cargando asientos…</p>';
 
-/* ── 3. Generar estado de cada asiento ───────────────────────── */
-/**
- * Construye un array de 40 asientos.
- * Los asientos "disponibles" (asientosDisp) se marcan como libres,
- * el resto como ocupados. Los ocupados se distribuyen aleatoriamente.
- */
-function generarEstadoAsientos(total, disponibles) {
-  const estados = Array(total).fill('ocupado');
+  try {
+    const response = await fetch(`/api/asientos?bus=${encodeURIComponent(busId)}&hora=${encodeURIComponent(hora)}`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'No se pudieron cargar los asientos');
 
-  // Seleccionar índices aleatorios para los asientos libres
-  const indices = [];
-  while (indices.length < disponibles && indices.length < total) {
-    const idx = Math.floor(Math.random() * total);
-    if (!indices.includes(idx)) indices.push(idx);
+    estadoAsientos = Array.from({ length: TOTAL_ASIENTOS }, (_, index) => {
+      const asiento = data.asientos.find(item => item.numero === index + 1);
+      return asiento ? asiento.estado : 'libre';
+    });
+
+    renderizarAsientos();
+    actualizarResumen(null);
+  } catch (error) {
+    contenedor.innerHTML = '<p class="sa-cargando">No se pudieron cargar los asientos.</p>';
+    console.error(error);
   }
-  indices.forEach(i => { estados[i] = 'libre'; });
-
-  return estados;
 }
 
-const estadoAsientos = generarEstadoAsientos(TOTAL_ASIENTOS, asientosDisp);
-let asientoSeleccionado = null;   // número del asiento actualmente seleccionado (1-based)
-
-
-/* ── 4. Renderizar grilla de asientos ────────────────────────── */
-/**
- * Layout del bus: 10 filas, cada fila tiene 4 asientos (A, B | C, D).
- * Columnas en el grid: [num-fila] [A] [B] [pasillo] [C] [D]
- */
 function renderizarAsientos() {
   const contenedor = document.getElementById('filasAsientos');
   contenedor.innerHTML = '';
@@ -71,50 +63,40 @@ function renderizarAsientos() {
     divFila.className = 'sa-fila';
     divFila.setAttribute('role', 'row');
 
-    // Número de fila
     const numFila = document.createElement('span');
     numFila.className = 'sa-fila__num';
     numFila.textContent = fila;
     numFila.setAttribute('aria-hidden', 'true');
     divFila.appendChild(numFila);
 
-    // Columnas: A=0, B=1 | pasillo | C=2, D=3
-    const colsIzq = [0, 1];   // A, B
-    const colsDer = [2, 3];   // C, D
+    const colsIzq = [0, 1];
+    const colsDer = [2, 3];
 
-    // Asientos izquierda (A y B)
     colsIzq.forEach(col => {
       const numAsiento = (fila - 1) * 4 + col + 1;
-      divFila.appendChild(crearAsiento(numAsiento, fila, col));
+      divFila.appendChild(crearAsiento(numAsiento));
     });
 
-    // Pasillo
     const pasillo = document.createElement('div');
     pasillo.className = 'sa-fila__pasillo';
     pasillo.setAttribute('aria-hidden', 'true');
     divFila.appendChild(pasillo);
 
-    // Asientos derecha (C y D)
     colsDer.forEach(col => {
       const numAsiento = (fila - 1) * 4 + col + 1;
-      divFila.appendChild(crearAsiento(numAsiento, fila, col));
+      divFila.appendChild(crearAsiento(numAsiento));
     });
 
     contenedor.appendChild(divFila);
   }
 }
 
-/**
- * Crea un elemento botón que representa un asiento.
- * @param {number} num - Número del asiento (1–40)
- */
 function crearAsiento(num) {
-  const idx    = num - 1;
-  const estado = estadoAsientos[idx];
-
+  const idx = num - 1;
+  const estado = estadoAsientos[idx] || 'libre';
   const btn = document.createElement('button');
-  btn.className    = `sa-asiento sa-asiento--${estado}`;
-  btn.dataset.num  = num;
+  btn.className = `sa-asiento sa-asiento--${estado}`;
+  btn.dataset.num = num;
   btn.dataset.estado = estado;
   btn.setAttribute('role', 'option');
   btn.setAttribute('aria-label', `Asiento ${num} – ${estado}`);
@@ -124,24 +106,18 @@ function crearAsiento(num) {
     btn.setAttribute('aria-disabled', 'true');
   }
 
-  // Número visible dentro del asiento
   const span = document.createElement('span');
-  span.className   = 'sa-asiento__num';
+  span.className = 'sa-asiento__num';
   span.textContent = num;
   btn.appendChild(span);
 
-  // Evento click
   btn.addEventListener('click', () => seleccionarAsiento(btn, num));
-
   return btn;
 }
 
-
-/* ── 5. Lógica de selección ──────────────────────────────────── */
 function seleccionarAsiento(btn, num) {
   if (btn.dataset.estado === 'ocupado') return;
 
-  // Deseleccionar el anterior
   if (asientoSeleccionado !== null) {
     const anterior = document.querySelector(`.sa-asiento[data-num="${asientoSeleccionado}"]`);
     if (anterior) {
@@ -151,65 +127,59 @@ function seleccionarAsiento(btn, num) {
     }
   }
 
-  // Si se hace clic en el mismo asiento → deseleccionar
   if (asientoSeleccionado === num) {
     asientoSeleccionado = null;
     actualizarResumen(null);
     return;
   }
 
-  // Seleccionar el nuevo
   btn.classList.remove('sa-asiento--libre');
   btn.classList.add('sa-asiento--seleccionado');
   btn.setAttribute('aria-label', `Asiento ${num} – seleccionado`);
   asientoSeleccionado = num;
-
   actualizarResumen(num);
+
+  sessionStorage.setItem('asientoSeleccionado', String(num));
+  sessionStorage.setItem('busSeleccionado', busId);
+  sessionStorage.setItem('horaSeleccionada', hora);
+  sessionStorage.setItem('precioSeleccionado', precio);
 }
 
-
-/* ── 6. Actualizar panel de resumen ──────────────────────────── */
 function actualizarResumen(num) {
-  const btnConfirmar    = document.getElementById('btnConfirmar');
-  const resumenVacio    = document.getElementById('resumenVacio');
-  const resumenSel      = document.getElementById('resumenSeleccion');
-  const elNum           = document.getElementById('resumenAsientoNum');
-  const elPrecio        = document.getElementById('resumenPrecio');
-  const elHora          = document.getElementById('resumenHora');
+  const btnConfirmar = document.getElementById('btnConfirmar');
+  const resumenVacio = document.getElementById('resumenVacio');
+  const resumenSel = document.getElementById('resumenSeleccion');
+  const elNum = document.getElementById('resumenAsientoNum');
+  const elPrecio = document.getElementById('resumenPrecio');
+  const elHora = document.getElementById('resumenHora');
 
   if (num === null) {
     resumenVacio.style.display = '';
-    resumenSel.style.display   = 'none';
-    btnConfirmar.disabled      = true;
+    resumenSel.style.display = 'none';
+    btnConfirmar.disabled = true;
     return;
   }
 
   resumenVacio.style.display = 'none';
-  resumenSel.style.display   = '';
-  btnConfirmar.disabled      = false;
+  resumenSel.style.display = '';
+  btnConfirmar.disabled = false;
 
-  elNum.textContent    = `Asiento N.º ${num}`;
+  elNum.textContent = `Asiento N.º ${num}`;
   elPrecio.textContent = PRECIO_FMT;
-  elHora.textContent   = hora;
+  elHora.textContent = hora;
 }
 
-
-/* ── 7. Botón confirmar compra ───────────────────────────────── */
 document.getElementById('btnConfirmar').addEventListener('click', () => {
   if (asientoSeleccionado === null) return;
-
-  // Aquí en el futuro se conectará con la API de reserva
+  sessionStorage.setItem('asientoSeleccionado', String(asientoSeleccionado));
+  sessionStorage.setItem('busSeleccionado', busId);
+  sessionStorage.setItem('horaSeleccionada', hora);
+  sessionStorage.setItem('precioSeleccionado', precio);
   window.location.assign('/compra-pasajes');
-  //alert(`✅ Reserva registrada:\n\nBus: ${busId}\nAsiento: ${asientoSeleccionado}\nHora: ${hora}\nPrecio: ${PRECIO_FMT}\n\n(Funcionalidad de pago próximamente)`);
 });
 
-
-/* ── 8. Iniciar ──────────────────────────────────────────────── */
-renderizarAsientos();
+cargarAsientos();
 actualizarResumen(null);
-
-
-/* ── 9. MAPA LEAFLET + OpenStreetMap ─────────────────────────── */
 /**
  * Inicializa el mapa interactivo con Leaflet.js usando tiles de
  * OpenStreetMap (sin API key). La ruta sigue la Ruta 5 Sur real

@@ -2,7 +2,7 @@
 # Define todas las tablas de la base de datos como clases Python.
 # SQLAlchemy las traduce automáticamente a SQL.
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, Float,
