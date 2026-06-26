@@ -47,7 +47,7 @@ def crear_usuario(nombre: str, email: str, password_hash: str) -> dict:
         dict: El usuario creado (sin el hash de contraseña).
     """
     import uuid
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     db = obtener_sesion()
     try:
@@ -56,7 +56,7 @@ def crear_usuario(nombre: str, email: str, password_hash: str) -> dict:
             nombre=nombre.strip(),
             email=email.strip().lower(),
             password_hash=password_hash,
-            fecha_registro=datetime.utcnow(),
+            fecha_registro=datetime.now(timezone.utc),
             rol="pasajero",
         )
         db.add(nuevo)

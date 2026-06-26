@@ -125,7 +125,7 @@ class Compra(Base):
     id_usuario   = Column(String(36),  ForeignKey("usuario.id"),              nullable=False)
     id_horario   = Column(Integer,     ForeignKey("horario_viaje.id_horario"), nullable=False)
     fecha_viaje  = Column(Date,        nullable=False)    # día concreto en que viajará
-    fecha_compra = Column(DateTime,    default=datetime.utcnow)
+    fecha_compra = Column(DateTime,    default=lambda: datetime.now(timezone.utc))
     monto_total  = Column(Float,       nullable=False)
     metodo_pago  = Column(String(50),  nullable=False)
     estado       = Column(String(20),  nullable=False, default="confirmada")
@@ -190,7 +190,7 @@ class Aviso(Base):
     titulo         = Column(String(200),  nullable=False)
     mensaje        = Column(String(1000), nullable=False)
     activo         = Column(Boolean,      nullable=False, default=True)
-    fecha_creacion = Column(DateTime,     default=datetime.utcnow)
+    fecha_creacion = Column(DateTime,     default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
         return f"<Aviso(titulo={self.titulo}, activo={self.activo})>"
