@@ -61,14 +61,17 @@ backend/
     ├── test_validaciones.py # Tests unitarios de validación
     ├── test_registro.py     # Tests de integración para registro
     ├── test_login.py        # Tests de integración para login
-    └── test_sesion.py       # Tests de sesión, logout y flujos completos
+    ├── test_sesion.py       # Tests de sesión, logout y flujos completos
+    ├── test_perfil.py       # Tests de perfil, context processor y cache
+    ├── test_db_sqlite.py    # Tests unitarios para funciones CRUD
+    └── test_robustez.py     # Tests de robustez y casos borde de la API
 ```
 
 ---
 
 ## Descripción de cada módulo de tests
 
-### `test_validaciones.py` — 29 tests
+### `test_validaciones.py` — 18 tests
 
 Tests **unitarios** para las funciones de validación en `utils.py`. No requieren base de datos ni servidor Flask.
 
@@ -129,6 +132,45 @@ Tests de **integración** para el manejo de sesiones y rutas protegidas.
 
 ---
 
+### `test_perfil.py` — 12 tests
+
+Tests de **integración** para la ruta `/perfil`, el context processor y los headers de cache.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestPerfilAcceso` | `/perfil` accesible con y sin sesión, retorna HTML |
+| `TestContextProcessor` | `inject_usuario()` inyecta datos al navbar, menú de usuario aparece/desaparece según sesión |
+| `TestCacheHeaders` | `/login` y `/registro` tienen `Cache-Control: no-store`, home no lo tiene |
+
+---
+
+### `test_db_sqlite.py` — 24 tests
+
+Tests **unitarios** para las funciones CRUD en `db_sqlite.py`.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestCrearUsuario` | Creación con datos válidos, UUID, normalización de email, strip de nombre, rol por defecto |
+| `TestBuscarPorEmail` | Búsqueda existente/inexistente, insensible a mayúsculas, incluye hash, strip de espacios |
+| `TestBuscarPorId` | Búsqueda por UUID existente/inexistente, datos completos |
+| `TestActualizarUsuario` | Actualización de nombre/email/rol/password, múltiples campos, campos no permitidos ignorados, preservación de campos no modificados |
+
+---
+
+### `test_robustez.py` — 22 tests
+
+Tests de **robustez** para verificar que la API maneja correctamente peticiones malformadas.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestRegistroRobustez` | Sin body, JSON vacío, campos faltantes, campos extra, nombre largo, caracteres Unicode |
+| `TestLoginRobustez` | Sin body, JSON vacío, campos faltantes, campos extra |
+| `TestMetodosNoPermitidos` | GET en endpoints POST retorna 405, POST en endpoint GET retorna 405 |
+| `TestRutasInexistentes` | Rutas inexistentes retornan 404 |
+| `TestApiMeRobustez` | Sesión corrupta (user_id inválido) retorna 404 y limpia sesión, llamadas consecutivas |
+
+---
+
 ## Cómo funciona el aislamiento de tests
 
 Cada test recibe una **base de datos SQLite en memoria** completamente vacía e independiente. Esto se logra mediante la fixture `client` en `conftest.py`:
@@ -182,20 +224,35 @@ class TestMiEndpoint:
         assert response.status_code == 200
 ```
 
+### 3. Test unitario de BD (funciones CRUD)
+
+Si necesitas testear funciones CRUD directamente, usa la fixture `client` para tener la BD aislada:
+
+```python
+import db_sqlite as db
+
+class TestMiFuncionCRUD:
+    def test_ejemplo(self, client):
+        # La fixture `client` configura la BD en memoria
+        resultado = db.crear_usuario('Test', 'test@test.com', 'hash')
+        assert resultado['nombre'] == 'Test'
+```
+
 ---
 
 ## Trazabilidad con requisitos
 
 | Requisito | Tests que lo cubren |
 |:----------|:-------------------|
-| REQ-F04 — Login y control de acceso | `test_login.py`, `test_sesion.py` |
+| REQ-F04 — Login y control de acceso | `test_login.py`, `test_sesion.py`, `test_perfil.py` |
 | REQ-NF01 — Contraseñas cifradas | `test_registro.py::TestRegistroSeguridad` |
 | REQ-NF03 — Interfaz en español | Todos los tests verifican mensajes en español |
+| Robustez y seguridad | `test_robustez.py` |
 
 ---
 
 ## Resultado actual
 
 ```
-============================= 81 passed in ~13s ==============================
+============================= 138 passed in ~18s ==============================
 ```
