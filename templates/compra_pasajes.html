@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Compra de pasaje · Talmocur{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Completa tus datos para comprar tu pasaje en Talmocur." />
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/compra_asientos.css" />
+{% endblock %}
+
+{% block content %}
+<main class="cp-page">
+  <section class="cp-hero" aria-label="Compra de pasaje">
+    <p class="cp-hero__kicker">Compra de pasaje</p>
+    <h1 class="cp-hero__title">Completa tus datos para continuar con la reserva</h1>
+    <p class="cp-note">Esta pantalla es solo un esqueleto de compra. Más adelante podrá conectarse al flujo real de pago.</p>
+  </section>
+
+  <div class="cp-layout">
+    <section class="cp-card" aria-labelledby="resumen-compra-title">
+      <h2 class="cp-card__title" id="resumen-compra-title">Resumen del viaje</h2>
+      <p class="cp-card__text">Información general de la compra antes de ingresar tus datos.</p>
+
+      <div class="cp-summary">
+        <div class="cp-summary__item">
+          <span class="cp-summary__label">Ruta</span>
+          <strong>Curicó → Talca</strong>
+        </div>
+        <div class="cp-summary__item">
+          <span class="cp-summary__label">Servicio</span>
+          <strong>Bus A1</strong>
+        </div>
+        <div class="cp-summary__item">
+          <span class="cp-summary__label">Salida</span>
+          <strong>07:00</strong>
+        </div>
+        <div class="cp-summary__item">
+          <span class="cp-summary__label">Asiento</span>
+          <strong>Por definir</strong>
+        </div>
+        <div class="cp-summary__item">
+          <span class="cp-summary__label">Precio</span>
+          <strong>$2.800</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="cp-card" aria-labelledby="datos-compra-title">
+      <h2 class="cp-card__title" id="datos-compra-title">Datos del pasajero</h2>
+      <p class="cp-card__text">Ingresa la información requerida para emitir el pasaje.</p>
+
+      <form class="cp-form" action="#" method="post">
+        <div class="cp-form__grid">
+          <div class="cp-field cp-field--full">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej. María Pérez" required />
+          </div>
+
+          <div class="cp-field">
+            <label for="rut">RUT</label>
+            <input type="text" id="rut" name="rut" placeholder="12.345.678-9" required />
+          </div>
+
+          <div class="cp-field">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="correo@ejemplo.cl" required />
+          </div>
+
+          <div class="cp-field">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="+56 9 1234 5678" />
+          </div>
+
+          <div class="cp-field">
+            <label for="tipo-pasaje">Tipo de pasaje</label>
+            <select id="tipo-pasaje" name="tipo_pasaje">
+              <option value="adulto">Adulto</option>
+              <option value="estudiante">Estudiante</option>
+              <option value="tercera-edad">Tercera edad</option>
+              <option value="nino">Niño</option>
+            </select>
+          </div>
+
+          <div class="cp-field cp-field--full">
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" name="observaciones" placeholder="Necesidades especiales, equipaje, etc."></textarea>
+          </div>
+        </div>
+
+        <div class="cp-actions">
+          <button type="submit" class="cp-btn cp-btn--primary">
+            <i class='bx bx-credit-card'></i>
+            Continuar con la compra
+          </button>
+          <a href="/seleccionar-asientos" class="cp-btn cp-btn--secondary">Volver</a>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>
+{% endblock %}

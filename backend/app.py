@@ -105,6 +105,11 @@ def perfil():
 def seleccionar_asientos():
     return render_template('seleccionar_asientos.html')
 
+
+@app.route('/compra-pasajes')
+def compra_pasajes():
+    return render_template('compra_pasajes.html')
+
 @app.route('/admin')
 def admin_dashboard():
     if 'user_id' not in session or session.get('user_rol') != 'admin':

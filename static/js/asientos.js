@@ -199,7 +199,8 @@ document.getElementById('btnConfirmar').addEventListener('click', () => {
   if (asientoSeleccionado === null) return;
 
   // Aquí en el futuro se conectará con la API de reserva
-  alert(`✅ Reserva registrada:\n\nBus: ${busId}\nAsiento: ${asientoSeleccionado}\nHora: ${hora}\nPrecio: ${PRECIO_FMT}\n\n(Funcionalidad de pago próximamente)`);
+  window.location.assign('/compra-pasajes');
+  //alert(`✅ Reserva registrada:\n\nBus: ${busId}\nAsiento: ${asientoSeleccionado}\nHora: ${hora}\nPrecio: ${PRECIO_FMT}\n\n(Funcionalidad de pago próximamente)`);
 });
 
 
