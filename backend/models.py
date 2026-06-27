@@ -42,6 +42,7 @@ class Bus(Base):
     patente   = Column(String(10),  primary_key=True)
     capacidad = Column(Integer,     nullable=False)   # determina cuántos Asiento se crean
     modelo    = Column(String(100))                   # opcional
+    chofer    = Column(String(100))                   # nombre del conductor (opcional)
     estado    = Column(String(50),  nullable=False, default="Activo")
     # estado: "Activo" | "En mantención"
 

@@ -41,25 +41,25 @@ engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 
-def _migrar_aviso(conn):
-    """Agrega las columnas nuevas a la tabla 'aviso' si aún no existen.
+def _migrar_tablas(conn):
+    """Agrega columnas nuevas a tablas existentes sin borrar datos.
 
-    Usa ALTER TABLE directo (SQLite lo soporta para añadir columnas).
-    Si la columna ya existe, SQLite lanza 'duplicate column name' y lo
-    capturamos silenciosamente — la función es idempotente.
-    Finalmente hace un UPDATE para que los registros existentes que
-    quedaron con NULL reciban valores por defecto razonables.
+    Usa ALTER TABLE directo. Si la columna ya existe, SQLite lanza
+    'duplicate column name' y lo capturamos silenciosamente.
+    La función es idempotente: se puede llamar N veces sin efectos negativos.
     """
-    columnas_nuevas = [
+    migraciones = [
+        # Tabla aviso
         "ALTER TABLE aviso ADD COLUMN tipo          VARCHAR(20)  NOT NULL DEFAULT 'info'",
         "ALTER TABLE aviso ADD COLUMN duracion_dias INTEGER      NOT NULL DEFAULT 1",
+        # Tabla bus
+        "ALTER TABLE bus   ADD COLUMN chofer        VARCHAR(100)",
     ]
-    for sql in columnas_nuevas:
+    for sql in migraciones:
         try:
             conn.execute(text(sql))
         except Exception:
-            # La columna ya existe — ignorar
-            pass
+            pass   # columna ya existe — ignorar
 
     # Backfill: avisos anteriores sin tipo o duración reciben valores razonables
     conn.execute(text(
@@ -85,7 +85,8 @@ def crear_tablas(quiet=False):
 
     # Migración incremental: agrega columnas nuevas a tablas ya existentes
     with engine.begin() as conn:
-        _migrar_aviso(conn)
+        _migrar_tablas(conn)
+
 
     # Evitar duplicados debido al reloader de Flask (Werkzeug) en modo debug
     is_reloader_parent = (os.environ.get('WERKZEUG_RUN_MAIN') is None and
