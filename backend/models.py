@@ -2,7 +2,7 @@
 # Define todas las tablas de la base de datos como clases Python.
 # SQLAlchemy las traduce automáticamente a SQL.
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, Float,
@@ -42,6 +42,7 @@ class Bus(Base):
     patente   = Column(String(10),  primary_key=True)
     capacidad = Column(Integer,     nullable=False)   # determina cuántos Asiento se crean
     modelo    = Column(String(100))                   # opcional
+    chofer    = Column(String(100))                   # nombre del conductor (opcional)
     estado    = Column(String(50),  nullable=False, default="Activo")
     # estado: "Activo" | "En mantención"
 
@@ -191,8 +192,13 @@ class Aviso(Base):
     id_aviso       = Column(Integer,      primary_key=True, autoincrement=True)
     titulo         = Column(String(200),  nullable=False)
     mensaje        = Column(String(1000), nullable=False)
+    tipo           = Column(String(20),   nullable=False, default="info")
+    # tipo: "alerta" | "info" | "precio" | "emergencia"
+    duracion_dias  = Column(Integer,      nullable=False, default=1)
+    # Días de vigencia desde fecha_creacion. 0 = nunca se muestra.
     activo         = Column(Boolean,      nullable=False, default=True)
     fecha_creacion = Column(DateTime,     default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
-        return f"<Aviso(titulo={self.titulo}, activo={self.activo})>"
+        return f"<Aviso(titulo={self.titulo}, tipo={self.tipo}, activo={self.activo})>"
+

@@ -2,7 +2,7 @@
 # Este archivo crea la conexión a la base de datos y genera las tablas.
 
 import os
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 from models import Base
 
@@ -41,6 +41,36 @@ engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 
+def _migrar_tablas(conn):
+    """Agrega columnas nuevas a tablas existentes sin borrar datos.
+
+    Usa ALTER TABLE directo. Si la columna ya existe, SQLite lanza
+    'duplicate column name' y lo capturamos silenciosamente.
+    La función es idempotente: se puede llamar N veces sin efectos negativos.
+    """
+    migraciones = [
+        # Tabla aviso
+        "ALTER TABLE aviso ADD COLUMN tipo          VARCHAR(20)  NOT NULL DEFAULT 'info'",
+        "ALTER TABLE aviso ADD COLUMN duracion_dias INTEGER      NOT NULL DEFAULT 1",
+        # Tabla bus
+        "ALTER TABLE bus   ADD COLUMN chofer        VARCHAR(100)",
+    ]
+    for sql in migraciones:
+        try:
+            conn.execute(text(sql))
+        except Exception:
+            pass   # columna ya existe — ignorar
+
+    # Backfill: avisos anteriores sin tipo o duración reciben valores razonables
+    conn.execute(text(
+        "UPDATE aviso SET tipo = 'info' WHERE tipo IS NULL OR tipo = ''"
+    ))
+    conn.execute(text(
+        "UPDATE aviso SET duracion_dias = 1 WHERE duracion_dias IS NULL"
+    ))
+    conn.commit()
+
+
 def crear_tablas(quiet=False):
     """Crea todas las tablas en la base de datos si no existen.
 
@@ -53,8 +83,13 @@ def crear_tablas(quiet=False):
 
     Base.metadata.create_all(engine)
 
+    # Migración incremental: agrega columnas nuevas a tablas ya existentes
+    with engine.begin() as conn:
+        _migrar_tablas(conn)
+
+
     # Evitar duplicados debido al reloader de Flask (Werkzeug) en modo debug
-    is_reloader_parent = (os.environ.get('WERKZEUG_RUN_MAIN') is None and 
+    is_reloader_parent = (os.environ.get('WERKZEUG_RUN_MAIN') is None and
                           os.environ.get('FLASK_USE_RELOADER') == 'true')
 
     if not is_reloader_parent:

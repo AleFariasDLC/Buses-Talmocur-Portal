@@ -348,5 +348,9 @@
 
 
 {% block extra_js %}
+  {% if usuario_logueado %}
+  <!-- Contenedor de toasts de avisos (solo usuarios logueados) -->
+  <div id="avisoToastContenedor" aria-live="polite" aria-atomic="true"></div>
+  {% endif %}
   <script src="/static/js/home.js"></script>
-{% endblock %}
+{% endblock %}

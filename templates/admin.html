@@ -84,7 +84,9 @@
               <i class='bx bx-bus'></i>
               Flota de buses
             </h2>
-            <p class="admin-seccion__subtitulo">{{ total_buses }} buses registrados en el sistema</p>
+            <p class="admin-seccion__subtitulo" id="subtituloBuses">
+              {{ total_buses }} buses registrados en el sistema
+            </p>
           </div>
           <button class="admin-btn admin-btn--primario" id="btnAgregarBus">
             <i class='bx bx-plus'></i>
@@ -92,190 +94,142 @@
           </button>
         </div>
 
-        <!-- Lista de buses -->
-        <div class="buses-lista">
-
-          <!-- ── Tarjeta Bus 1 ── -->
-          <div class="bus-card">
-
-            <!-- Cabecera de la tarjeta -->
-            <div class="bus-card__cabecera">
-              <div class="bus-card__id-wrap">
-                <span class="bus-card__id">Bus #01</span>
-                <span class="bus-card__estado bus-card__estado--activo">
-                  <i class='bx bx-radio-circle-marked'></i>
-                  En recorrido
-                </span>
-              </div>
-              <div class="bus-card__acciones">
-                <button class="admin-btn admin-btn--icono admin-btn--secundario" title="Editar bus">
-                  <i class='bx bx-edit'></i>
-                  Editar
-                </button>
-                <button class="admin-btn admin-btn--icono admin-btn--peligro" title="Eliminar bus">
-                  <i class='bx bx-trash'></i>
-                  Eliminar
-                </button>
-              </div>
-            </div>
-
-            <!-- Info del bus -->
-            <div class="bus-card__info">
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-user'></i>
-                  Chofer
-                </span>
-                <span class="bus-card__dato-valor">Carlos Muñoz</span>
-              </div>
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-chair'></i>
-                  Asientos
-                </span>
-                <span class="bus-card__dato-valor">42 asientos</span>
-              </div>
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-hash'></i>
-                  Patente
-                </span>
-                <span class="bus-card__dato-valor">BJKP 42</span>
-              </div>
-            </div>
-
-            <!-- Botón recorridos -->
-            <div class="bus-card__pie">
-              <button class="admin-btn admin-btn--ghost admin-btn--recorridos">
-                <i class='bx bx-map-alt'></i>
-                Ver recorridos y horarios
-                <i class='bx bx-chevron-down'></i>
-              </button>
-            </div>
-
+        <!-- Lista de buses (dinámica) -->
+        <div class="buses-lista" id="busesLista">
+          <div class="buses-cargando" id="busesCargando">
+            <i class='bx bx-loader-alt bx-spin'></i>
+            Cargando buses…
           </div>
-
-
-          <!-- ── Tarjeta Bus 2 ── -->
-          <div class="bus-card">
-
-            <div class="bus-card__cabecera">
-              <div class="bus-card__id-wrap">
-                <span class="bus-card__id">Bus #02</span>
-                <span class="bus-card__estado bus-card__estado--inactivo">
-                  <i class='bx bx-radio-circle'></i>
-                  Fuera de recorrido
-                </span>
-              </div>
-              <div class="bus-card__acciones">
-                <button class="admin-btn admin-btn--icono admin-btn--secundario" title="Editar bus">
-                  <i class='bx bx-edit'></i>
-                  Editar
-                </button>
-                <button class="admin-btn admin-btn--icono admin-btn--peligro" title="Eliminar bus">
-                  <i class='bx bx-trash'></i>
-                  Eliminar
-                </button>
-              </div>
-            </div>
-
-            <div class="bus-card__info">
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-user'></i>
-                  Chofer
-                </span>
-                <span class="bus-card__dato-valor">Roberto Herrera</span>
-              </div>
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-chair'></i>
-                  Asientos
-                </span>
-                <span class="bus-card__dato-valor">38 asientos</span>
-              </div>
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-hash'></i>
-                  Patente
-                </span>
-                <span class="bus-card__dato-valor">CDLM 19</span>
-              </div>
-            </div>
-
-            <div class="bus-card__pie">
-              <button class="admin-btn admin-btn--ghost admin-btn--recorridos">
-                <i class='bx bx-map-alt'></i>
-                Ver recorridos y horarios
-                <i class='bx bx-chevron-down'></i>
-              </button>
-            </div>
-
-          </div>
-
-
-          <!-- ── Tarjeta Bus 3 ── -->
-          <div class="bus-card">
-
-            <div class="bus-card__cabecera">
-              <div class="bus-card__id-wrap">
-                <span class="bus-card__id">Bus #03</span>
-                <span class="bus-card__estado bus-card__estado--activo">
-                  <i class='bx bx-radio-circle-marked'></i>
-                  En recorrido
-                </span>
-              </div>
-              <div class="bus-card__acciones">
-                <button class="admin-btn admin-btn--icono admin-btn--secundario" title="Editar bus">
-                  <i class='bx bx-edit'></i>
-                  Editar
-                </button>
-                <button class="admin-btn admin-btn--icono admin-btn--peligro" title="Eliminar bus">
-                  <i class='bx bx-trash'></i>
-                  Eliminar
-                </button>
-              </div>
-            </div>
-
-            <div class="bus-card__info">
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-user'></i>
-                  Chofer
-                </span>
-                <span class="bus-card__dato-valor">Andrés Soto</span>
-              </div>
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-chair'></i>
-                  Asientos
-                </span>
-                <span class="bus-card__dato-valor">45 asientos</span>
-              </div>
-              <div class="bus-card__dato">
-                <span class="bus-card__dato-etiqueta">
-                  <i class='bx bx-hash'></i>
-                  Patente
-                </span>
-                <span class="bus-card__dato-valor">FRWT 88</span>
-              </div>
-            </div>
-
-            <div class="bus-card__pie">
-              <button class="admin-btn admin-btn--ghost admin-btn--recorridos">
-                <i class='bx bx-map-alt'></i>
-                Ver recorridos y horarios
-                <i class='bx bx-chevron-down'></i>
-              </button>
-            </div>
-
-          </div>
-
         </div>
         <!-- /buses-lista -->
 
       </section>
 
+
+      <!-- ============================================================
+           MODAL — CREAR / EDITAR BUS
+           ============================================================ -->
+      <div class="modal-overlay" id="modalBusOverlay">
+        <div class="modal-card" id="modalBus" role="dialog" aria-modal="true"
+             aria-labelledby="modalBusTitulo">
+
+          <div class="modal-card__cabecera">
+            <h3 class="modal-card__titulo" id="modalBusTitulo">Agregar bus</h3>
+            <button class="modal-card__cerrar" id="modalBusCerrarBtn" aria-label="Cerrar">
+              <i class='bx bx-x'></i>
+            </button>
+          </div>
+
+          <div class="modal-card__cuerpo">
+
+            <div class="modal-form__grupo">
+              <label class="modal-form__label" for="busPatente">Patente</label>
+              <input class="modal-form__input" type="text" id="busPatente"
+                     placeholder="Ej: CGKR-15" maxlength="10" />
+            </div>
+
+            <div class="modal-form__grupo">
+              <label class="modal-form__label" for="busChofer">Chofer</label>
+              <input class="modal-form__input" type="text" id="busChofer"
+                     placeholder="Nombre del conductor" maxlength="100" />
+            </div>
+
+            <div class="modal-form__grupo">
+              <label class="modal-form__label" for="busModelo">Modelo</label>
+              <input class="modal-form__input" type="text" id="busModelo"
+                     placeholder="Ej: Mercedes O500" maxlength="100" />
+            </div>
+
+            <div class="modal-form__fila">
+              <div class="modal-form__grupo">
+                <label class="modal-form__label" for="busCapacidad">Capacidad (asientos)</label>
+                <input class="modal-form__input" type="number" id="busCapacidad"
+                       min="1" max="200" value="40" />
+              </div>
+              <div class="modal-form__grupo">
+                <label class="modal-form__label" for="busEstado">Estado</label>
+                <select class="modal-form__select" id="busEstado">
+                  <option value="Activo">Activo</option>
+                  <option value="En mantención">En mantención</option>
+                </select>
+              </div>
+            </div>
+
+            <p class="modal-form__nota" id="busNotaCapacidad" style="display:none;">
+              <i class='bx bx-info-circle'></i>
+              La capacidad y la patente no se pueden modificar después de crear el bus.
+            </p>
+
+          </div>
+
+          <div class="modal-card__pie">
+            <button class="admin-btn admin-btn--ghost" id="btnModalBusCancelar">Cancelar</button>
+            <button class="admin-btn admin-btn--primario" id="btnModalBusGuardar">
+              <i class='bx bx-save'></i> Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================================================
+           MODAL — AGREGAR HORARIO
+           ============================================================ -->
+      <div class="modal-overlay" id="modalHorarioOverlay">
+        <div class="modal-card" id="modalHorario" role="dialog" aria-modal="true"
+             aria-labelledby="modalHorarioTitulo">
+
+          <div class="modal-card__cabecera">
+            <h3 class="modal-card__titulo" id="modalHorarioTitulo">Agregar horario</h3>
+            <button class="modal-card__cerrar" id="modalHorarioCerrarBtn" aria-label="Cerrar">
+              <i class='bx bx-x'></i>
+            </button>
+          </div>
+
+          <div class="modal-card__cuerpo">
+
+            <div class="modal-form__grupo">
+              <label class="modal-form__label" for="horarioRecorrido">Recorrido</label>
+              <select class="modal-form__select" id="horarioRecorrido"></select>
+            </div>
+
+            <div class="modal-form__fila">
+              <div class="modal-form__grupo">
+                <label class="modal-form__label" for="horarioSalida">Hora de salida</label>
+                <input class="modal-form__input" type="text" id="horarioSalida"
+                       placeholder="Ej: 14:30 o 20:00" maxlength="5"
+                       pattern="^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+                       title="Formato de 24 horas (HH:MM), ej: 08:30 o 20:00" />
+              </div>
+              <div class="modal-form__grupo">
+                <label class="modal-form__label" for="horarioPrecio">Precio base ($)</label>
+                <input class="modal-form__input" type="number" id="horarioPrecio"
+                       min="0" value="3500" />
+              </div>
+            </div>
+
+            <div class="modal-form__grupo modal-form__grupo--horizontal">
+              <input class="modal-form__checkbox" type="checkbox" id="horarioActivo" checked />
+              <label class="modal-form__label modal-form__label--inline" for="horarioActivo">
+                Horario activo (visible para usuarios)
+              </label>
+            </div>
+
+            <p class="modal-form__nota">
+              <i class='bx bx-info-circle'></i>
+              La hora de llegada se calcula automáticamente (+45 min).
+            </p>
+
+          </div>
+
+          <div class="modal-card__pie">
+            <button class="admin-btn admin-btn--ghost" id="btnModalHorarioCancelar">Cancelar</button>
+            <button class="admin-btn admin-btn--primario" id="btnModalHorarioGuardar">
+              <i class='bx bx-save'></i> Guardar horario
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- ===========================================================
            SECCIÓN 2: ENVIAR AVISO A USUARIOS
@@ -288,11 +242,35 @@
               <i class='bx bx-broadcast'></i>
               Avisos a usuarios
             </h2>
-            <p class="admin-seccion__subtitulo">Envía una alerta o comunicado a todos los usuarios de la plataforma.</p>
+            <p class="admin-seccion__subtitulo">Crea y gestiona comunicados que se muestran a todos los usuarios al iniciar sesión.</p>
+          </div>
+          <button class="admin-btn admin-btn--ghost" type="button" id="btnVerAvisos">
+            <i class='bx bx-list-ul'></i>
+            Ver avisos
+            <i class='bx bx-chevron-down' id="iconVerAvisos"></i>
+          </button>
+        </div>
+
+        <!-- ── Lista de avisos (desplegable) ── -->
+        <div class="avisos-lista-panel" id="avisosListaPanel">
+          <div class="avisos-lista-panel__interior">
+            <p class="avisos-lista__cargando" id="avisosListaCargando">
+              <i class='bx bx-loader-alt bx-spin'></i> Cargando avisos…
+            </p>
+            <div id="avisosListaContenido"></div>
           </div>
         </div>
 
         <div class="aviso-form-card">
+
+          <!-- Indicador modo edición -->
+          <div class="aviso-modo-edicion" id="avisoModoEdicion" style="display:none;">
+            <i class='bx bx-edit'></i>
+            Editando aviso — <span id="avisoEditandoTitulo"></span>
+            <button class="aviso-modo-edicion__cancelar" type="button" id="btnCancelarEdicion">
+              <i class='bx bx-x'></i> Cancelar
+            </button>
+          </div>
 
           <!-- Tipo de aviso -->
           <div class="aviso-form__grupo">
@@ -356,9 +334,29 @@
             ></textarea>
           </div>
 
+          <!-- Duración -->
+          <div class="aviso-form__grupo">
+            <label class="aviso-form__label" for="duracionAviso">
+              Duración del aviso
+              <span class="aviso-form__hint">días desde hoy que estará visible</span>
+            </label>
+            <div class="aviso-form__duracion-wrap">
+              <input
+                type="number"
+                id="duracionAviso"
+                class="aviso-form__input aviso-form__input--duracion"
+                placeholder="1"
+                min="1"
+                max="365"
+                value="1"
+              />
+              <span class="aviso-form__duracion-label">días</span>
+            </div>
+          </div>
+
           <!-- Acciones -->
           <div class="aviso-form__acciones">
-            <button class="admin-btn admin-btn--ghost" type="button">
+            <button class="admin-btn admin-btn--ghost" type="button" id="btnLimpiarAviso">
               <i class='bx bx-trash'></i>
               Limpiar
             </button>
@@ -368,10 +366,14 @@
             </button>
           </div>
 
+          <!-- Feedback -->
+          <div class="aviso-feedback" id="avisoFeedback" style="display:none;"></div>
+
         </div>
         <!-- /aviso-form-card -->
 
       </section>
+
 
     </div>
     <!-- /admin-cuerpo -->
@@ -381,22 +383,574 @@
 
   <!-- Footer -->
   <footer class="footer">
-    © 2025 Talmocur. Panel de administración interno.
+    © 2026 Talmocur. Panel de administración interno.
   </footer>
 
 
   <!-- JS navbar -->
   <script src="/static/js/navbar.js"></script>
 
-  <!-- Contador de caracteres (pequeño script inline) -->
+  <!-- JS panel de admin: gestión de avisos -->
   <script>
-    const textarea = document.getElementById('mensajeAviso');
-    const contador = document.getElementById('contadorMensaje');
+  (function initAdminAvisos() {
+
+    // ── Referencias al DOM ────────────────────────────────────────
+    const textarea       = document.getElementById('mensajeAviso');
+    const contador       = document.getElementById('contadorMensaje');
+    const btnEnviar      = document.getElementById('btnEnviarAviso');
+    const btnLimpiar     = document.getElementById('btnLimpiarAviso');
+    const btnVerAvisos   = document.getElementById('btnVerAvisos');
+    const iconVerAvisos  = document.getElementById('iconVerAvisos');
+    const listaPanel     = document.getElementById('avisosListaPanel');
+    const listaContenido = document.getElementById('avisosListaContenido');
+    const listaCargando  = document.getElementById('avisosListaCargando');
+    const modoEdicion    = document.getElementById('avisoModoEdicion');
+    const editandoTitulo = document.getElementById('avisoEditandoTitulo');
+    const btnCancelar    = document.getElementById('btnCancelarEdicion');
+    const feedback       = document.getElementById('avisoFeedback');
+    const tituloInput    = document.getElementById('tituloAviso');
+    const duracionInput  = document.getElementById('duracionAviso');
+
+    let editandoId = null;   // null = modo creación, número = modo edición
+    let listaCargada = false;
+
+    // ── Contador de caracteres ────────────────────────────────────
     if (textarea && contador) {
       textarea.addEventListener('input', () => {
         contador.textContent = `${textarea.value.length} / 300`;
       });
     }
+
+    // ── Tipo de aviso seleccionado ────────────────────────────────
+    function getTipo() {
+      const sel = document.querySelector('input[name="tipoAviso"]:checked');
+      return sel ? sel.value : 'info';
+    }
+
+    function setTipo(tipo) {
+      const radio = document.querySelector(`input[name="tipoAviso"][value="${tipo}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    // ── Feedback visual ───────────────────────────────────────────
+    function mostrarFeedback(msg, tipo) {
+      feedback.textContent = msg;
+      feedback.className = `aviso-feedback aviso-feedback--${tipo}`;
+      feedback.style.display = 'block';
+      setTimeout(() => { feedback.style.display = 'none'; }, 4000);
+    }
+
+    // ── Limpiar formulario ────────────────────────────────────────
+    function limpiarForm() {
+      tituloInput.value    = '';
+      textarea.value       = '';
+      duracionInput.value  = '1';
+      contador.textContent = '0 / 300';
+      setTipo('alerta');
+      editandoId = null;
+      modoEdicion.style.display = 'none';
+      btnEnviar.innerHTML = "<i class='bx bx-send'></i> Enviar aviso";
+    }
+
+    if (btnLimpiar) btnLimpiar.addEventListener('click', limpiarForm);
+    if (btnCancelar) btnCancelar.addEventListener('click', limpiarForm);
+
+    // ── Enviar / Actualizar aviso ─────────────────────────────────
+    if (btnEnviar) {
+      btnEnviar.addEventListener('click', async () => {
+        const titulo      = tituloInput.value.trim();
+        const mensaje     = textarea.value.trim();
+        const tipo        = getTipo();
+        const duracion    = parseInt(duracionInput.value, 10) || 1;
+
+        if (!titulo || !mensaje) {
+          mostrarFeedback('El título y el mensaje son obligatorios.', 'error');
+          return;
+        }
+
+        const url    = editandoId ? `/api/avisos/${editandoId}` : '/api/avisos';
+        const method = editandoId ? 'PUT' : 'POST';
+
+        try {
+          const res  = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ titulo, mensaje, tipo, duracion_dias: duracion })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            mostrarFeedback(data.error || 'Error al guardar el aviso.', 'error');
+            return;
+          }
+
+          mostrarFeedback(
+            editandoId ? 'Aviso actualizado correctamente.' : 'Aviso creado correctamente.',
+            'exito'
+          );
+          limpiarForm();
+          if (listaCargada) cargarLista();   // refresca la lista si está abierta
+
+        } catch {
+          mostrarFeedback('Error de red. Intenta de nuevo.', 'error');
+        }
+      });
+    }
+
+    // ── Panel lista de avisos ─────────────────────────────────────
+    const TIPO_META = {
+      alerta:     { icono: 'bx-error',            color: '#d97706', label: 'Alerta' },
+      info:       { icono: 'bx-info-circle',      color: '#1d4ed8', label: 'Información' },
+      precio:     { icono: 'bx-dollar-circle',    color: '#059669', label: 'Cambio de tarifa' },
+      emergencia: { icono: 'bx-alarm-exclamation',color: '#dc2626', label: 'Emergencia' },
+    };
+
+    async function cargarLista() {
+      listaCargando.style.display = 'flex';
+      listaContenido.innerHTML = '';
+      try {
+        const res  = await fetch('/api/avisos');
+        const data = await res.json();
+
+        listaCargando.style.display = 'none';
+
+        if (!data.avisos || data.avisos.length === 0) {
+          listaContenido.innerHTML = '<p class="avisos-lista__vacia">No hay avisos registrados aún.</p>';
+          return;
+        }
+
+        const tabla = document.createElement('div');
+        tabla.className = 'avisos-tabla';
+
+        data.avisos.forEach(aviso => {
+          const meta = TIPO_META[aviso.tipo] || TIPO_META.info;
+          const estadoClass = aviso.vigente ? 'vigente' : 'expirado';
+          const estadoLabel = aviso.vigente ? 'Vigente' : 'Expirado';
+
+          const fila = document.createElement('div');
+          fila.className = 'avisos-tabla__fila';
+          fila.innerHTML = `
+            <div class="avisos-tabla__tipo" style="color:${meta.color};">
+              <i class='bx ${meta.icono}'></i>
+              <span>${meta.label}</span>
+            </div>
+            <div class="avisos-tabla__info">
+              <p class="avisos-tabla__titulo">${aviso.titulo}</p>
+              <p class="avisos-tabla__meta">${aviso.fecha_creacion} · ${aviso.duracion_dias} día(s)</p>
+            </div>
+            <span class="avisos-tabla__estado avisos-tabla__estado--${estadoClass}">${estadoLabel}</span>
+            <div class="avisos-tabla__acciones">
+              <button class="admin-btn admin-btn--icono admin-btn--secundario btn-editar-aviso"
+                      data-id="${aviso.id_aviso}" title="Editar">
+                <i class='bx bx-edit'></i> Editar
+              </button>
+              <button class="admin-btn admin-btn--icono admin-btn--peligro btn-eliminar-aviso"
+                      data-id="${aviso.id_aviso}" data-titulo="${aviso.titulo}" title="Eliminar">
+                <i class='bx bx-trash'></i> Eliminar
+              </button>
+            </div>
+          `;
+          tabla.appendChild(fila);
+        });
+
+        listaContenido.appendChild(tabla);
+
+        // Eventos editar
+        listaContenido.querySelectorAll('.btn-editar-aviso').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id    = parseInt(btn.dataset.id, 10);
+            const aviso = data.avisos.find(a => a.id_aviso === id);
+            if (!aviso) return;
+
+            editandoId = id;
+            tituloInput.value   = aviso.titulo;
+            textarea.value      = aviso.mensaje;
+            duracionInput.value = aviso.duracion_dias;
+            contador.textContent = `${aviso.mensaje.length} / 300`;
+            setTipo(aviso.tipo);
+
+            editandoTitulo.textContent = aviso.titulo;
+            modoEdicion.style.display  = 'flex';
+            btnEnviar.innerHTML = "<i class='bx bx-save'></i> Actualizar aviso";
+
+            // Scroll al formulario
+            document.querySelector('.aviso-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        });
+
+        // Eventos eliminar
+        listaContenido.querySelectorAll('.btn-eliminar-aviso').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id     = parseInt(btn.dataset.id, 10);
+            const titulo = btn.dataset.titulo;
+            if (!confirm(`¿Eliminar el aviso "${titulo}"? Esta acción no se puede deshacer.`)) return;
+
+            try {
+              const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+              if (res.ok) {
+                mostrarFeedback('Aviso eliminado.', 'exito');
+                cargarLista();
+              } else {
+                const d = await res.json();
+                mostrarFeedback(d.error || 'Error al eliminar.', 'error');
+              }
+            } catch {
+              mostrarFeedback('Error de red.', 'error');
+            }
+          });
+        });
+
+      } catch {
+        listaCargando.style.display = 'none';
+        listaContenido.innerHTML = '<p class="avisos-lista__vacia">Error al cargar los avisos.</p>';
+      }
+    }
+
+    // Toggle del panel
+    if (btnVerAvisos) {
+      btnVerAvisos.addEventListener('click', () => {
+        const abierto = listaPanel.classList.toggle('avisos-lista-panel--abierto');
+        iconVerAvisos.style.transform = abierto ? 'rotate(180deg)' : '';
+        if (abierto && !listaCargada) {
+          listaCargada = true;
+          cargarLista();
+        } else if (abierto) {
+          cargarLista();  // refresca cada vez que se abre
+        }
+      });
+    }
+
+  })();
+  </script>
+
+  <!-- JS gestión de flota de buses -->
+  <script>
+  (function initGestionBuses() {
+
+    // ── Estado ────────────────────────────────────────────────────
+    let busesData      = [];
+    let recorridos     = [];
+    let modoModal      = 'crear';   // 'crear' | 'editar'
+    let patenteEditar  = null;
+    let patenteHorario = null;
+
+    // ── Referencias DOM ───────────────────────────────────────────
+    const lista          = document.getElementById('busesLista');
+    const subtitulo      = document.getElementById('subtituloBuses');
+    const btnAgregar     = document.getElementById('btnAgregarBus');
+
+    // Modal Bus
+    const overlayBus     = document.getElementById('modalBusOverlay');
+    const tituloBus      = document.getElementById('modalBusTitulo');
+    const inpPatente     = document.getElementById('busPatente');
+    const inpChofer      = document.getElementById('busChofer');
+    const inpModelo      = document.getElementById('busModelo');
+    const inpCapacidad   = document.getElementById('busCapacidad');
+    const selEstado      = document.getElementById('busEstado');
+    const notaCap        = document.getElementById('busNotaCapacidad');
+    const btnGuardarBus  = document.getElementById('btnModalBusGuardar');
+    const btnCancelarBus = document.getElementById('btnModalBusCancelar');
+    const btnCerrarBus   = document.getElementById('modalBusCerrarBtn');
+
+    // Modal Horario
+    const overlayHor     = document.getElementById('modalHorarioOverlay');
+    const selRecorrido   = document.getElementById('horarioRecorrido');
+    const inpSalida      = document.getElementById('horarioSalida');
+    const inpPrecio      = document.getElementById('horarioPrecio');
+    const chkActivo      = document.getElementById('horarioActivo');
+    const btnGuardarHor  = document.getElementById('btnModalHorarioGuardar');
+    const btnCancelarHor = document.getElementById('btnModalHorarioCancelar');
+    const btnCerrarHor   = document.getElementById('modalHorarioCerrarBtn');
+
+    // ── Inicialización ────────────────────────────────────────────
+    cargarBuses();
+    cargarRecorridos();
+
+    // ── CARGAR BUSES ──────────────────────────────────────────────
+    async function cargarBuses() {
+      lista.innerHTML = '<div class="buses-cargando"><i class="bx bx-loader-alt bx-spin"></i> Cargando buses…</div>';
+      try {
+        const res  = await fetch('/api/buses');
+        const data = await res.json();
+        busesData  = data.buses || [];
+
+        const n = busesData.length;
+        subtitulo.textContent = `${n} bus${n !== 1 ? 'es' : ''} registrado${n !== 1 ? 's' : ''} en el sistema`;
+
+        if (n === 0) {
+          lista.innerHTML = '<p class="buses-vacio">No hay buses registrados. Agrega el primero.</p>';
+          return;
+        }
+        lista.innerHTML = busesData.map(renderCard).join('');
+      } catch {
+        lista.innerHTML = '<p class="buses-vacio">Error al cargar los buses.</p>';
+      }
+    }
+
+    // ── RENDER TARJETA BUS ────────────────────────────────────────
+    function renderCard(bus) {
+      const activo = bus.estado === 'Activo';
+      return `
+        <div class="bus-card" id="buscard-${bus.patente}">
+          <div class="bus-card__cabecera">
+            <div class="bus-card__id-wrap">
+              <span class="bus-card__id">${bus.patente}</span>
+              <span class="bus-card__estado bus-card__estado--${activo ? 'activo' : 'inactivo'}">
+                <i class='bx ${activo ? 'bx-radio-circle-marked' : 'bx-radio-circle'}'></i>
+                ${activo ? 'En servicio' : 'En mantención'}
+              </span>
+            </div>
+            <div class="bus-card__acciones">
+              <button class="admin-btn admin-btn--icono admin-btn--secundario"
+                      onclick="window.__editarBus('${bus.patente}')">
+                <i class='bx bx-edit'></i> Editar
+              </button>
+              <button class="admin-btn admin-btn--icono admin-btn--peligro"
+                      onclick="window.__eliminarBus('${bus.patente}')">
+                <i class='bx bx-trash'></i> Eliminar
+              </button>
+            </div>
+          </div>
+
+          <div class="bus-card__info">
+            <div class="bus-card__dato">
+              <span class="bus-card__dato-etiqueta"><i class='bx bx-user'></i> Chofer</span>
+              <span class="bus-card__dato-valor">${bus.chofer || '—'}</span>
+            </div>
+            <div class="bus-card__dato">
+              <span class="bus-card__dato-etiqueta"><i class='bx bx-chair'></i> Asientos</span>
+              <span class="bus-card__dato-valor">${bus.capacidad} asientos</span>
+            </div>
+            <div class="bus-card__dato">
+              <span class="bus-card__dato-etiqueta"><i class='bx bxs-car-mechanic'></i> Modelo</span>
+              <span class="bus-card__dato-valor">${bus.modelo || '—'}</span>
+            </div>
+          </div>
+
+          <div class="bus-card__pie">
+            <button class="admin-btn admin-btn--ghost admin-btn--recorridos"
+                    onclick="window.__toggleHorarios('${bus.patente}', this)">
+              <i class='bx bx-map-alt'></i>
+              Ver recorridos y horarios
+              <span class="bus-card__hor-count">(${bus.total_horarios})</span>
+              <i class='bx bx-chevron-down' id="hor-icon-${bus.patente}"></i>
+            </button>
+          </div>
+
+          <!-- Panel horarios -->
+          <div class="bus-horarios-panel" id="horpanel-${bus.patente}">
+            <div class="bus-horarios-panel__interior">
+              <div class="bus-horarios-panel__cabecera">
+                <span class="bus-horarios-panel__titulo">
+                  <i class='bx bx-time'></i> Horarios asignados
+                </span>
+                <button class="admin-btn admin-btn--icono admin-btn--primario"
+                        onclick="window.__abrirModalHorario('${bus.patente}')">
+                  <i class='bx bx-plus'></i> Agregar horario
+                </button>
+              </div>
+              <div id="hortabla-${bus.patente}">
+                ${renderHorariosTabla(bus.horarios, bus.patente)}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderHorariosTabla(horarios, patente) {
+      if (!horarios || horarios.length === 0) {
+        return '<p class="horarios-vacio">Sin horarios asignados. Agrega uno arriba.</p>';
+      }
+      const sorted = [...horarios].sort((a, b) => a.hora_salida.localeCompare(b.hora_salida));
+      return `
+        <div class="horarios-tabla">
+          <div class="horarios-tabla__header">
+            <span>Recorrido</span><span>Salida</span><span>Llegada</span>
+            <span>Precio</span><span>Estado</span><span></span>
+          </div>
+          ${sorted.map(h => `
+            <div class="horarios-tabla__fila">
+              <span class="horarios-tabla__recorrido">${h.recorrido}</span>
+              <span class="horarios-tabla__hora"><i class='bx bx-time-five'></i> ${h.hora_salida}</span>
+              <span class="horarios-tabla__hora">${h.hora_llegada}</span>
+              <span class="horarios-tabla__precio">$${Number(h.precio_base).toLocaleString('es-CL')}</span>
+              <span class="horarios-tabla__activo ${h.activo ? 'activo' : 'inactivo'}">
+                ${h.activo ? 'Activo' : 'Inactivo'}
+              </span>
+              <div class="horarios-tabla__acciones">
+                <button class="admin-btn admin-btn--icono admin-btn--peligro btn-del-horario"
+                        onclick="window.__eliminarHorario(${h.id_horario},'${patente}')"
+                        title="Eliminar horario">
+                  <i class='bx bx-trash'></i>
+                </button>
+              </div>
+            </div>`).join('')}
+        </div>`;
+    }
+
+    // ── TOGGLE HORARIOS ───────────────────────────────────────────
+    window.__toggleHorarios = function(patente, btn) {
+      const panel = document.getElementById(`horpanel-${patente}`);
+      const icon  = document.getElementById(`hor-icon-${patente}`);
+      const open  = panel.classList.toggle('bus-horarios-panel--abierto');
+      if (icon) icon.style.transform = open ? 'rotate(180deg)' : '';
+    };
+
+    // ── ELIMINAR BUS ──────────────────────────────────────────────
+    window.__eliminarBus = async function(patente) {
+      if (!confirm(`¿Eliminar el bus ${patente}?\nSe eliminarán también todos sus horarios asignados.`)) return;
+      try {
+        const res  = await fetch(`/api/buses/${patente}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!res.ok) { alert(data.error || 'Error al eliminar.'); return; }
+        cargarBuses();
+      } catch { alert('Error de red.'); }
+    };
+
+    // ── ELIMINAR HORARIO ──────────────────────────────────────────
+    window.__eliminarHorario = async function(id, patente) {
+      if (!confirm('¿Eliminar este horario?')) return;
+      try {
+        const res  = await fetch(`/api/horarios/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!res.ok) { alert(data.error || 'Error al eliminar.'); return; }
+        cargarBuses();
+      } catch { alert('Error de red.'); }
+    };
+
+    // ── MODAL BUS ─────────────────────────────────────────────────
+    function abrirModalBus(modo, bus = null) {
+      modoModal     = modo;
+      patenteEditar = bus ? bus.patente : null;
+
+      if (modo === 'crear') {
+        tituloBus.textContent = 'Agregar bus';
+        inpPatente.value   = '';
+        inpChofer.value    = '';
+        inpModelo.value    = '';
+        inpCapacidad.value = '40';
+        selEstado.value    = 'Activo';
+        inpPatente.disabled  = false;
+        inpCapacidad.disabled = false;
+        notaCap.style.display = 'none';
+      } else {
+        tituloBus.textContent = `Editar bus — ${bus.patente}`;
+        inpPatente.value   = bus.patente;
+        inpChofer.value    = bus.chofer || '';
+        inpModelo.value    = bus.modelo || '';
+        inpCapacidad.value = bus.capacidad;
+        selEstado.value    = bus.estado;
+        inpPatente.disabled  = true;
+        inpCapacidad.disabled = true;
+        notaCap.style.display = 'block';
+      }
+      overlayBus.classList.add('modal-overlay--visible');
+    }
+
+    function cerrarModalBus() {
+      overlayBus.classList.remove('modal-overlay--visible');
+    }
+
+    window.__editarBus = function(patente) {
+      const bus = busesData.find(b => b.patente === patente);
+      if (bus) abrirModalBus('editar', bus);
+    };
+
+    if (btnAgregar)     btnAgregar.addEventListener('click',     () => abrirModalBus('crear'));
+    if (btnCancelarBus) btnCancelarBus.addEventListener('click', cerrarModalBus);
+    if (btnCerrarBus)   btnCerrarBus.addEventListener('click',   cerrarModalBus);
+    if (overlayBus)     overlayBus.addEventListener('click', e => { if (e.target === overlayBus) cerrarModalBus(); });
+
+    if (btnGuardarBus) {
+      btnGuardarBus.addEventListener('click', async () => {
+        const patente   = inpPatente.value.trim().toUpperCase();
+        const chofer    = inpChofer.value.trim();
+        const modelo    = inpModelo.value.trim();
+        const capacidad = parseInt(inpCapacidad.value, 10) || 44;
+        const estado    = selEstado.value;
+
+        if (!patente) { alert('La patente es obligatoria.'); return; }
+
+        const url    = modoModal === 'crear' ? '/api/buses' : `/api/buses/${patenteEditar}`;
+        const method = modoModal === 'crear' ? 'POST' : 'PUT';
+
+        try {
+          const res  = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ patente, chofer, modelo, capacidad, estado })
+          });
+          const data = await res.json();
+          if (!res.ok) { alert(data.error || 'Error al guardar.'); return; }
+          cerrarModalBus();
+          cargarBuses();
+        } catch { alert('Error de red.'); }
+      });
+    }
+
+    // ── CARGAR RECORRIDOS ─────────────────────────────────────────
+    async function cargarRecorridos() {
+      try {
+        const res  = await fetch('/api/recorridos');
+        const data = await res.json();
+        recorridos = data.recorridos || [];
+        if (selRecorrido) {
+          selRecorrido.innerHTML = recorridos.map(r =>
+            `<option value="${r.id}">${r.nombre}</option>`
+          ).join('');
+        }
+      } catch {}
+    }
+
+    // ── MODAL HORARIO ─────────────────────────────────────────────
+    window.__abrirModalHorario = function(patente) {
+      patenteHorario = patente;
+      inpSalida.value   = '08:00';
+      inpPrecio.value   = '3500';
+      chkActivo.checked = true;
+      overlayHor.classList.add('modal-overlay--visible');
+    };
+
+    function cerrarModalHorario() {
+      overlayHor.classList.remove('modal-overlay--visible');
+      patenteHorario = null;
+    }
+
+    if (btnCancelarHor) btnCancelarHor.addEventListener('click', cerrarModalHorario);
+    if (btnCerrarHor)   btnCerrarHor.addEventListener('click',   cerrarModalHorario);
+    if (overlayHor)     overlayHor.addEventListener('click', e => { if (e.target === overlayHor) cerrarModalHorario(); });
+
+    if (btnGuardarHor) {
+      btnGuardarHor.addEventListener('click', async () => {
+        if (!patenteHorario) return;
+        const id_recorrido = parseInt(selRecorrido.value, 10);
+        const hora_salida  = inpSalida.value.trim();
+        const precio_base  = parseFloat(inpPrecio.value) || 3500;
+        const activo       = chkActivo.checked;
+
+        if (!hora_salida) { alert('La hora de salida es obligatoria.'); return; }
+
+        const regexHora = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!regexHora.test(hora_salida)) {
+          alert('Por favor, ingresa la hora en formato de 24 horas (HH:MM), por ejemplo: 08:30 o 20:00.');
+          return;
+        }
+
+        try {
+          const res  = await fetch('/api/horarios', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ patente: patenteHorario, id_recorrido, hora_salida, precio_base, activo })
+          });
+          const data = await res.json();
+          if (!res.ok) { alert(data.error || 'Error al crear horario.'); return; }
+          cerrarModalHorario();
+          cargarBuses();
+        } catch { alert('Error de red.'); }
+      });
+    }
+
+  })();
   </script>
 
 </body>

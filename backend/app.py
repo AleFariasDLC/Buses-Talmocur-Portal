@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect, make_response, session, jsonify
+from flask import Flask, render_template, redirect, make_response, session, jsonify, request
 import os
 import secrets
+from datetime import date, datetime, timezone, timedelta
 from dotenv import load_dotenv
 
 # Cargar variables de entorno antes de crear la app
@@ -9,7 +10,7 @@ load_dotenv()
 # Inicializar y poblar la base de datos con el seed automático (si está vacía).
 # Centralizado en seed_db.py para mantener el código limpio y evitar ejecuciones redundantes.
 from database import obtener_sesion
-from models import Recorrido, Bus
+from models import Recorrido, Bus, Aviso, Asiento, HorarioViaje, Compra, AsientoComprado
 from seed_db import seed as _seed_inicial
 _seed_inicial(quiet=False)
 
@@ -117,6 +118,466 @@ def admin_dashboard():
     return render_template('admin.html', total_buses=total_buses)
 
 
+# ── BUSES ────────────────────────────────────────────────────────
+
+
+@app.route('/api/buses', methods=['GET'])
+def listar_buses():
+    """Lista todos los buses con sus horarios. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        buses = db.query(Bus).order_by(Bus.patente).all()
+        resultado = []
+        for b in buses:
+            horarios = []
+            for h in sorted(b.horarios, key=lambda x: x.hora_salida):
+                horarios.append({
+                    'id_horario':  h.id_horario,
+                    'recorrido':   f"{h.recorrido.origen} → {h.recorrido.destino}",
+                    'hora_salida': h.hora_salida.strftime('%H:%M'),
+                    'hora_llegada':h.hora_llegada.strftime('%H:%M'),
+                    'precio_base': h.precio_base,
+                    'activo':      h.activo,
+                })
+            resultado.append({
+                'patente':        b.patente,
+                'modelo':         b.modelo or '',
+                'chofer':         b.chofer or '',
+                'capacidad':      b.capacidad,
+                'estado':         b.estado,
+                'total_horarios': len(horarios),
+                'horarios':       horarios,
+            })
+        return jsonify({'buses': resultado, 'total': len(resultado)}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/buses', methods=['POST'])
+def crear_bus():
+    """Crea un bus nuevo con sus asientos físicos. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    data      = request.get_json()
+    patente   = (data.get('patente') or '').strip().upper()
+    chofer    = (data.get('chofer')   or '').strip()
+    modelo    = (data.get('modelo')   or '').strip()
+    capacidad = int(data.get('capacidad', 44))
+    estado    = data.get('estado', 'Activo')
+
+    if not patente:
+        return jsonify({'error': 'La patente es obligatoria.'}), 400
+    if capacidad < 1 or capacidad > 200:
+        return jsonify({'error': 'La capacidad debe estar entre 1 y 200.'}), 400
+
+    db = obtener_sesion()
+    try:
+        if db.query(Bus).filter(Bus.patente == patente).first():
+            return jsonify({'error': 'Ya existe un bus con esa patente.'}), 409
+
+        bus = Bus(patente=patente, chofer=chofer, modelo=modelo,
+                  capacidad=capacidad, estado=estado)
+        db.add(bus)
+        db.flush()
+
+        for num in range(1, capacidad + 1):
+            db.add(Asiento(numero=num, patente=patente))
+
+        db.commit()
+        return jsonify({'message': 'Bus creado correctamente.', 'patente': patente}), 201
+    finally:
+        db.close()
+
+
+@app.route('/api/buses/<patente>', methods=['PUT'])
+def editar_bus(patente):
+    """Edita datos de un bus (excepto patente y capacidad). Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        bus = db.query(Bus).filter(Bus.patente == patente).first()
+        if not bus:
+            return jsonify({'error': 'Bus no encontrado.'}), 404
+
+        data = request.get_json()
+        if 'chofer' in data: bus.chofer = data['chofer'].strip()
+        if 'modelo' in data: bus.modelo = data['modelo'].strip()
+        if 'estado' in data: bus.estado = data['estado']
+
+        db.commit()
+        return jsonify({'message': 'Bus actualizado correctamente.'}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/buses/<patente>', methods=['DELETE'])
+def eliminar_bus(patente):
+    """Elimina un bus, sus asientos y sus horarios. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        bus = db.query(Bus).filter(Bus.patente == patente).first()
+        if not bus:
+            return jsonify({'error': 'Bus no encontrado.'}), 404
+
+        # Eliminar horarios vinculados (y suspensiones internas)
+        for h in list(bus.horarios):
+            for s in list(h.suspensiones):
+                db.delete(s)
+            db.delete(h)
+
+        # Eliminar asientos físicos
+        db.query(Asiento).filter(Asiento.patente == patente).delete()
+
+        db.delete(bus)
+        db.commit()
+        return jsonify({'message': 'Bus eliminado correctamente.'}), 200
+    finally:
+        db.close()
+
+
+# ── RECORRIDOS (lectura pública para dropdowns) ───────────────────
+
+@app.route('/api/recorridos', methods=['GET'])
+def listar_recorridos():
+    """Lista todos los recorridos. Público (para formularios de horario)."""
+    db = obtener_sesion()
+    try:
+        recorridos = db.query(Recorrido).order_by(Recorrido.id_recorrido).all()
+        return jsonify({'recorridos': [
+            {'id': r.id_recorrido,
+             'nombre': f"{r.origen} → {r.destino}",
+             'precio_base': r.precio_base}
+            for r in recorridos
+        ]}), 200
+    finally:
+        db.close()
+
+
+# ── HORARIOS ─────────────────────────────────────────────────────
+
+def check_horario_conflict(db, patente, id_recorrido, hora_salida, ignore_id_horario=None):
+    """
+    Verifica si existe un conflicto de horario para un bus según las reglas:
+    - 2 horas de diferencia si es el mismo recorrido.
+    - 1 hora de diferencia si cambia de recorrido.
+    Retorna (boolean_conflicto, mensaje_error)
+    """
+    prop_minutos = hora_salida.hour * 60 + hora_salida.minute
+
+    query = db.query(HorarioViaje).filter(HorarioViaje.patente == patente)
+    if ignore_id_horario is not None:
+        query = query.filter(HorarioViaje.id_horario != ignore_id_horario)
+    
+    horarios_existentes = query.all()
+
+    for h in horarios_existentes:
+        exist_minutos = h.hora_salida.hour * 60 + h.hora_salida.minute
+        diff_minutos = abs(prop_minutos - exist_minutos)
+        
+        # Como opera en el mismo día, si la diferencia es de más de 12 horas,
+        # puede ser por dar la vuelta (ej: 08:00 vs 21:00).
+        # Pero mantendremos el cálculo directo ya que los viajes son dentro del mismo día.
+        if h.id_recorrido == id_recorrido:
+            # Mismo recorrido -> requiere 2 horas (120 minutos)
+            if diff_minutos < 120:
+                return True, (
+                    f"No se puede registrar este recorrido. El bus ya tiene un viaje programado para el mismo recorrido "
+                    f"a las {h.hora_salida.strftime('%H:%M')}. "
+                    f"Debe haber al menos 2 horas de diferencia."
+                )
+        else:
+            # Recorrido diferente -> requiere 1 hora (60 minutos)
+            if diff_minutos < 60:
+                return True, (
+                    f"No se puede registrar este recorrido. El bus ya tiene un viaje programado para un recorrido diferente "
+                    f"a las {h.hora_salida.strftime('%H:%M')}. "
+                    f"Debe haber al menos 1 hora de diferencia."
+                )
+                
+    return False, ""
+
+
+@app.route('/api/horarios', methods=['POST'])
+def crear_horario():
+    """Agrega un horario a un bus con validación de conflictos. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    data         = request.get_json()
+    patente      = data.get('patente')
+    id_recorrido = int(data.get('id_recorrido'))
+    hora_str     = data.get('hora_salida', '')
+    precio_base  = float(data.get('precio_base', 3500))
+    activo       = bool(data.get('activo', True))
+
+    if not patente or not id_recorrido or not hora_str:
+        return jsonify({'error': 'Faltan campos obligatorios.'}), 400
+
+    db = obtener_sesion()
+    try:
+        if not db.query(Bus).filter(Bus.patente == patente).first():
+            return jsonify({'error': 'Bus no encontrado.'}), 404
+        if not db.query(Recorrido).filter(Recorrido.id_recorrido == id_recorrido).first():
+            return jsonify({'error': 'Recorrido no encontrado.'}), 404
+
+        partes = hora_str.split(':')
+        h, m = int(partes[0]), int(partes[1])
+        base    = datetime(2000, 1, 1, h, m)
+        llegada = (base + timedelta(minutes=45)).time()
+
+        # Validar conflicto de horarios
+        conflicto, msg = check_horario_conflict(db, patente, id_recorrido, base.time())
+        if conflicto:
+            return jsonify({'error': msg}), 400
+
+        horario = HorarioViaje(
+            id_recorrido=id_recorrido,
+            patente=patente,
+            hora_salida=base.time(),
+            hora_llegada=llegada,
+            precio_base=precio_base,
+            activo=activo,
+        )
+        db.add(horario)
+        db.commit()
+        db.refresh(horario)
+        return jsonify({'message': 'Horario creado.', 'id_horario': horario.id_horario}), 201
+    finally:
+        db.close()
+
+
+@app.route('/api/horarios/<int:id_horario>', methods=['PUT'])
+def editar_horario(id_horario):
+    """Edita precio, estado activo o la hora de salida de un horario con validación. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        h = db.query(HorarioViaje).filter(HorarioViaje.id_horario == id_horario).first()
+        if not h:
+            return jsonify({'error': 'Horario no encontrado.'}), 404
+
+        data = request.get_json()
+        
+        # Si se edita la hora de salida, debemos comprobar conflictos
+        if 'hora_salida' in data:
+            partes = data['hora_salida'].split(':')
+            hh, mm = int(partes[0]), int(partes[1])
+            base = datetime(2000, 1, 1, hh, mm)
+            new_time = base.time()
+            
+            # Recorrido a evaluar: el actual o el nuevo si viniera
+            rec_eval = int(data.get('id_recorrido', h.id_recorrido))
+            
+            conflicto, msg = check_horario_conflict(db, h.patente, rec_eval, new_time, ignore_id_horario=id_horario)
+            if conflicto:
+                return jsonify({'error': msg}), 400
+                
+            h.hora_salida  = new_time
+            h.hora_llegada = (base + timedelta(minutes=45)).time()
+
+        if 'precio_base' in data:
+            h.precio_base = float(data['precio_base'])
+        if 'activo' in data:
+            h.activo = bool(data['activo'])
+
+        db.commit()
+        return jsonify({'message': 'Horario actualizado.'}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/horarios/<int:id_horario>', methods=['DELETE'])
+def eliminar_horario(id_horario):
+    """Elimina un horario de viaje. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        h = db.query(HorarioViaje).filter(HorarioViaje.id_horario == id_horario).first()
+        if not h:
+            return jsonify({'error': 'Horario no encontrado.'}), 404
+        db.delete(h)
+        db.commit()
+        return jsonify({'message': 'Horario eliminado.'}), 200
+    finally:
+        db.close()
+
+
+# ── AVISOS ──────────────────────────────────────────────────────
+
+
+@app.route('/api/avisos', methods=['POST'])
+def crear_aviso():
+    """Crea un nuevo aviso. Solo accesible por administradores."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    data = request.get_json()
+    titulo       = (data.get('titulo') or '').strip()
+    mensaje      = (data.get('mensaje') or '').strip()
+    tipo         = data.get('tipo', 'info')
+    duracion_dias = data.get('duracion_dias', 1)
+
+    if not titulo or not mensaje:
+        return jsonify({'error': 'El título y el mensaje son obligatorios.'}), 400
+    if tipo not in ('alerta', 'info', 'precio', 'emergencia'):
+        return jsonify({'error': 'Tipo de aviso no válido.'}), 400
+    try:
+        duracion_dias = int(duracion_dias)
+    except (ValueError, TypeError):
+        return jsonify({'error': 'La duración debe ser un número entero.'}), 400
+
+    db = obtener_sesion()
+    try:
+        aviso = Aviso(
+            titulo=titulo,
+            mensaje=mensaje,
+            tipo=tipo,
+            duracion_dias=duracion_dias,
+            activo=True,
+            fecha_creacion=datetime.now(timezone.utc)
+        )
+        db.add(aviso)
+        db.commit()
+        db.refresh(aviso)
+        return jsonify({
+            'message': 'Aviso creado correctamente.',
+            'aviso': {
+                'id_aviso':      aviso.id_aviso,
+                'titulo':        aviso.titulo,
+                'mensaje':       aviso.mensaje,
+                'tipo':          aviso.tipo,
+                'duracion_dias': aviso.duracion_dias,
+                'activo':        aviso.activo,
+                'fecha_creacion': aviso.fecha_creacion.strftime('%Y-%m-%d %H:%M')
+            }
+        }), 201
+    finally:
+        db.close()
+
+
+@app.route('/api/avisos', methods=['GET'])
+def listar_avisos():
+    """Lista todos los avisos (activos y expirados). Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        avisos = db.query(Aviso).order_by(Aviso.fecha_creacion.desc()).all()
+        hoy = date.today()
+        resultado = []
+        for a in avisos:
+            fecha_creacion = a.fecha_creacion
+            if hasattr(fecha_creacion, 'date'):
+                fecha_base = fecha_creacion.date()
+            else:
+                fecha_base = fecha_creacion
+            from datetime import timedelta
+            vigente = (fecha_base + timedelta(days=a.duracion_dias)) > hoy
+            resultado.append({
+                'id_aviso':       a.id_aviso,
+                'titulo':         a.titulo,
+                'mensaje':        a.mensaje,
+                'tipo':           a.tipo,
+                'duracion_dias':  a.duracion_dias,
+                'activo':         a.activo,
+                'vigente':        vigente,
+                'fecha_creacion': a.fecha_creacion.strftime('%Y-%m-%d %H:%M')
+            })
+        return jsonify({'avisos': resultado}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/avisos/activos', methods=['GET'])
+def avisos_activos():
+    """Devuelve los avisos vigentes para mostrar a los usuarios en el home.
+
+    Un aviso es vigente si:
+      - activo == True
+      - fecha_creacion + duracion_dias > hoy
+    """
+    db = obtener_sesion()
+    try:
+        from datetime import timedelta
+        hoy = date.today()
+        todos = db.query(Aviso).filter(Aviso.activo == True).all()
+        resultado = []
+        for a in todos:
+            fecha_base = a.fecha_creacion.date() if hasattr(a.fecha_creacion, 'date') else a.fecha_creacion
+            if (fecha_base + timedelta(days=a.duracion_dias)) > hoy:
+                resultado.append({
+                    'id_aviso': a.id_aviso,
+                    'titulo':   a.titulo,
+                    'mensaje':  a.mensaje,
+                    'tipo':     a.tipo,
+                })
+        return jsonify({'avisos': resultado}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/avisos/<int:id_aviso>', methods=['PUT'])
+def editar_aviso(id_aviso):
+    """Edita un aviso existente. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        aviso = db.query(Aviso).filter(Aviso.id_aviso == id_aviso).first()
+        if not aviso:
+            return jsonify({'error': 'Aviso no encontrado.'}), 404
+
+        data = request.get_json()
+        if 'titulo' in data:
+            aviso.titulo = data['titulo'].strip()
+        if 'mensaje' in data:
+            aviso.mensaje = data['mensaje'].strip()
+        if 'tipo' in data:
+            if data['tipo'] not in ('alerta', 'info', 'precio', 'emergencia'):
+                return jsonify({'error': 'Tipo de aviso no válido.'}), 400
+            aviso.tipo = data['tipo']
+        if 'duracion_dias' in data:
+            aviso.duracion_dias = int(data['duracion_dias'])
+        if 'activo' in data:
+            aviso.activo = bool(data['activo'])
+
+        db.commit()
+        return jsonify({'message': 'Aviso actualizado correctamente.'}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/avisos/<int:id_aviso>', methods=['DELETE'])
+def eliminar_aviso(id_aviso):
+    """Elimina un aviso de la BD. Solo admin."""
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    db = obtener_sesion()
+    try:
+        aviso = db.query(Aviso).filter(Aviso.id_aviso == id_aviso).first()
+        if not aviso:
+            return jsonify({'error': 'Aviso no encontrado.'}), 404
+        db.delete(aviso)
+        db.commit()
+        return jsonify({'message': 'Aviso eliminado correctamente.'}), 200
+    finally:
+        db.close()
 
 
 if __name__ == '__main__':

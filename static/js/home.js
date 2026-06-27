@@ -149,3 +149,101 @@
     btn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
   });
 })();
+
+
+/* ── 7. AVISOS: toast deslizante desde la derecha ────────────── */
+(function initAvisosToast() {
+
+  const contenedor = document.getElementById('avisoToastContenedor');
+  if (!contenedor) return;  // Usuario no logueado: nada que hacer
+
+  const TIPO_META = {
+    alerta:     { icono: 'bx-error',             label: 'Alerta',           clase: 'aviso-toast--alerta' },
+    info:       { icono: 'bx-info-circle',       label: 'Información',      clase: 'aviso-toast--info' },
+    precio:     { icono: 'bx-dollar-circle',     label: 'Cambio de tarifa', clase: 'aviso-toast--precio' },
+    emergencia: { icono: 'bx-alarm-exclamation', label: 'Emergencia',       clase: 'aviso-toast--emergencia' },
+  };
+
+  let cola       = [];
+  let timerId    = null;
+  let toastActual = null;
+
+  /**
+   * Muestra el siguiente aviso de la cola.
+   * Si no hay más, no hace nada.
+   */
+  function mostrarSiguiente() {
+    if (cola.length === 0) return;
+    const aviso = cola.shift();
+    mostrarToast(aviso);
+  }
+
+  /**
+   * Crea y anima un toast para un aviso dado.
+   * Se cierra solo a los 10 s o al pulsar ×.
+   */
+  function mostrarToast(aviso) {
+    const meta = TIPO_META[aviso.tipo] || TIPO_META.info;
+
+    const toast = document.createElement('div');
+    toast.className = `aviso-toast ${meta.clase}`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+      <div class="aviso-toast__cabecera">
+        <span class="aviso-toast__tipo">
+          <i class='bx ${meta.icono}'></i>
+          ${meta.label}
+        </span>
+        <button class="aviso-toast__cerrar" aria-label="Cerrar aviso">
+          <i class='bx bx-x'></i>
+        </button>
+      </div>
+      <p class="aviso-toast__titulo">${aviso.titulo}</p>
+      <p class="aviso-toast__mensaje">${aviso.mensaje}</p>
+      <div class="aviso-toast__barra-wrap">
+        <div class="aviso-toast__barra"></div>
+      </div>
+    `;
+
+    contenedor.appendChild(toast);
+    toastActual = toast;
+
+    // Forzar reflow para que la animación de entrada funcione
+    toast.getBoundingClientRect();
+    toast.classList.add('aviso-toast--visible');
+
+    // Función para cerrar y mostrar el siguiente
+    function cerrar() {
+      clearTimeout(timerId);
+      toast.classList.remove('aviso-toast--visible');
+      toast.classList.add('aviso-toast--saliendo');
+      toast.addEventListener('transitionend', () => {
+        toast.remove();
+        toastActual = null;
+        // Pequeña pausa antes de mostrar el siguiente
+        setTimeout(mostrarSiguiente, 400);
+      }, { once: true });
+    }
+
+    // Botón × para cerrar
+    toast.querySelector('.aviso-toast__cerrar').addEventListener('click', cerrar);
+
+    // Auto-cierre a los 10 segundos
+    timerId = setTimeout(cerrar, 10000);
+  }
+
+  // Obtener los avisos vigentes del servidor
+  fetch('/api/avisos/activos')
+    .then(r => r.json())
+    .then(data => {
+      if (!data.avisos || data.avisos.length === 0) return;
+      cola = data.avisos;
+      // Pequeño delay para que el usuario vea la página primero
+      setTimeout(mostrarSiguiente, 800);
+    })
+    .catch(() => {
+      // Si falla silenciosamente, simplemente no se muestran avisos
+    });
+
+})();
+
