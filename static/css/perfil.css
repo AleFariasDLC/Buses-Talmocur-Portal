@@ -145,3 +145,95 @@
     padding: 90px 16px 40px;
   }
 }
+
+
+/* ── 9. FORMULARIO DE PERFIL (añadido) ───────────────────────── */
+.tarjeta-perfil__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: left;
+}
+
+/* Dato de solo lectura (fecha de registro) */
+.perfil-dato-readonly {
+  font-size: 0.9rem;
+  color: var(--color-gray-700);
+  background-color: var(--color-gray-50);
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 0;
+}
+
+/* Bloque desplegable "Cambiar contraseña" */
+.perfil-password-toggle {
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: 10px;
+  padding: 4px 14px;
+}
+
+.perfil-password-toggle > summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  padding: 10px 0;
+  list-style: none;
+}
+
+.perfil-password-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+
+.perfil-password-toggle > summary::before {
+  content: '+ ';
+  font-weight: 700;
+}
+
+.perfil-password-toggle[open] > summary::before {
+  content: '− ';
+}
+
+.perfil-password-campos {
+  margin-bottom: 12px;
+}
+
+/* Lista de criterios de contraseña */
+.password-criteria {
+  list-style: none;
+  padding-left: 4px;
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+}
+
+.password-criteria li {
+  margin: 2px 0;
+}
+
+/* Enlace volver */
+.perfil-volver {
+  text-align: center;
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+}
+
+/* Mensajes de éxito / error */
+#perfilMsg.msg-exito,
+#recuperarMsg.msg-exito,
+#restablecerMsg.msg-exito {
+  color: #15803d;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 14px;
+}
+
+#perfilMsg.msg-error,
+#recuperarMsg.msg-error,
+#restablecerMsg.msg-error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 14px;
+}

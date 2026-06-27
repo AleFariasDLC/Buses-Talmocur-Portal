@@ -119,3 +119,92 @@ def _a_dict(usuario: Usuario, incluir_hash: bool = True) -> dict:
     if incluir_hash:
         datos["password_hash"] = usuario.password_hash
     return datos
+
+
+# ── Tokens de recuperación de contraseña ──────────────────────────
+
+def crear_token_recuperacion(user_id: str, token: str, fecha_expiracion) -> None:
+    """Guarda un nuevo token de recuperación para un usuario."""
+    from models import TokenRecuperacion
+
+    db = obtener_sesion()
+    try:
+        registro = TokenRecuperacion(
+            id_usuario=user_id,
+            token=token,
+            fecha_expiracion=fecha_expiracion,
+            usado=False,
+        )
+        db.add(registro)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+
+def buscar_token_recuperacion(token: str):
+    """Devuelve (datos_usuario, vigente) para un token, o (None, False) si no existe.
+
+    Retorna un dict con {id, nombre, email} del dueño del token y un bool
+    indicando si el token todavía puede usarse (no usado y no expirado).
+    """
+    from models import TokenRecuperacion, Usuario
+
+    db = obtener_sesion()
+    try:
+        registro = db.query(TokenRecuperacion).filter(
+            TokenRecuperacion.token == token
+        ).first()
+        if not registro:
+            return None, False
+
+        vigente = registro.esta_vigente()
+        usuario = db.query(Usuario).filter(Usuario.id == registro.id_usuario).first()
+        if not usuario:
+            return None, False
+
+        return {"id": usuario.id, "nombre": usuario.nombre, "email": usuario.email}, vigente
+    finally:
+        db.close()
+
+
+def marcar_token_usado(token: str) -> None:
+    """Marca un token como usado para que no pueda reutilizarse."""
+    from models import TokenRecuperacion
+
+    db = obtener_sesion()
+    try:
+        registro = db.query(TokenRecuperacion).filter(
+            TokenRecuperacion.token == token
+        ).first()
+        if registro:
+            registro.usado = True
+            db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+
+def invalidar_tokens_de_usuario(user_id: str) -> None:
+    """Marca como usados todos los tokens previos de un usuario.
+
+    Se llama al generar uno nuevo para que solo el último enlace sea válido.
+    """
+    from models import TokenRecuperacion
+
+    db = obtener_sesion()
+    try:
+        db.query(TokenRecuperacion).filter(
+            TokenRecuperacion.id_usuario == user_id,
+            TokenRecuperacion.usado == False,  # noqa: E712
+        ).update({"usado": True})
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()

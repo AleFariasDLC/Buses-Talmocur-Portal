@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Restablecer contraseña{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Define tu nueva contraseña en Talmocur." />
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/login.css" />
+{% endblock %}
+
+{% block content %}
+
+  <section class="pagina-login" aria-label="Restablecer contraseña">
+
+    <div class="hero__bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
+      <div class="hero__bg-overlay"></div>
+    </div>
+
+    <div class="tarjeta-login" role="main">
+
+      <div class="tarjeta-login__logo">
+        <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="tarjeta-login__logo-img" />
+      </div>
+
+      <header class="tarjeta-login__encabezado">
+        <h1 class="tarjeta-login__titulo">Nueva contraseña</h1>
+        <p class="tarjeta-login__subtitulo">Crea una contraseña segura para tu cuenta</p>
+      </header>
+
+      <form class="tarjeta-login__form" id="restablecerForm" novalidate>
+
+        <div class="lc-field">
+          <label for="password" class="lc-label">Nueva contraseña</label>
+          <div class="lc-input-wrapper">
+            <input type="password" id="password" name="password" class="lc-input"
+              placeholder="Mínimo 8 caracteres" autocomplete="new-password" required />
+            <button type="button" class="lc-icon lc-icon--btn" id="togglePassword"
+              aria-label="Mostrar u ocultar contraseña">
+              <i class='bx bxs-show' id="toggleIcon"></i>
+            </button>
+          </div>
+          <ul id="passwordCriteria" class="password-criteria"></ul>
+        </div>
+
+        <div class="lc-field">
+          <label for="confirmPassword" class="lc-label">Confirmar contraseña</label>
+          <div class="lc-input-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="lc-input"
+              placeholder="Repite tu contraseña" autocomplete="new-password" required />
+          </div>
+        </div>
+
+        <button type="submit" class="lc-btn-submit" id="btnRestablecer">
+          <i class='bx bx-check-shield'></i>
+          Guardar contraseña
+        </button>
+
+      </form>
+
+      <div class="separador"><span>o</span></div>
+
+      <p class="texto-registro">
+        <a href="/login" class="enlace-registro">Volver al inicio de sesión</a>
+      </p>
+
+    </div>
+
+  </section>
+
+{% endblock %}
+
+{% block extra_js %}
+  <script src="/static/js/restablecer.js"></script>
+{% endblock %}
