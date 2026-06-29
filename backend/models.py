@@ -2,7 +2,7 @@
 # Define todas las tablas de la base de datos como clases Python.
 # SQLAlchemy las traduce automáticamente a SQL.
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, Float,
@@ -127,7 +127,7 @@ class Compra(Base):
     id_usuario   = Column(String(36),  ForeignKey("usuario.id"),              nullable=False)
     id_horario   = Column(Integer,     ForeignKey("horario_viaje.id_horario"), nullable=False)
     fecha_viaje  = Column(Date,        nullable=False)    # día concreto en que viajará
-    fecha_compra = Column(DateTime,    default=datetime.utcnow)
+    fecha_compra = Column(DateTime,    default=lambda: datetime.now(timezone.utc))
     monto_total  = Column(Float,       nullable=False)
     metodo_pago  = Column(String(50),  nullable=False)
     estado       = Column(String(20),  nullable=False, default="confirmada")
@@ -192,7 +192,34 @@ class Aviso(Base):
     titulo         = Column(String(200),  nullable=False)
     mensaje        = Column(String(1000), nullable=False)
     activo         = Column(Boolean,      nullable=False, default=True)
-    fecha_creacion = Column(DateTime,     default=datetime.utcnow)
+    fecha_creacion = Column(DateTime,     default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
         return f"<Aviso(titulo={self.titulo}, activo={self.activo})>"
+
+
+# ─────────────────────────────────────────────
+# 10. TokenRecuperacion  (recuperación de contraseña por enlace temporal)
+# ─────────────────────────────────────────────
+class TokenRecuperacion(Base):
+    __tablename__ = "token_recuperacion"
+
+    id               = Column(Integer,    primary_key=True, autoincrement=True)
+    id_usuario       = Column(String(36), ForeignKey("usuario.id"), nullable=False)
+    token            = Column(String(128), nullable=False, unique=True, index=True)
+    fecha_expiracion = Column(DateTime,   nullable=False)
+    usado            = Column(Boolean,    nullable=False, default=False)
+
+    usuario = relationship("Usuario")
+
+    def esta_vigente(self) -> bool:
+        """True si el token no fue usado y no ha expirado."""
+        ahora = datetime.now(timezone.utc)
+        exp = self.fecha_expiracion
+        # SQLite guarda datetimes "naive"; los tratamos como UTC para comparar
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        return (not self.usado) and ahora < exp
+
+    def __repr__(self):
+        return f"<TokenRecuperacion(usuario={self.id_usuario}, usado={self.usado})>"

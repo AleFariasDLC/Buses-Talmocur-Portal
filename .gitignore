@@ -14,3 +14,7 @@ __pycache__/
 .env
 .pylintrc
 .pytest_cache/
+
+# ── Entorno virtual ──────────────────────────────────────────────
+.venv/
+venv/

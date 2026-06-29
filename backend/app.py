@@ -70,6 +70,20 @@ def registro():
     response.headers['Cache-Control'] = 'no-store'
     return response
 
+@app.route('/recuperar')
+def recuperar():
+    # Página para solicitar el enlace de recuperación de contraseña
+    response = make_response(render_template('recuperar.html'))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+@app.route('/restablecer')
+def restablecer():
+    # Página donde el usuario define su nueva contraseña (llega desde el correo)
+    response = make_response(render_template('restablecer.html'))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
 @app.route('/tarifas')
 def tarifas():
     db = obtener_sesion()
