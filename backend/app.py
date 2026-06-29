@@ -101,9 +101,9 @@ def api_origenes():
 def perfil():
     return render_template('perfil.html')
 
-@app.route('/seleccionar-asientos')
-def seleccionar_asientos():
-    return render_template('seleccionar_asientos.html')
+@app.route('/compra-pasajes-asientos')
+def compra_pasajes_asientos():
+    return render_template('compra_pasajes_asientos.html')
 
 
 @app.route('/compra-pasajes')

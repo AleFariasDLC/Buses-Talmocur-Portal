@@ -3,13 +3,13 @@
 {% block title %}Seleccionar Asientos · Talmocur{% endblock %}
 
 {% block meta %}
-  <meta name="description" content="Selecciona tu asiento en el bus Talmocur para tu viaje entre Curico y Talca." />
+<meta name="description" content="Selecciona tu asiento en el bus Talmocur para tu viaje entre Curico y Talca." />
 {% endblock %}
 
 {% block extra_css %}
-  <!-- Leaflet.js CSS (local, sin dependencia de internet) -->
-  <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
-  <link rel="stylesheet" href="/static/css/asientos.css" />
+<!-- Leaflet.js CSS (local, sin dependencia de internet) -->
+<link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+<link rel="stylesheet" href="/static/css/compra_pasajes_asientos.css" />
 {% endblock %}
 
 {% block content %}
@@ -46,12 +46,11 @@
 
       <div class="sa-mapa__header">
         <i class='bx bx-map-alt sa-mapa__icono'></i>
-        <h2 class="sa-mapa__titulo">Ruta del viaje</h2>
+        <h2 class="sa-mapa__titulo">Ruta del viaje - Por Varoli</h2>
       </div>
 
-      <!-- Mapa interactivo Leaflet + OpenStreetMap (con zoom real) -->
-      <div id="mapaLeaflet" class="sa-mapa__leaflet"
-           aria-label="Mapa interactivo de ruta Curico a Talca"></div>
+      <!-- Mapa interactivo Leaflet + OpenStreetMap-->
+      <div id="mapaLeaflet" class="sa-mapa__leaflet" aria-label="Mapa interactivo de ruta Curico a Talca"></div>
 
       <!-- Detalles del viaje debajo del mapa -->
       <div class="sa-mapa__detalles">
@@ -100,8 +99,8 @@
     <section class="sa-asientos" aria-label="Seleccion de asientos">
 
       <div class="sa-asientos__header">
-        <h2 class="sa-asientos__titulo">Selecciona tu asiento</h2>
-        <p class="sa-asientos__subtitulo">Haz clic en un asiento disponible para seleccionarlo</p>
+        <h2 class="sa-asientos__titulo">Selecciona tus asientos</h2>
+        <p class="sa-asientos__subtitulo">Haz clic en uno o más asientos disponibles para seleccionarlos</p>
       </div>
 
       <!-- Leyenda de estados -->
@@ -143,8 +142,7 @@
             <span>C</span>
             <span>D</span>
           </div>
-          <div class="sa-bus__filas" id="filasAsientos" role="list"
-               aria-label="Asientos del bus"></div>
+          <div class="sa-bus__filas" id="filasAsientos" role="list" aria-label="Asientos del bus"></div>
         </div>
 
         <div class="sa-bus__trasera">
@@ -164,11 +162,12 @@
 
         <div class="sa-resumen__seleccion" id="resumenSeleccion" style="display:none;">
           <div class="sa-resumen__fila">
-            <span class="sa-resumen__etiqueta">Asiento seleccionado</span>
-            <span class="sa-resumen__valor" id="resumenAsientoNum">-</span>
+            <span class="sa-resumen__etiqueta">Asientos</span>
+            <span class="sa-resumen__badge" id="resumenContador">0 asientos</span>
           </div>
+          <div class="sa-resumen__chips-wrap" id="resumenAsientoNum"></div>
           <div class="sa-resumen__fila">
-            <span class="sa-resumen__etiqueta">Precio</span>
+            <span class="sa-resumen__etiqueta">Total</span>
             <span class="sa-resumen__valor sa-resumen__valor--precio" id="resumenPrecio">-</span>
           </div>
           <div class="sa-resumen__fila">
@@ -197,7 +196,7 @@
 {% endblock %}
 
 {% block extra_js %}
-  <!-- Leaflet.js (local, con zoom e interactividad) -->
-  <script src="/static/leaflet/leaflet.js"></script>
-  <script src="/static/js/asientos.js"></script>
+<!-- Leaflet.js (local, con zoom e interactividad) -->
+<script src="/static/leaflet/leaflet.js"></script>
+<script src="/static/js/asientos.js"></script>
 {% endblock %}

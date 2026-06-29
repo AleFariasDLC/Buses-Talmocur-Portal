@@ -7,8 +7,10 @@
 const params       = new URLSearchParams(window.location.search);
 const busId        = params.get('bus')    || 'A1';
 const hora         = params.get('hora')   || '07:00';
-const precio       = params.get('precio') || '2800';
-const TOTAL_ASIENTOS = 40;
+const precio       = params.get('precio') || '3500';
+const asientosDisp = parseInt(params.get('asientos') || '20', 10);
+
+const TOTAL_ASIENTOS = 40;   // capacidad total del bus (10 filas × 4 asientos)
 const PRECIO_FMT     = `$${parseInt(precio).toLocaleString('es-CL')}`;
 
 let estadoAsientos = [];
@@ -54,6 +56,14 @@ async function cargarAsientos() {
   }
 }
 
+const asientosSeleccionados = new Set();  // números de asientos seleccionados
+
+
+/* ── 4. Renderizar grilla de asientos ────────────────────────── */
+/**
+ * Layout del bus: 10 filas, cada fila tiene 4 asientos (A, B | C, D).
+ * Columnas en el grid: [num-fila] [A] [B] [pasillo] [C] [D]
+ */
 function renderizarAsientos() {
   const contenedor = document.getElementById('filasAsientos');
   contenedor.innerHTML = '';
@@ -115,45 +125,40 @@ function crearAsiento(num) {
   return btn;
 }
 
+
+/* ── 5. Lógica de selección múltiple de asientos ────────────────────────── */
 function seleccionarAsiento(btn, num) {
   if (btn.dataset.estado === 'ocupado') return;
 
-  if (asientoSeleccionado !== null) {
-    const anterior = document.querySelector(`.sa-asiento[data-num="${asientoSeleccionado}"]`);
-    if (anterior) {
-      anterior.classList.remove('sa-asiento--seleccionado');
-      anterior.classList.add('sa-asiento--libre');
-      anterior.setAttribute('aria-label', `Asiento ${asientoSeleccionado} – libre`);
-    }
+  if (asientosSeleccionados.has(num)) {
+    // Deseleccionar asientos
+    asientosSeleccionados.delete(num);
+    btn.classList.remove('sa-asiento--seleccionado');
+    btn.classList.add('sa-asiento--libre');
+    btn.setAttribute('aria-label', `Asiento ${num} – libre`);
+  } else {
+    // Seleccionar asientos
+    asientosSeleccionados.add(num);
+    btn.classList.remove('sa-asiento--libre');
+    btn.classList.add('sa-asiento--seleccionado');
+    btn.setAttribute('aria-label', `Asiento ${num} – seleccionado`);
   }
 
-  if (asientoSeleccionado === num) {
-    asientoSeleccionado = null;
-    actualizarResumen(null);
-    return;
-  }
-
-  btn.classList.remove('sa-asiento--libre');
-  btn.classList.add('sa-asiento--seleccionado');
-  btn.setAttribute('aria-label', `Asiento ${num} – seleccionado`);
-  asientoSeleccionado = num;
-  actualizarResumen(num);
-
-  sessionStorage.setItem('asientoSeleccionado', String(num));
-  sessionStorage.setItem('busSeleccionado', busId);
-  sessionStorage.setItem('horaSeleccionada', hora);
-  sessionStorage.setItem('precioSeleccionado', precio);
+  actualizarResumen();
 }
 
-function actualizarResumen(num) {
+
+/* ── 6. Actualizar panel de resumen ──────────────────────────── */
+function actualizarResumen() {
   const btnConfirmar = document.getElementById('btnConfirmar');
   const resumenVacio = document.getElementById('resumenVacio');
-  const resumenSel = document.getElementById('resumenSeleccion');
-  const elNum = document.getElementById('resumenAsientoNum');
-  const elPrecio = document.getElementById('resumenPrecio');
-  const elHora = document.getElementById('resumenHora');
+  const resumenSel   = document.getElementById('resumenSeleccion');
+  const elLista      = document.getElementById('resumenAsientoNum');
+  const elContador   = document.getElementById('resumenContador');
+  const elPrecio     = document.getElementById('resumenPrecio');
+  const elHora       = document.getElementById('resumenHora');
 
-  if (num === null) {
+  if (asientosSeleccionados.size === 0) {
     resumenVacio.style.display = '';
     resumenSel.style.display = 'none';
     btnConfirmar.disabled = true;
@@ -164,22 +169,42 @@ function actualizarResumen(num) {
   resumenSel.style.display = '';
   btnConfirmar.disabled = false;
 
-  elNum.textContent = `Asiento N.º ${num}`;
-  elPrecio.textContent = PRECIO_FMT;
-  elHora.textContent = hora;
+  const sorted = Array.from(asientosSeleccionados).sort((a, b) => a - b);
+  const precioNum = parseInt(precio);
+  const total = precioNum * asientosSeleccionados.size;
+  const totalFmt = `$${total.toLocaleString('es-CL')}`;
+
+  // Chips de asientos seleccionados
+  elLista.innerHTML = sorted
+    .map(n => `<span class="sa-resumen__chip">${n}</span>`)
+    .join('');
+
+  elContador.textContent = `${asientosSeleccionados.size} asiento${asientosSeleccionados.size > 1 ? 's' : ''}`;
+  elPrecio.textContent   = totalFmt;
+  elHora.textContent     = hora;
 }
 
 document.getElementById('btnConfirmar').addEventListener('click', () => {
-  if (asientoSeleccionado === null) return;
-  sessionStorage.setItem('asientoSeleccionado', String(asientoSeleccionado));
+  if (asientosSeleccionados.size === 0) return;
+
+  const sorted = Array.from(asientosSeleccionados).sort((a, b) => a - b);
+  const asientoFinal = sorted.join(', ');
+  const total  = parseInt(precio) * asientosSeleccionados.size;
+
   sessionStorage.setItem('busSeleccionado', busId);
   sessionStorage.setItem('horaSeleccionada', hora);
   sessionStorage.setItem('precioSeleccionado', precio);
-  window.location.assign('/compra-pasajes');
+  sessionStorage.setItem('asientoSeleccionado', asientoFinal);
+
+  window.location.href = '/compra-pasajes';
 });
 
+
+/* ── 8. Iniciar ──────────────────────────────────────────────── */
 cargarAsientos();
-actualizarResumen(null);
+
+
+/* ── 9. MAPA LEAFLET + OpenStreetMap ─────────────────────────── */
 /**
  * Inicializa el mapa interactivo con Leaflet.js usando tiles de
  * OpenStreetMap (sin API key). La ruta sigue la Ruta 5 Sur real
@@ -200,61 +225,83 @@ function initMapaLeaflet() {
   /* ── Coordenadas reales de las paradas ── */
   const paradas = [
     {
-      latlng: [-34.9855, -71.2441],
+      latlng: [-34.984800474239314, -71.24580838453566],
       nombre: 'Terminal de Buses Curicó',
       detalle: 'Maipú 636, Curicó',
       tipo: 'origen'
     },
     {
-      latlng: [-35.1174, -71.2892],
+      latlng: [-35.094148495408554, -71.31878667318661],
       nombre: 'Paradero Molina',
       detalle: 'Molina, Maule',
       tipo: 'parada'
     },
     {
-      latlng: [-35.1830, -71.3210],
-      nombre: 'Subestación Itahue EFE',
-      detalle: 'Itahue, Molina',
+      latlng: [-35.12952611574631, -71.35216713561492],
+      nombre: 'Paradero Itahue',
+      detalle: 'Puente Alto, Molina',
       tipo: 'parada'
     },
     {
-      latlng: [-35.3065, -71.5205],
-      nombre: 'Vulcanización San Javier',
-      detalle: 'Ruta 5 Sur, San Javier',
+      latlng: [-35.21930224041522, -71.42243265633414],
+      nombre: 'Paradero Camarico',
+      detalle: 'Camarico, Rio Claro',
       tipo: 'parada'
     },
     {
-      latlng: [-35.4270, -71.6554],
+      latlng: [-35.30268971372136, -71.51769771925869],
+      nombre: 'Paradero San Rafael',
+      detalle: 'San Rafael',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.36884174597917, -71.5906332560088],
+      nombre: 'Paradero Panguilemo',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.39938866192725, -71.62046454103272],
+      nombre: 'Paradero Cruze Lircay',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.418717276870936, -71.63192427631867],
+      nombre: 'Paradero Parque Industrial Talca',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.42829759595688, -71.63593351927078],
+      nombre: 'Paradero 2 Norte',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.43157875116553, -71.63719529177065],
+      nombre: 'Paradero Varoli',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.4319090, -71.6443620],
+      nombre: 'Paradero 15 Oriente',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.43177636340633, -71.64541360388556],
+      nombre: 'Paradero Plaza Arturo Prat',
+      detalle: 'Talca',
+      tipo: 'parada'
+    },
+    {
+      latlng: [-35.43016139127286, -71.64699132598537],
       nombre: 'Terminal de Buses Talca',
-      detalle: '2 Sur 1936, Talca',
+      detalle: 'Talca, Maule',
       tipo: 'destino'
     }
-  ];
-
-  /* ── Coordenadas de la ruta (Ruta 5 Sur) ── */
-  const coordsRuta = [
-    [-34.9855, -71.2441],   // Curicó
-    [-34.9990, -71.2560],
-    [-35.0145, -71.2640],
-    [-35.0360, -71.2720],
-    [-35.0560, -71.2780],
-    [-35.0780, -71.2840],
-    [-35.1000, -71.2870],
-    [-35.1174, -71.2892],   // Molina
-    [-35.1380, -71.3010],
-    [-35.1580, -71.3130],
-    [-35.1830, -71.3210],   // Itahue EFE
-    [-35.2040, -71.3440],
-    [-35.2240, -71.3750],
-    [-35.2440, -71.4080],
-    [-35.2650, -71.4410],
-    [-35.2850, -71.4730],
-    [-35.3065, -71.5205],   // San Javier
-    [-35.3280, -71.5520],
-    [-35.3500, -71.5840],
-    [-35.3720, -71.6100],
-    [-35.3970, -71.6330],
-    [-35.4270, -71.6554]    // Talca
   ];
 
   /* ── Íconos con imágenes PNG descargadas ── */
@@ -295,71 +342,129 @@ function initMapaLeaflet() {
 
   /* ── Tiles de OpenStreetMap ── */
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | Ruta: <a href="https://project-osrm.org" target="_blank">OSRM</a>',
     maxZoom: 19,
     minZoom:  8,
   }).addTo(mapa);
 
-  /* ── Halo exterior (glow azul) de la ruta ── */
-  L.polyline(coordsRuta, {
-    color:      '#1a73e8',
-    weight:     16,
-    opacity:    0.18,
-    lineJoin:   'round',
-    lineCap:    'round',
-    smoothFactor: 1.5,
-  }).addTo(mapa);
+  /* ─────────────────────────────────────────────────────────────────
+     DIBUJAR RUTA REAL SIGUIENDO CARRETERAS (API OSRM gratuita)
+     OSRM = OpenStreetMap Routing Machine. Devuelve la geometría exacta
+     de la carretera (Ruta 5 Sur) sin necesitar API key.
 
-  /* ── Línea principal de la ruta ── */
-  const lineaRuta = L.polyline(coordsRuta, {
-    color:        '#1a73e8',
-    weight:       7,
-    opacity:      0.92,
-    lineJoin:     'round',
-    lineCap:      'round',
-    smoothFactor: 1.5,
-  }).addTo(mapa);
+     Nota: las coordenadas en OSRM van en orden  LONGITUD,LATITUD
+     (al revés que Leaflet que usa LATITUD,LONGITUD).
+  ───────────────────────────────────────────────────────────────── */
 
-  /* ── Hilo blanco interior (efecto Google Maps) ── */
-  L.polyline(coordsRuta, {
-    color:   '#ffffff',
-    weight:  2.5,
-    opacity: 0.55,
-    lineJoin:   'round',
-    lineCap:    'round',
-    smoothFactor: 1.5,
-  }).addTo(mapa);
+  // Convertir paradas de [lat,lng] a "lng,lat" que necesita OSRM
+  const waypoints = paradas
+    .map(p => `${p.latlng[1]},${p.latlng[0]}`)   // lng,lat
+    .join(';');
 
-  /* ── Marcadores de paradas ── */
-  paradas.forEach(p => {
-    // Elegir el icono según el tipo de parada
-    let icono;
-    if      (p.tipo === 'origen')  icono = iconoInicio;
-    else if (p.tipo === 'destino') icono = iconoFin;
-    else                           icono = iconoParada;
+  const osrmUrl =
+    `https://router.project-osrm.org/route/v1/driving/${waypoints}` +
+    `?overview=full&geometries=geojson`;
 
-    const etiquetaTipo = {
-      origen:  '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">ORIGEN</span>',
-      destino: '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">DESTINO</span>',
-      parada:  '<span style="color:#e53935;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">PARADA</span>',
-    }[p.tipo];
+  /**
+   * Dibuja la línea de ruta sobre el mapa usando las coordenadas dadas.
+   * Se llama tanto con la ruta real de OSRM como con el fallback.
+   * @param {Array} latlngs  - Array de [lat, lng] para Leaflet
+   */
+  function dibujarRuta(latlngs) {
+    // Halo exterior (glow azul)
+    L.polyline(latlngs, {
+      color:      '#1a73e8',
+      weight:     16,
+      opacity:    0.18,
+      lineJoin:   'round',
+      lineCap:    'round',
+    }).addTo(mapa);
 
-    const popupHtml = `
-      <div style="font-family:'DM Sans',sans-serif;min-width:150px;padding:2px 0;">
-        <div style="margin-bottom:4px;">${etiquetaTipo}</div>
-        <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px;">
-          ${p.nombre}
-        </div>
-        <div style="font-size:11px;color:#64748b;">${p.detalle}</div>
-      </div>`;
+    // Línea principal
+    const lineaPrincipal = L.polyline(latlngs, {
+      color:    '#1a73e8',
+      weight:   7,
+      opacity:  0.92,
+      lineJoin: 'round',
+      lineCap:  'round',
+    }).addTo(mapa);
 
-    L.marker(p.latlng, { icon: icono })
-      .addTo(mapa)
-      .bindPopup(popupHtml, { maxWidth: 220, offset: [0, 0] });
-  });
+    // Hilo blanco interior (efecto Google Maps)
+    L.polyline(latlngs, {
+      color:   '#ffffff',
+      weight:  2.5,
+      opacity: 0.55,
+      lineJoin: 'round',
+      lineCap:  'round',
+    }).addTo(mapa);
 
-  /* ── Ajustar vista para mostrar la ruta completa ── */
-  mapa.fitBounds(lineaRuta.getBounds(), { padding: [40, 55] });
+    return lineaPrincipal;
+  }
+
+  /* ── Marcadores de paradas (se agregan siempre, independiente de OSRM) ── */
+  function agregarMarcadores() {
+    paradas.forEach(p => {
+      let icono;
+      if      (p.tipo === 'origen')  icono = iconoInicio;
+      else if (p.tipo === 'destino') icono = iconoFin;
+      else                           icono = iconoParada;
+
+      const etiquetaTipo = {
+        origen:  '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">ORIGEN</span>',
+        destino: '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">DESTINO</span>',
+        parada:  '<span style="color:#e53935;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">PARADA</span>',
+      }[p.tipo];
+
+      const popupHtml = `
+        <div style="font-family:'DM Sans',sans-serif;min-width:150px;padding:2px 0;">
+          <div style="margin-bottom:4px;">${etiquetaTipo}</div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px;">
+            ${p.nombre}
+          </div>
+          <div style="font-size:11px;color:#64748b;">${p.detalle}</div>
+        </div>`;
+
+      L.marker(p.latlng, { icon: icono })
+        .addTo(mapa)
+        .bindPopup(popupHtml, { maxWidth: 220 });
+    });
+  }
+
+  /* ── Pedir ruta real a OSRM ── */
+  fetch(osrmUrl)
+    .then(res => {
+      if (!res.ok) throw new Error(`OSRM error: ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      // OSRM devuelve GeoJSON con coordenadas en [lng, lat]
+      // Leaflet necesita [lat, lng] → invertimos
+      const coords = data.routes[0].geometry.coordinates
+        .map(([lng, lat]) => [lat, lng]);
+
+      const linea = dibujarRuta(coords);
+      agregarMarcadores();
+      mapa.fitBounds(linea.getBounds(), { padding: [40, 55] });
+    })
+    .catch(err => {
+      // Si OSRM no está disponible (sin internet, etc.)
+      // usa el fallback con las coordenadas aproximadas
+      console.warn('OSRM no disponible, usando ruta aproximada:', err);
+
+      const fallback = [
+        [-34.9855, -71.2441],
+        [-35.0360, -71.2720],
+        [-35.1174, -71.2892],
+        [-35.1830, -71.3210],
+        [-35.2650, -71.4410],
+        [-35.3065, -71.5205],
+        [-35.3720, -71.6100],
+        [-35.4270, -71.6554],
+      ];
+      const linea = dibujarRuta(fallback);
+      agregarMarcadores();
+      mapa.fitBounds(linea.getBounds(), { padding: [40, 55] });
+    });
 }
 
 /* Iniciar el mapa cuando el DOM esté listo */
