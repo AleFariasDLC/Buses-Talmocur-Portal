@@ -38,7 +38,7 @@
         uppercase: { regex: /[A-Z]/, message: 'Una letra mayúscula' },
         lowercase: { regex: /[a-z]/, message: 'Una letra minúscula' },
         number: { regex: /[0-9]/, message: 'Un número' },
-        special: { regex: /[!@#$%^&*()-_,.?":{}|<>]/, message: 'Un carácter especial' }
+        special: { regex: /[!@#$%^&*()\-_=+\[\]{}|;:,.<>?/]/, message: 'Un carácter especial' }
     };
     passwordInput.addEventListener('input', () => {
         const value = passwordInput.value;

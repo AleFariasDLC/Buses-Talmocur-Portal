@@ -1,20 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Perfil{% endblock %}
+{% block title %}Mi perfil{% endblock %}
 
 {% block meta %}
-  <meta name="description" content="Tu perfil en Talmocur." />
+  <meta name="description" content="Edita tu información personal en Talmocur." />
 {% endblock %}
 
 {% block extra_css %}
+  <!-- Reutilizamos los estilos de campos/botones del login -->
+  <link rel="stylesheet" href="/static/css/login.css" />
   <link rel="stylesheet" href="/static/css/perfil.css" />
 {% endblock %}
 
 {% block content %}
 
-  <!-- ============================================================
-       HERO CON FONDO
-       ============================================================ -->
   <section class="pagina-perfil" aria-label="Perfil de usuario">
 
     <!-- Fondo con imagen + degradado -->
@@ -23,7 +22,7 @@
       <div class="hero__bg-overlay"></div>
     </div>
 
-    <!-- Tarjeta de perfil centrada -->
+    <!-- Tarjeta de perfil -->
     <div class="tarjeta-perfil" role="main">
 
       <!-- Logo -->
@@ -33,27 +32,87 @@
 
       <!-- Título -->
       <header class="tarjeta-perfil__header">
-        <h1 class="tarjeta-perfil__titulo">Perfil</h1>
-        <p class="tarjeta-perfil__subtitulo">Esta sección está en desarrollo</p>
+        <h1 class="tarjeta-perfil__titulo">Mi perfil</h1>
+        <p class="tarjeta-perfil__subtitulo">Edita tu información personal</p>
       </header>
 
-      <!-- Ícono decorativo -->
-      <div class="tarjeta-perfil__icono-dev">
-        <i class='bx bx-hard-hat'></i>
-      </div>
+      <!-- Estado de carga -->
+      <p id="perfilCargando" class="tarjeta-perfil__mensaje">Cargando tus datos…</p>
 
-      <p class="tarjeta-perfil__mensaje">
-        Pronto podrás ver y editar tu información personal desde aquí.
-      </p>
+      <!-- Formulario (oculto hasta cargar /api/me) -->
+      <form class="tarjeta-perfil__form" id="perfilForm" novalidate hidden>
 
-      <!-- Botón volver -->
-      <a href="/" class="lc-btn-submit tarjeta-perfil__btn-volver">
-        <i class='bx bx-home'></i>
-        Volver al inicio
-      </a>
+        <!-- Nombre completo -->
+        <div class="lc-field">
+          <label for="nombre" class="lc-label">Nombre completo</label>
+          <div class="lc-input-wrapper">
+            <input type="text" id="nombre" name="nombre" class="lc-input" autocomplete="name" required />
+            <span class="lc-icon" aria-hidden="true"><i class='bx bx-user'></i></span>
+          </div>
+        </div>
+
+        <!-- Correo electrónico -->
+        <div class="lc-field">
+          <label for="email" class="lc-label">Correo electrónico</label>
+          <div class="lc-input-wrapper">
+            <input type="email" id="email" name="email" class="lc-input" autocomplete="email" required />
+            <span class="lc-icon" aria-hidden="true"><i class='bx bx-envelope'></i></span>
+          </div>
+        </div>
+
+        <!-- Fecha de registro (solo lectura) -->
+        <div class="lc-field">
+          <label class="lc-label">Miembro desde</label>
+          <p id="fechaRegistro" class="perfil-dato-readonly">—</p>
+        </div>
+
+        <!-- Bloque cambiar contraseña (opcional) -->
+        <details class="perfil-password-toggle">
+          <summary>Cambiar contraseña</summary>
+
+          <div class="lc-field perfil-password-campos">
+            <label for="currentPassword" class="lc-label">Contraseña actual</label>
+            <div class="lc-input-wrapper">
+              <input type="password" id="currentPassword" name="currentPassword" class="lc-input"
+                placeholder="Tu contraseña actual" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <div class="lc-field perfil-password-campos">
+            <label for="password" class="lc-label">Nueva contraseña</label>
+            <div class="lc-input-wrapper">
+              <input type="password" id="password" name="password" class="lc-input"
+                placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+            </div>
+            <ul id="passwordCriteria" class="password-criteria"></ul>
+          </div>
+
+          <div class="lc-field perfil-password-campos">
+            <label for="confirmPassword" class="lc-label">Confirmar nueva contraseña</label>
+            <div class="lc-input-wrapper">
+              <input type="password" id="confirmPassword" name="confirmPassword" class="lc-input"
+                placeholder="Repite la nueva contraseña" autocomplete="new-password" />
+            </div>
+          </div>
+        </details>
+
+        <!-- Botón guardar -->
+        <button type="submit" class="lc-btn-submit" id="btnGuardar">
+          <i class='bx bx-save'></i>
+          Guardar cambios
+        </button>
+
+        <!-- Volver -->
+        <a href="/" class="enlace-registro perfil-volver">← Volver al inicio</a>
+
+      </form>
 
     </div>
 
   </section>
 
+{% endblock %}
+
+{% block extra_js %}
+  <script src="/static/js/perfil.js"></script>
 {% endblock %}

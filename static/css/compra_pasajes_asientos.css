@@ -43,7 +43,9 @@
   transform: translateX(-2px);
 }
 
-.sa-topbar__back i { font-size: 1rem; }
+.sa-topbar__back i {
+  font-size: 1rem;
+}
 
 .sa-topbar__info {
   display: flex;
@@ -74,7 +76,9 @@
   color: var(--color-gray-500);
 }
 
-.sa-topbar__sep { color: var(--color-gray-400); }
+.sa-topbar__sep {
+  color: var(--color-gray-400);
+}
 
 .sa-topbar__hora {
   font-weight: 600;
@@ -106,8 +110,8 @@
 /* ---- 3. Layout principal (MAPA GRANDE | asientos) -------------- */
 .sa-layout {
   display: grid;
-  /* Mapa ocupa 3 fracciones, asientos solo 2 → mapa ~60% del ancho */
-  grid-template-columns: 3fr 2fr;
+  /* Mapa ocupa 5 fracciones, asientos solo 2 → mapa ~71% del ancho */
+  grid-template-columns: 5fr 2fr;
   gap: 24px;
   max-width: 1400px;
   margin: 0 auto;
@@ -126,7 +130,8 @@
   display: flex;
   flex-direction: column;
   position: sticky;
-  top: 88px;          /* queda fijo debajo de navbar + topbar */
+  top: 88px;
+  /* queda fijo debajo de navbar + topbar */
 }
 
 /* Header del panel de mapa */
@@ -196,9 +201,11 @@
 /* Contenedor del mapa Leaflet */
 .sa-mapa__leaflet {
   width: 100%;
-  height: 520px;          /* altura fija que Leaflet necesita */
+  height: 520px;
+  /* altura fija que Leaflet necesita */
   min-height: 400px;
-  background: #e8ecef;    /* color terreno mientras carga */
+  background: #e8ecef;
+  /* color terreno mientras carga */
   display: block;
 }
 
@@ -210,14 +217,14 @@
 
 .sa-mapa__leaflet .leaflet-popup-content-wrapper {
   border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 /* Detalles del viaje (debajo del mapa) */
 .sa-mapa__detalles {
   padding: 14px 22px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
   border-top: 1.5px solid var(--color-gray-100);
   background: var(--color-gray-50);
@@ -229,14 +236,14 @@
   gap: 10px;
 }
 
-.sa-mapa__detalle-item > i {
+.sa-mapa__detalle-item>i {
   font-size: 1.2rem;
   color: var(--color-primary);
   margin-top: 1px;
   flex-shrink: 0;
 }
 
-.sa-mapa__detalle-item > div {
+.sa-mapa__detalle-item>div {
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -286,12 +293,12 @@
 
 .sa-mapa__leyenda-pin--negro {
   background: #1a1a1a;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
 .sa-mapa__leyenda-pin--rojo {
   background: #35e53b;
-  box-shadow: 0 2px 5px rgba(229,57,53,0.5);
+  box-shadow: 0 2px 5px rgba(229, 57, 53, 0.5);
 }
 
 .sa-mapa__leyenda-linea {
@@ -300,7 +307,7 @@
   height: 5px;
   border-radius: 3px;
   background: #1a73e8;
-  box-shadow: 0 1px 4px rgba(26,115,232,0.45);
+  box-shadow: 0 1px 4px rgba(26, 115, 232, 0.45);
   flex-shrink: 0;
 }
 
@@ -312,7 +319,9 @@
   gap: 16px;
 }
 
-.sa-asientos__header { padding: 2px 0; }
+.sa-asientos__header {
+  padding: 2px 0;
+}
 
 .sa-asientos__titulo {
   font-size: 1.25rem;
@@ -416,9 +425,13 @@
 }
 
 .sa-bus__volante i,
-.sa-bus__puerta i { font-size: 1.05rem; }
+.sa-bus__puerta i {
+  font-size: 1.05rem;
+}
 
-.sa-bus__cabina { padding: 16px 22px; }
+.sa-bus__cabina {
+  padding: 16px 22px;
+}
 
 /* Etiquetas columnas A B / C D */
 .sa-bus__labels-col {
@@ -497,14 +510,21 @@
   border-color: #7dd3fc;
   color: #0369a1;
 }
-.sa-asiento--libre::before { background-color: #7dd3fc; }
+
+.sa-asiento--libre::before {
+  background-color: #7dd3fc;
+}
+
 .sa-asiento--libre:hover {
   background-color: #bae6fd;
   border-color: #38bdf8;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
 }
-.sa-asiento--libre:hover::before { background-color: #38bdf8; }
+
+.sa-asiento--libre:hover::before {
+  background-color: #38bdf8;
+}
 
 /* Estado: Seleccionado */
 .sa-asiento--seleccionado {
@@ -514,7 +534,11 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(29, 78, 216, 0.40);
 }
-.sa-asiento--seleccionado::before { background-color: #1e3a8a; }
+
+.sa-asiento--seleccionado::before {
+  background-color: #1e3a8a;
+}
+
 .sa-asiento--seleccionado:hover {
   background-color: #1e40af;
   transform: translateY(-3px);
@@ -528,7 +552,11 @@
   color: #cbd5e1;
   cursor: not-allowed;
 }
-.sa-asiento--ocupado::before { background-color: #e2e8f0; }
+
+.sa-asiento--ocupado::before {
+  background-color: #e2e8f0;
+}
+
 .sa-asiento--ocupado::after {
   content: 'x';
   position: absolute;
@@ -536,7 +564,10 @@
   color: #94a3b8;
   font-weight: 700;
 }
-.sa-asiento--ocupado .sa-asiento__num { display: none; }
+
+.sa-asiento--ocupado .sa-asiento__num {
+  display: none;
+}
 
 .sa-asiento__num {
   font-size: 0.7rem;
@@ -583,9 +614,19 @@
   color: var(--color-gray-400);
 }
 
-.sa-resumen__vacio i { font-size: 2.2rem; }
-.sa-resumen__vacio p { font-size: 0.88rem; font-weight: 600; margin: 0; }
-.sa-resumen__vacio small { font-size: 0.76rem; }
+.sa-resumen__vacio i {
+  font-size: 2.2rem;
+}
+
+.sa-resumen__vacio p {
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sa-resumen__vacio small {
+  font-size: 0.76rem;
+}
 
 .sa-resumen__seleccion {
   display: flex;
@@ -600,7 +641,10 @@
   padding: 7px 0;
   border-bottom: 1px solid var(--color-gray-100);
 }
-.sa-resumen__fila:last-child { border-bottom: none; }
+
+.sa-resumen__fila:last-child {
+  border-bottom: none;
+}
 
 .sa-resumen__etiqueta {
   font-size: 0.8rem;
@@ -617,6 +661,42 @@
 .sa-resumen__valor--precio {
   font-size: 1.08rem;
   color: var(--color-primary);
+}
+
+/* Badge contador de asientos */
+.sa-resumen__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1.5px solid #bfdbfe;
+}
+
+/* Contenedor de chips de asientos */
+.sa-resumen__chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+/* Chip individual de número de asiento */
+.sa-resumen__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 4px 8px;
+  background: #1d4ed8;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.30);
 }
 
 /* Boton confirmar */
@@ -650,13 +730,20 @@
   opacity: 0.7;
 }
 
-.sa-btn-confirmar i { font-size: 1.1rem; }
+.sa-btn-confirmar i {
+  font-size: 1.1rem;
+}
 
 
 /* ---- 9. Animacion de la linea de ruta -------------------------- */
 @keyframes rutaDash {
-  from { stroke-dashoffset: 2000; }
-  to   { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 2000;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 #rutaBus {
@@ -668,7 +755,7 @@
 /* ---- 10. Responsive -------------------------------------------- */
 @media (max-width: 1100px) {
   .sa-layout {
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 5fr 2fr;
     padding: 16px 16px 40px;
   }
 }
@@ -694,9 +781,15 @@
     gap: 10px;
   }
 
-  .sa-bus__cabina { padding: 12px 14px; }
+  .sa-bus__cabina {
+    padding: 12px 14px;
+  }
 
-  .sa-asiento { height: 35px; }
+  .sa-asiento {
+    height: 35px;
+  }
 
-  .sa-mapa__header-chips { display: none; }
+  .sa-mapa__header-chips {
+    display: none;
+  }
 }

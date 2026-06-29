@@ -3,102 +3,102 @@
 {% block title %}Login{% endblock %}
 
 {% block meta %}
-  <meta name="description" content="Inicia sesión en Talmocur para gestionar tus pasajes de bus." />
+<meta name="description" content="Inicia sesión en Talmocur para gestionar tus pasajes de bus." />
 {% endblock %}
 
 {% block nav_login %}nav-activo{% endblock %}
 
 {% block extra_css %}
-  <!-- CSS Login -->
-  <link rel="stylesheet" href="/static/css/login.css" />
+<!-- CSS Login -->
+<link rel="stylesheet" href="/static/css/login.css" />
 {% endblock %}
 
 
 {% block content %}
 
-  <!-- ============================================================
+<!-- ============================================================
        HERO CON FONDO
        ============================================================ -->
-  <section class="pagina-login" aria-label="Iniciar sesión">
+<section class="pagina-login" aria-label="Iniciar sesión">
 
-    <!-- Fondo con imagen de bus -->
-    <div class="hero__bg" aria-hidden="true">
-      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
-      <div class="hero__bg-overlay"></div>
+  <!-- Fondo con imagen de bus -->
+  <div class="hero__bg" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&q=80" alt="" class="hero__bg-img" />
+    <div class="hero__bg-overlay"></div>
+  </div>
+
+  <!-- Tarjeta de login centrada -->
+  <div class="tarjeta-login" role="main">
+
+    <!-- Logo dentro de la tarjeta -->
+    <div class="tarjeta-login__logo">
+      <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="tarjeta-login__logo-img" />
     </div>
 
-    <!-- Tarjeta de login centrada -->
-    <div class="tarjeta-login" role="main">
+    <!-- Título -->
+    <header class="tarjeta-login__encabezado">
+      <h1 class="tarjeta-login__titulo">Bienvenido de vuelta</h1>
+      <p class="tarjeta-login__subtitulo">Ingresa tus datos en el formulario</p>
+    </header>
 
-      <!-- Logo dentro de la tarjeta -->
-      <div class="tarjeta-login__logo">
-        <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="tarjeta-login__logo-img" />
-      </div>
+    <!-- Formulario -->
+    <form class="tarjeta-login__form" id="loginForm" novalidate>
 
-      <!-- Título -->
-      <header class="tarjeta-login__encabezado">
-        <h1 class="tarjeta-login__titulo">Bienvenido de vuelta</h1>
-        <p class="tarjeta-login__subtitulo">Ingresa tus datos en el formulario</p>
-      </header>
-
-      <!-- Formulario -->
-      <form class="tarjeta-login__form" id="loginForm" novalidate>
-
-        <!-- Correo electrónico -->
+      <!-- Correo electrónico -->
       <div class="lc-field">
         <label for="email" class="lc-label">Correo electrónico</label>
         <div class="lc-input-wrapper">
           <input type="email" id="email" name="email" class="lc-input" placeholder="ejemplo@correo.com"
-              autocomplete="email" required />
+            autocomplete="email" required />
           <span class="lc-icon" aria-hidden="true">
-              <i class='bx bx-envelope'></i>
-            </span>
-          </div>
+            <i class='bx bx-envelope'></i>
+          </span>
         </div>
+      </div>
 
-        <!-- Contraseña -->
+      <!-- Contraseña -->
       <div class="lc-field">
         <div class="lc-label-fila">
           <label for="password" class="lc-label">Contraseña</label>
-          <a href="#" class="lc-olvidaste">¿Olvidaste tu contraseña?</a>
+          <a href="/recuperar" class="lc-olvidaste">¿Olvidaste tu contraseña?</a>
         </div>
         <div class="lc-input-wrapper">
           <input type="password" id="password" name="password" class="lc-input" placeholder="••••••••"
-              autocomplete="current-password" required />
+            autocomplete="current-password" required />
           <button type="button" class="lc-icon lc-icon--btn" id="togglePassword"
-              aria-label="Mostrar u ocultar contraseña">
-              <i class='bx bxs-show' id="toggleIcon"></i>
-            </button>
-          </div>
+            aria-label="Mostrar u ocultar contraseña">
+            <i class='bx bxs-show' id="toggleIcon"></i>
+          </button>
         </div>
-
-        <!-- Botón Iniciar Sesión -->
-      <button type="submit" class="lc-btn-submit" id="btnLogin">
-          <i class='bx bx-log-in'></i>
-          Iniciar sesión
-        </button>
-
-      </form>
-
-      <!-- Separador -->
-      <div class="separador">
-        <span>o</span>
       </div>
 
-      <!-- Registro -->
-      <p class="texto-registro">
-        ¿No tienes una cuenta?
-        <a href="/registro" class="enlace-registro">Registrate aquí</a>
-      </p>
+      <!-- Botón Iniciar Sesión -->
+      <button type="submit" class="lc-btn-submit" id="btnLogin">
+        <i class='bx bx-log-in'></i>
+        Iniciar sesión
+      </button>
 
+    </form>
+
+    <!-- Separador -->
+    <div class="separador">
+      <span>o</span>
     </div>
-    <!-- /tarjeta-login -->
 
-  </section>
+    <!-- Registro -->
+    <p class="texto-registro">
+      ¿No tienes una cuenta?
+      <a href="/registro" class="enlace-registro">Registrate aquí</a>
+    </p>
+
+  </div>
+  <!-- /tarjeta-login -->
+
+</section>
 
 {% endblock %}
 
 
 {% block extra_js %}
-  <script src="/static/js/login.js"></script>
+<script src="/static/js/login.js"></script>
 {% endblock %}

@@ -71,6 +71,20 @@ def registro():
     response.headers['Cache-Control'] = 'no-store'
     return response
 
+@app.route('/recuperar')
+def recuperar():
+    # Página para solicitar el enlace de recuperación de contraseña
+    response = make_response(render_template('recuperar.html'))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+@app.route('/restablecer')
+def restablecer():
+    # Página donde el usuario define su nueva contraseña (llega desde el correo)
+    response = make_response(render_template('restablecer.html'))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
 @app.route('/tarifas')
 def tarifas():
     db = obtener_sesion()
@@ -84,6 +98,14 @@ def tarifas():
 @app.route('/quienes-somos')
 def quienes_somos():
     return render_template('quienes_somos.html')
+
+@app.route('/compra-pasajes')
+def compra_pasajes():
+    return render_template('compra_pasajes.html')
+
+@app.route('/boleta')
+def boleta():
+    return render_template('boleta.html')
 
 
 @app.route('/api/origenes')
@@ -102,9 +124,9 @@ def api_origenes():
 def perfil():
     return render_template('perfil.html')
 
-@app.route('/seleccionar-asientos')
-def seleccionar_asientos():
-    return render_template('seleccionar_asientos.html')
+@app.route('/compra-pasajes-asientos')
+def compra_pasajes_asientos():
+    return render_template('compra_pasajes_asientos.html')
 
 @app.route('/admin')
 def admin_dashboard():
