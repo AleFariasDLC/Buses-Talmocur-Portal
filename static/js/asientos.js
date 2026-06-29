@@ -204,8 +204,19 @@ document.getElementById('btnConfirmar').addEventListener('click', () => {
   const total  = parseInt(precio) * asientosSeleccionados.size;
   const totalFmt = `$${total.toLocaleString('es-CL')}`;
 
+  sessionStorage.setItem('busSeleccionado', busId);
+  sessionStorage.setItem('horaSeleccionada', hora);
+  sessionStorage.setItem('precioSeleccionado', precio);
+  sessionStorage.setItem('asientosSeleccionados', JSON.stringify(sorted));
+  sessionStorage.setItem('asientoSeleccionado', sorted.join(', '));
+  sessionStorage.setItem('totalSeleccionado', String(total));
+  sessionStorage.setItem('totalSeleccionadoFmt', totalFmt);
+
   // Aquí en el futuro se conectará con la API de reserva
-  alert(`✅ Reserva registrada:\n\nBus: ${busId}\nAsientos: ${sorted.join(', ')}\nHora: ${hora}\nTotal: ${totalFmt}\n\n(Funcionalidad de pago próximamente)`);
+  //alert(`✅ Reserva registrada:\n\nBus: ${busId}\nAsientos: ${sorted.join(', ')}\nHora: ${hora}\nTotal: ${totalFmt}\n\n(Funcionalidad de pago próximamente)`);
+  
+  //Existe ruta de compra de pasajes, redirigir con nombre de ruta de flask
+  window.location.assign('/compra-pasajes')
 });
 
 

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Boleta de Compra · Talmocur{% endblock %}
+
+{% block meta %}
+  <meta name="description" content="Tu boleta de compra ha sido generada exitosamente." />
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="/static/css/boleta.css" />
+{% endblock %}
+
+{% block content %}
+<main class="boleta-page">
+  <section class="boleta-hero" aria-label="Boleta de compra">
+    <p class="boleta-hero__kicker">Compra Realizada</p>
+    <h1 class="boleta-hero__title">¡Gracias por tu compra!</h1>
+    <p class="boleta-hero__subtitle">Tu boleta ha sido generada exitosamente</p>
+  </section>
+
+  <div class="boleta-container">
+    <!-- Boleta imprimible -->
+    <section class="boleta-card" id="boleta-imprimible">
+      <!-- Encabezado -->
+      <div class="boleta-header">
+        <img src="/static/image/logo_azul_sin_fondo.png" alt="Talmocur" class="boleta-logo" />
+        <div class="boleta-header__info">
+          <h2 class="boleta-empresa">TALMOCUR</h2>
+          <p class="boleta-subtitulo">Empresa de Transporte</p>
+        </div>
+      </div>
+
+      <!-- Número de boleta y fecha -->
+      <div class="boleta-ref">
+        <div>
+          <p class="boleta-ref__label">Número de boleta</p>
+          <p class="boleta-ref__value" id="boleta-numero">FACT-2024-000001</p>
+        </div>
+        <div>
+          <p class="boleta-ref__label">Fecha</p>
+          <p class="boleta-ref__value" id="boleta-fecha">26/06/2024</p>
+        </div>
+      </div>
+
+      <!-- Sección: Información del viaje -->
+      <div class="boleta-seccion">
+        <h3 class="boleta-seccion__titulo">Información del Viaje</h3>
+        <div class="boleta-grid">
+          <div class="boleta-item">
+            <span class="boleta-item__label">Origen</span>
+            <span class="boleta-item__value" id="boleta-origen">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Destino</span>
+            <span class="boleta-item__value" id="boleta-destino">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Hora de salida</span>
+            <span class="boleta-item__value" id="boleta-salida">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Hora de llegada</span>
+            <span class="boleta-item__value" id="boleta-llegada">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Tipo de Bus</span>
+            <span class="boleta-item__value" id="boleta-bus">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Asiento</span>
+            <span class="boleta-item__value" id="boleta-asiento">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Datos del pasajero -->
+      <div class="boleta-seccion">
+        <h3 class="boleta-seccion__titulo">Datos del Pasajero</h3>
+        <div class="boleta-grid">
+          <div class="boleta-item boleta-item--full">
+            <span class="boleta-item__label">Nombre completo</span>
+            <span class="boleta-item__value" id="boleta-nombre">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">RUT</span>
+            <span class="boleta-item__value" id="boleta-rut">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Tipo de pasaje</span>
+            <span class="boleta-item__value" id="boleta-tipo-pasaje">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Email</span>
+            <span class="boleta-item__value" id="boleta-email">—</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Teléfono</span>
+            <span class="boleta-item__value" id="boleta-telefono">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Observaciones -->
+      <div class="boleta-seccion" id="seccion-observaciones" style="display: none;">
+        <h3 class="boleta-seccion__titulo">Observaciones</h3>
+        <p class="boleta-observaciones" id="boleta-observaciones">—</p>
+      </div>
+
+      <!-- QR y precio -->
+      <div class="boleta-footer">
+        <div class="boleta-qr-container">
+          <p class="boleta-qr__label">Código QR</p>
+          <div id="boleta-qr" class="boleta-qr"></div>
+          <p class="boleta-qr__numero" id="boleta-codigo">TALMOCUR-2024-000001</p>
+        </div>
+
+        <div class="boleta-precio-total">
+          <p class="boleta-precio__label">Monto total</p>
+          <p class="boleta-precio__value" id="boleta-precio">$0</p>
+        </div>
+      </div>
+
+      <!-- Línea divisora -->
+      <div class="boleta-divisor"></div>
+
+      <!-- Pie de boleta -->
+      <div class="boleta-pie">
+        <p>Gracias por viajar con Talmocur</p>
+        <p>Conserve esta boleta como comprobante de su viaje</p>
+      </div>
+    </section>
+
+    <!-- Acciones -->
+    <div class="boleta-acciones">
+      <button type="button" class="boleta-btn boleta-btn--print" id="btn-imprimir" aria-label="Imprimir boleta">
+        <i class='bx bx-printer'></i>
+        Imprimir boleta
+      </button>
+      <a href="/" class="boleta-btn boleta-btn--home">
+        <i class='bx bx-home'></i>
+        Volver al inicio
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.5.3/qrcode.min.js"></script>
+  <script src="/static/js/boleta.js"></script>
+{% endblock %}

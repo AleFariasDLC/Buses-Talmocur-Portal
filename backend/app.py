@@ -84,6 +84,14 @@ def tarifas():
 def quienes_somos():
     return render_template('quienes_somos.html')
 
+@app.route('/compra-pasajes')
+def compra_pasajes():
+    return render_template('compra_pasajes.html')
+
+@app.route('/boleta')
+def boleta():
+    return render_template('boleta.html')
+
 
 @app.route('/api/origenes')
 def api_origenes():
