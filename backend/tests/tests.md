@@ -53,18 +53,26 @@ python -m pytest tests/ -q
 
 ```
 backend/
-├── pytest.ini              # Configuración de pytest
+├── pytest.ini                  # Configuración de pytest
 └── tests/
-    ├── __init__.py          # Marca tests/ como paquete Python
-    ├── conftest.py          # Fixture principal (cliente Flask con BD aislada)
-    ├── helpers.py           # Constantes y funciones reutilizables
-    ├── test_validaciones.py # Tests unitarios de validación
-    ├── test_registro.py     # Tests de integración para registro
-    ├── test_login.py        # Tests de integración para login
-    ├── test_sesion.py       # Tests de sesión, logout y flujos completos
-    ├── test_perfil.py       # Tests de perfil, context processor y cache
-    ├── test_db_sqlite.py    # Tests unitarios para funciones CRUD
-    └── test_robustez.py     # Tests de robustez y casos borde de la API
+    ├── __init__.py              # Marca tests/ como paquete Python
+    ├── conftest.py              # Fixture principal (cliente Flask con BD aislada)
+    ├── helpers.py               # Constantes y funciones reutilizables
+    ├── test_validaciones.py     # Tests unitarios de validación
+    ├── test_registro.py         # Tests de integración para registro
+    ├── test_login.py            # Tests de integración para login
+    ├── test_sesion.py           # Tests de sesión, logout y flujos completos
+    ├── test_perfil.py           # Tests de perfil, context processor y cache
+    ├── test_perfil_editar.py    # Tests de edición de perfil (PUT /api/me)
+    ├── test_db_sqlite.py        # Tests unitarios para funciones CRUD de usuarios
+    ├── test_db_tokens.py        # Tests unitarios para tokens de recuperación
+    ├── test_robustez.py         # Tests de robustez y casos borde de la API
+    ├── test_recuperar.py        # Tests de recuperación de contraseña
+    ├── test_admin_buses.py      # Tests CRUD de buses (admin)
+    ├── test_admin_horarios.py   # Tests CRUD de horarios + conflictos (admin)
+    ├── test_admin_avisos.py     # Tests CRUD de avisos (admin)
+    ├── test_asientos_compra.py  # Tests de asientos y compra de pasajes
+    └── test_rutas_paginas.py    # Tests de rutas de páginas y acceso admin
 ```
 
 ---
@@ -171,6 +179,98 @@ Tests de **robustez** para verificar que la API maneja correctamente peticiones 
 
 ---
 
+### `test_recuperar.py` — 9 tests
+
+Tests de **integración** para la recuperación y restablecimiento de contraseña.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestForgotPassword` | Email existente retorna 200, email inexistente mismo mensaje (anti-enumeración), email vacío retorna 400 |
+| `TestResetPassword` | Reset exitoso + login con nueva clave, token inválido, token de un solo uso, contraseña débil, contraseñas no coinciden |
+
+---
+
+### `test_admin_buses.py` — 22 tests
+
+Tests de **integración** para el CRUD de buses (solo admin).
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestBusesAcceso` | Sin sesión retorna 403, pasajero retorna 403 (GET, POST, PUT, DELETE) |
+| `TestListarBuses` | Lista vacía, lista con datos después de crear |
+| `TestCrearBus` | Creación exitosa, asientos generados, patente duplicada (409), patente vacía/normalizada, capacidad inválida |
+| `TestEditarBus` | Editar chofer/modelo/estado, bus inexistente (404) |
+| `TestEliminarBus` | Eliminación exitosa, inexistente (404), pasajero no puede eliminar |
+
+---
+
+### `test_admin_horarios.py` — 20 tests
+
+Tests de **integración** para el CRUD de horarios y validación de conflictos (solo admin).
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestHorariosAcceso` | Sin sesión y como pasajero retorna 403 (POST, PUT, DELETE) |
+| `TestCrearHorario` | Creación exitosa, bus inexistente (404), recorrido inexistente (404), campos faltantes |
+| `TestConflictoHorario` | Mismo recorrido <2h rechazado, ≥2h permitido; distinto recorrido <1h rechazado, ≥1h permitido; buses diferentes no conflictan |
+| `TestEditarHorario` | Editar precio/estado/hora, inexistente (404), hora con conflicto (400) |
+| `TestEliminarHorario` | Eliminación exitosa, inexistente (404) |
+
+---
+
+### `test_admin_avisos.py` — 20 tests
+
+Tests de **integración** para el CRUD de avisos (admin) y endpoint público de avisos activos.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestAvisosAcceso` | Sin sesión y como pasajero retorna 403 (POST, GET, PUT, DELETE) |
+| `TestCrearAviso` | Creación exitosa, título/mensaje vacío (400), tipo inválido (400), 4 tipos válidos |
+| `TestListarAvisos` | Lista vacía, con datos |
+| `TestAvisosActivos` | Sin datos, avisos vigentes, avisos inactivos no aparecen |
+| `TestEditarAviso` | Editar título, tipo inválido (400), inexistente (404) |
+| `TestEliminarAviso` | Eliminación exitosa, inexistente (404) |
+
+---
+
+### `test_asientos_compra.py` — 13 tests
+
+Tests de **integración** para consulta de asientos y flujo de compra de pasajes.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestObtenerAsientos` | Sin parámetro bus (400), bus existente, bus auto-creado, con hora, asiento ocupado post-compra |
+| `TestConfirmarCompra` | Compra exitosa, sin datos (400), sin patente (400), asiento inválido (400), asiento ya vendido (409), usuario invitado, fecha de viaje, monto correcto |
+
+---
+
+### `test_db_tokens.py` — 10 tests
+
+Tests **unitarios** para las funciones CRUD de tokens de recuperación en `db_sqlite.py`.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestCrearToken` | Creación exitosa y posterior búsqueda |
+| `TestBuscarToken` | Token inexistente, vigente, expirado, usado, datos de usuario retornados |
+| `TestMarcarTokenUsado` | Marcar exitoso, token inexistente no falla |
+| `TestInvalidarTokensDeUsuario` | Invalida todos los tokens del usuario, no afecta tokens de otros usuarios |
+
+---
+
+### `test_rutas_paginas.py` — 17 tests
+
+Tests de **integración** para las rutas de páginas y control de acceso.
+
+| Clase | Qué verifica |
+|:------|:-------------|
+| `TestAdminDashboard` | /admin redirige sin sesión y como pasajero, accesible como admin |
+| `TestPaginasRecuperacion` | /recuperar y /restablecer retornan HTML con Cache-Control: no-store |
+| `TestPaginasPublicas` | /tarifas, /quienes-somos, /compra-pasajes, /boleta, /perfil, /compra-pasajes-asientos retornan 200 |
+| `TestApiOrigenes` | Sin datos retorna listas vacías, con datos retorna orígenes y destinos |
+| `TestApiRecorridos` | Sin datos retorna lista vacía, con datos retorna nombre y precio |
+
+---
+
 ## Cómo funciona el aislamiento de tests
 
 Cada test recibe una **base de datos SQLite en memoria** completamente vacía e independiente. Esto se logra mediante la fixture `client` en `conftest.py`:
@@ -245,14 +345,21 @@ class TestMiFuncionCRUD:
 | Requisito | Tests que lo cubren |
 |:----------|:-------------------|
 | REQ-F04 — Login y control de acceso | `test_login.py`, `test_sesion.py`, `test_perfil.py` |
+| REQ-F04 — Gestión de cuenta | `test_perfil_editar.py`, `test_recuperar.py` |
 | REQ-NF01 — Contraseñas cifradas | `test_registro.py::TestRegistroSeguridad` |
 | REQ-NF03 — Interfaz en español | Todos los tests verifican mensajes en español |
 | Robustez y seguridad | `test_robustez.py` |
+| Administración de buses | `test_admin_buses.py` |
+| Administración de horarios | `test_admin_horarios.py` |
+| Administración de avisos | `test_admin_avisos.py` |
+| Compra de pasajes | `test_asientos_compra.py` |
+| CRUD de tokens | `test_db_tokens.py` |
+| Rutas y acceso admin | `test_rutas_paginas.py` |
 
 ---
 
 ## Resultado actual
 
 ```
-============================= 138 passed in ~18s ==============================
+====================== 259 passed, 5 warnings in ~50s =======================
 ```
