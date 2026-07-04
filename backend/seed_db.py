@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from database import crear_tablas, obtener_sesion, _RUTA_DB
 from models import Recorrido, Usuario, Bus, Asiento, HorarioViaje
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -76,7 +76,7 @@ def seed(quiet=False):
                 email=admin_email,
                 password_hash=admin_hash,
                 rol="admin",
-                fecha_registro=datetime.utcnow()
+                fecha_registro=datetime.now(timezone.utc)
             )
             db.add(admin_user)
             db.commit()
