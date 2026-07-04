@@ -135,12 +135,14 @@ Si no existe el `.env`, la app genera una clave aleatoria en cada arranque (modo
 Buses-Talmocur-Portal/
 ├── backend/
 │   ├── app.py              # Servidor Flask principal (punto de entrada)
-│   ├── routes.py           # Rutas API (registro, login, logout, /api/me)
+│   ├── routes.py           # Rutas API (registro, login, compras, recuperación de contraseña)
 │   ├── database.py         # Conexión SQLAlchemy → apunta a /data/talmocur.db
 │   ├── models.py           # Modelos ORM (tablas de la BD)
 │   ├── db_sqlite.py        # Funciones CRUD para usuarios
+│   ├── email_utils.py      # Funciones para el envío de correos de recuperación
 │   ├── seed_db.py          # Script auxiliar para poblar la BD manualmente
-│   └── utils.py            # Funciones de validación (email, contraseña)
+│   ├── utils.py            # Funciones de validación (email, contraseña)
+│   └── tests/              # Pruebas unitarias de recuperación de contraseña y edición de perfil
 ├── data/
 │   ├── .gitkeep            # Mantiene la carpeta en el repo (la BD no se sube)
 │   └── talmocur.db         # ← generado automáticamente, NO está en el repo
@@ -150,15 +152,20 @@ Buses-Talmocur-Portal/
 │   ├── login.html          # Inicio de sesión
 │   ├── registro.html       # Registro de usuarios
 │   ├── perfil.html         # Perfil del usuario
-│   ├── seleccionar_asientos.html # Selección de asientos para compras
+│   ├── compra_pasajes.html # Vista del buscador y selección de pasajes
+│   ├── compra_pasajes_asientos.html # Vista interactiva de selección de asientos
+│   ├── boleta.html         # Vista del comprobante/boleta de compra
+│   ├── recuperar.html      # Formulario para solicitar recuperación de contraseña
+│   ├── restablecer.html    # Formulario para ingresar la nueva contraseña
 │   ├── admin.html          # Vista panel de administración
 │   └── tarifas.html        # Página de tarifas
-
 ├── static/
 │   ├── css/                # Hojas de estilo
 │   ├── js/                 # Scripts del frontend
 │   └── image/              # Logos e imágenes
 ├── requisitos.md           # Requisitos funcionales y no funcionales
+├── trazabilidad.md         # Matriz de trazabilidad de requisitos implementados
+├── panel_administracion.md # Documentación detallada del funcionamiento del Panel de Administrador
 ├── diagramaER_baseDeDatos.md  # Diagrama entidad-relación
 ├── docs_bd.md              # Documentación detallada de la base de datos
 ├── esquema_relacional_v2.md   # Esquema relacional actualizado
@@ -187,25 +194,20 @@ La app usa **SQLite + SQLAlchemy**. Las tablas se crean automáticamente al inic
 
 ## Estado Actual del Proyecto
 
-El proyecto se encuentra en fase de **desarrollo activo — integración con base de datos**.
+El proyecto se encuentra en fase de **pruebas y estabilización de características**.
 
 **Completado:**
-- Vistas de Home, Login, Registro, Perfil y Tarifas implementadas
-- Sistema de autenticación funcional (registro, inicio y cierre de sesión con bcrypt)
-- Base de datos SQLite integrada con SQLAlchemy — se crea automáticamente al arrancar
-- Página de Tarifas conectada a la BD (muestra datos reales de recorridos)
-- Buscador del Home con listas de origen/destino cargadas dinámicamente desde la BD
-- Datos iniciales de recorridos Curicó ↔ Talca poblados automáticamente
-
-**En progreso:**
-- Poblamiento de datos adicionales (horarios, buses, etc.)
-- Visualización de horarios reales en el Home
-- Conexión del buscador con resultados reales de la BD
+- **Sistema de Autenticación & Seguridad:** Registro, inicio y cierre de sesión con cifrado bcrypt.
+- **Diferenciación de Roles:** Redirecciones inteligentes del portal y restricciones estrictas de API basadas en rol (`admin` y `pasajero`).
+- **Base de Datos Dinámica:** SQLite con SQLAlchemy, generación automática de tablas e inicialización de datos de prueba al arranque.
+- **Buscador & Tarifas:** Carga dinámica de rutas y orígenes/destinos desde la BD; visualización de tarifas en tiempo real.
+- **Panel de Administración:** Gestión integral de buses (autogeneración de asientos), control estricto de horarios y sus reglas de conflicto de tiempos, y publicación de avisos globales según vigencia. Ver [panel_administracion.md](file:///c:/Users/dipez/OneDrive/Documentos/Universidad/Metodoogias/Proyecto/panel_administracion.md).
+- **Flujo de Compra e Interactividad:** Selección interactiva de asientos según disponibilidad real y persistencia de transacciones con emisión de boletas.
+- **Recuperación de Contraseñas:** Mecanismo seguro de restablecimiento de contraseñas mediante tokens por correo electrónico.
 
 **Pendiente:**
-- Panel de administración
-- Flujo de compra de pasajes
-- Distinción de roles (pasajero / admin) en la interfaz
+- **Visualización de beneficios y convenios (REQ-F05):** Pestaña informativa y módulo dinámico de descuentos aplicables.
+
 
 ## Capturas de Pantalla
 
