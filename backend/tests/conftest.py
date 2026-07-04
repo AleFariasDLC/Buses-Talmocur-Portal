@@ -38,13 +38,18 @@ def client(monkeypatch):
 
     # Redirigir obtener_sesion() para que use la BD de test
     # en vez de la BD real (talmocur.db).
-    # Hay que parchear en AMBOS módulos porque db_sqlite.py hace
-    # `from database import obtener_sesion` (copia la referencia).
+    # Hay que parchear en TODOS los módulos que hacen
+    # `from database import obtener_sesion` (copian la referencia).
     import database
     import db_sqlite
+    import app as app_module
+    import routes as routes_module
 
-    monkeypatch.setattr(database, 'obtener_sesion', lambda: TestSession())
-    monkeypatch.setattr(db_sqlite, 'obtener_sesion', lambda: TestSession())
+    factory = lambda: TestSession()
+    monkeypatch.setattr(database, 'obtener_sesion', factory)
+    monkeypatch.setattr(db_sqlite, 'obtener_sesion', factory)
+    monkeypatch.setattr(app_module, 'obtener_sesion', factory)
+    monkeypatch.setattr(routes_module, 'obtener_sesion', factory)
 
     from app import app
     app.config['TESTING'] = True
@@ -55,3 +60,14 @@ def client(monkeypatch):
 
     # Limpiar tablas al terminar el test
     Base.metadata.drop_all(test_engine)
+
+
+@pytest.fixture()
+def db_session(client, monkeypatch):
+    """Sesión de BD de test para acceso directo (tests de CRUD, seed data, etc.).
+
+    Reutiliza la misma BD en memoria que el fixture `client`.
+    """
+    import database
+    return database.obtener_sesion()
+

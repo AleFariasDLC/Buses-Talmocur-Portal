@@ -23,7 +23,7 @@ class Usuario(Base):
     nombre         = Column(String(100), nullable=False)
     email          = Column(String(100), nullable=False, unique=True)
     password_hash  = Column(String(200), nullable=False)
-    fecha_registro = Column(DateTime,    default=datetime.utcnow)
+    fecha_registro = Column(DateTime,    default=lambda: datetime.now(timezone.utc))
     rol            = Column(String(20),  nullable=False, default="pasajero")
     # rol: "pasajero" | "admin"
 
