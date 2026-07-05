@@ -54,6 +54,10 @@ def seed(quiet=False):
             recorridos = [
                 Recorrido(origen="Curicó", destino="Talca",  tipo="ida", precio_base=3500.0),
                 Recorrido(origen="Talca",  destino="Curicó", tipo="ida", precio_base=3500.0),
+                Recorrido(origen="Talca",  destino="San Rafael",tipo="ida", precio_base=1500.0),
+                Recorrido(origen="Curicó", destino="Molina",tipo="ida", precio_base=1500.0),
+                Recorrido(origen="Curicó", destino="Itahue",tipo="ida", precio_base=2000.0),
+                Recorrido(origen="Talca",  destino="Molina",tipo="ida", precio_base=2500.0),
             ]
             db.add_all(recorridos)
             db.commit()

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, make_response, session, json
 import os
 import secrets
 from datetime import date, datetime, timezone, timedelta
+from sqlalchemy import func
 from dotenv import load_dotenv
 
 # Cargar variables de entorno antes de crear la app
@@ -10,7 +11,7 @@ load_dotenv()
 # Inicializar y poblar la base de datos con el seed automático (si está vacía).
 # Centralizado en seed_db.py para mantener el código limpio y evitar ejecuciones redundantes.
 from database import obtener_sesion
-from models import Recorrido, Bus, Aviso, Asiento, HorarioViaje, Compra, AsientoComprado
+from models import Recorrido, Bus, Aviso, Asiento, HorarioViaje, Compra, AsientoComprado, Suspension
 from seed_db import seed as _seed_inicial
 _seed_inicial(quiet=False)
 
@@ -47,9 +48,80 @@ def index():
         # Obtener ciudades únicas de origen para el buscador
         recorridos = db.query(Recorrido).all()
         origenes = sorted({r.origen for r in recorridos})
+
+        # ── Horarios de hoy ──────────────────────────────────────────
+        hoy = date.today()
+
+        # Hora actual local del servidor (sin zona horaria, para comparar con time())
+        # Se aplica un margen de 10 minutos: si el bus sale en menos de 10 min, ya no se muestra.
+        ahora = datetime.now()
+        hora_minima = ahora.time()   # solo horarios que salen despues de la hora actual
+
+        # IDs de horarios suspendidos para hoy
+        suspendidos_hoy = {
+            s.id_horario
+            for s in db.query(Suspension).filter(
+                Suspension.fecha_inicio <= hoy,
+                Suspension.fecha_fin   >= hoy
+            ).all()
+        }
+
+        # Contar asientos ya comprados por horario para hoy
+        compras_hoy = (
+            db.query(
+                Compra.id_horario,
+                func.count(AsientoComprado.id).label('ocupados')
+            )
+            .join(AsientoComprado, AsientoComprado.id_compra == Compra.id_compra)
+            .filter(
+                Compra.fecha_viaje == hoy,
+                Compra.estado == 'confirmada'
+            )
+            .group_by(Compra.id_horario)
+            .all()
+        )
+        ocupados_por_horario = {fila.id_horario: fila.ocupados for fila in compras_hoy}
+
+        # Obtener solo horarios activos cuya hora de salida aún no ha pasado
+        # (filtrando en Python para comparar time() directamente)
+        horarios_raw = (
+            db.query(HorarioViaje)
+            .filter(
+                HorarioViaje.activo == True,
+                HorarioViaje.hora_salida >= hora_minima   # solo horarios futuros
+            )
+            .order_by(HorarioViaje.hora_salida)
+            .all()
+        )
+
+        pasajes_hoy = []
+        for h in horarios_raw:
+            if h.id_horario in suspendidos_hoy:
+                continue  # saltar suspendidos
+
+            capacidad        = h.bus.capacidad
+            ocupados         = ocupados_por_horario.get(h.id_horario, 0)
+            asientos_libres  = capacidad - ocupados
+
+            pasajes_hoy.append({
+                'id_horario':     h.id_horario,
+                'hora_salida':    h.hora_salida.strftime('%H:%M'),
+                'hora_llegada':   h.hora_llegada.strftime('%H:%M'),
+                'origen':         h.recorrido.origen,
+                'destino':        h.recorrido.destino,
+                'patente':        h.bus.patente,
+                'precio':         int(h.precio_base),
+                'asientos_libres': asientos_libres,
+                'capacidad':      capacidad,
+                'agotado':        asientos_libres <= 0,
+                'pocas_plazas':   0 < asientos_libres <= 5,
+                #'duracion_estimada': h.duracion_estimada,
+            })
+
     finally:
         db.close()
-    return render_template('home.html', origenes=origenes)
+    return render_template('home.html', origenes=origenes, pasajes_hoy=pasajes_hoy, fecha_hoy=hoy)
+
 
 @app.route('/login')
 def login():
@@ -94,6 +166,12 @@ def tarifas():
         db.close()
     return render_template('tarifas.html', recorridos=recorridos)
 
+@app.route('/ruta-visual')
+def ruta_visual():
+    origen = request.args.get('origen', '')
+    destino = request.args.get('destino', '')
+    return render_template('ruta_visual.html', origen=origen, destino=destino)
+
 
 @app.route('/quienes-somos')
 def quienes_somos():
@@ -126,7 +204,51 @@ def perfil():
 
 @app.route('/compra-pasajes-asientos')
 def compra_pasajes_asientos():
-    return render_template('compra_pasajes_asientos.html')
+    id_horario = request.args.get('horario', type=int)
+
+    # Si no viene el parámetro, redirigir al home
+    if not id_horario:
+        return redirect('/')
+
+    db = obtener_sesion()
+    try:
+        horario = db.query(HorarioViaje).filter(
+            HorarioViaje.id_horario == id_horario
+        ).first()
+
+        if not horario:
+            return redirect('/')
+
+        hoy = date.today()
+
+        # Obtener los números de asiento ya ocupados para este horario y fecha
+        compras_confirmadas = db.query(Compra).filter(
+            Compra.id_horario  == id_horario,
+            Compra.fecha_viaje == hoy,
+            Compra.estado      == 'confirmada'
+        ).all()
+
+        asientos_ocupados = []
+        for compra in compras_confirmadas:
+            for ac in compra.asientos_compra:
+                asientos_ocupados.append(ac.asiento.numero)
+
+        datos_viaje = {
+            'id_horario':        horario.id_horario,
+            'origen':            horario.recorrido.origen,
+            'destino':           horario.recorrido.destino,
+            'hora_salida':       horario.hora_salida.strftime('%H:%M'),
+            'hora_llegada':      horario.hora_llegada.strftime('%H:%M'),
+            'patente':           horario.bus.patente,
+            'precio':            int(horario.precio_base),
+            'capacidad':         horario.bus.capacidad,
+            'asientos_ocupados': asientos_ocupados,  # lista de números [3, 7, 12, ...]
+        }
+
+    finally:
+        db.close()
+
+    return render_template('compra_pasajes_asientos.html', viaje=datos_viaje)
 
 @app.route('/admin')
 def admin_dashboard():

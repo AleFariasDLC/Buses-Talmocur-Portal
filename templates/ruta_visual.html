@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Ruta {{ origen }} a {{ destino }} - Talmocur{% endblock %}
+
+{% block extra_css %}
+<!-- Leaflet.js CSS (local) -->
+<link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+<style>
+  /* Contenedor principal para que el mapa ocupe todo el espacio bajo el navbar */
+  .ruta-visual-page {
+    display: flex;
+    flex-direction: column;
+    /* Ajusta la altura restando la altura aproximada del navbar */
+    height: calc(100vh - 70px); 
+    width: 100%;
+    margin-top: 70px; /* Compensa el navbar fijo si lo hay */
+  }
+
+  .ruta-visual-header {
+    background-color: var(--color-white);
+    padding: 15px 24px;
+    border-bottom: 1px solid var(--color-gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    z-index: 10;
+  }
+
+  .ruta-visual-header__titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ruta-visual-header__titulo i {
+    color: var(--color-primary);
+  }
+
+  .ruta-visual-header__btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-700);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+  }
+
+  .ruta-visual-header__btn-volver:hover {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-900);
+  }
+
+  .mapa-container {
+    flex-grow: 1;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  #mapaLeafletFull {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ruta-visual-page">
+  <div class="ruta-visual-header">
+    <h1 class="ruta-visual-header__titulo">
+      <i class='bx bx-map-alt'></i>
+      Ruta: {{ origen }} <i class='bx bx-right-arrow-alt'></i> {{ destino }}
+    </h1>
+    <a href="/tarifas" class="ruta-visual-header__btn-volver">
+      <i class='bx bx-arrow-back'></i> Volver a Tarifas
+    </a>
+  </div>
+
+  <div class="mapa-container">
+    <div id="mapaLeafletFull"></div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script id="viaje-data-ruta" type="application/json">
+  {
+    "origen": "{{ origen }}",
+    "destino": "{{ destino }}"
+  }
+</script>
+<script src="/static/leaflet/leaflet.js"></script>
+<script src="/static/js/ruta_visual.js"></script>
+{% endblock %}

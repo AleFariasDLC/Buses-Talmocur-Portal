@@ -3,7 +3,7 @@
 {% block title %}Tarifas – Talmocur{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="/static/css/tarifas.css" />
+<link rel="stylesheet" href="/static/css/tarifas.css" />
 {% endblock %}
 
 {# Marca "Tarifas" como activo en el navbar #}
@@ -11,194 +11,107 @@
 
 {% block content %}
 
-  <!-- ============================================================
+<!-- ============================================================
        CONTENIDO PRINCIPAL
        ============================================================ -->
-  <main class="tarifas-page">
+<main class="tarifas-page">
 
-    <!-- Hero compacto -->
-    <section class="tarifas-hero">
-      <div class="tarifas-hero__interior">
-        <span class="tarifas-hero__eyebrow">
-          <i class='bx bx-receipt'></i>
-          Tarifas vigentes
-        </span>
-        <h1 class="tarifas-hero__titulo">Precios de pasajes</h1>
-        <p class="tarifas-hero__subtitulo">
-          Conoce el valor del pasaje según tu ruta. Precios en pesos chilenos, por persona.
-        </p>
+  <!-- Hero compacto -->
+  <section class="tarifas-hero">
+    <div class="tarifas-hero__interior">
+      <span class="tarifas-hero__eyebrow">
+        <i class='bx bx-receipt'></i>
+        Tarifas vigentes
+      </span>
+      <h1 class="tarifas-hero__titulo">Precios de pasajes</h1>
+      <p class="tarifas-hero__subtitulo">
+        Conoce el valor del pasaje según tu ruta. Precios en pesos chilenos, por persona.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- Tabla de tarifas -->
+  <section class="tarifas-seccion">
+    <div class="tarifas-seccion__interior">
+
+      <!-- Nota informativa -->
+      <div class="tarifas-nota">
+        <i class='bx bx-info-circle'></i>
+        <span>Los precios incluyen IVA y pueden variar en temporada alta. Consulta disponibilidad al momento de
+          comprar.</span>
       </div>
-    </section>
 
+      <!-- Tabla dinámica (datos desde la BD) -->
+      <div class="tarifas-tabla-wrapper">
+        <table class="tarifas-tabla">
+          <thead>
+            <tr>
+              <th class="tarifas-tabla__th tarifas-tabla__th--desde">
+                <i class='bx bx-map-pin'></i>
+                Desde
+              </th>
+              <th class="tarifas-tabla__th tarifas-tabla__th--hacia">
+                <i class='bx bx-map'></i>
+                Hacia
+              </th>
+              <th class="tarifas-tabla__th tarifas-tabla__th--valor">
+                <i class='bx bx-dollar-circle'></i>
+                Valor
+              </th>
+            </tr>
+          </thead>
+          <tbody>
 
-    <!-- Tabla de tarifas -->
-    <section class="tarifas-seccion">
-      <div class="tarifas-seccion__interior">
-
-        <!-- Nota informativa -->
-        <div class="tarifas-nota">
-          <i class='bx bx-info-circle'></i>
-          <span>Los precios incluyen IVA y pueden variar en temporada alta. Consulta disponibilidad al momento de comprar.</span>
-        </div>
-
-        <!-- Tabla dinámica (datos desde la BD) -->
-        <div class="tarifas-tabla-wrapper">
-          <table class="tarifas-tabla">
-            <thead>
-              <tr>
-                <th class="tarifas-tabla__th tarifas-tabla__th--desde">
-                  <i class='bx bx-map-pin'></i>
-                  Desde
-                </th>
-                <th class="tarifas-tabla__th tarifas-tabla__th--hacia">
-                  <i class='bx bx-map'></i>
-                  Hacia
-                </th>
-                <th class="tarifas-tabla__th tarifas-tabla__th--valor">
-                  <i class='bx bx-dollar-circle'></i>
-                  Valor
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-
-              {% for r in recorridos %}
-              <tr class="tarifas-tabla__fila">
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <span class="tarifas-tabla__ciudad-nombre">{{ r.origen }}</span>
-                  <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <div class="tarifas-tabla__destino">
-                    <span class="tarifas-tabla__flecha-icon">
-                      <i class='bx bx-right-arrow-alt'></i>
-                    </span>
-                    <div>
-                      <span class="tarifas-tabla__ciudad-nombre">{{ r.destino }}</span>
-                      <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                    </div>
+            {% for r in recorridos %}
+            <tr class="tarifas-tabla__fila" style="cursor: pointer;" onclick="window.location.href='/ruta-visual?origen={{ r.origen }}&destino={{ r.destino }}'">
+              <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
+                <span class="tarifas-tabla__ciudad-nombre">{{ r.origen }}</span>
+                <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
+              </td>
+              <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
+                <div class="tarifas-tabla__destino">
+                  <span class="tarifas-tabla__flecha-icon">
+                    <i class='bx bx-right-arrow-alt'></i>
+                  </span>
+                  <div>
+                    <span class="tarifas-tabla__ciudad-nombre">{{ r.destino }}</span>
+                    <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
                   </div>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--precio">
-                  <span class="tarifas-tabla__precio-monto">${{ "{:,.0f}".format(r.precio_base).replace(",", ".") }}</span>
-                  <span class="tarifas-tabla__precio-label">por persona</span>
-                </td>
-              </tr>
-              {% else %}
-              <tr>
-                <td colspan="3" style="text-align:center; padding: 24px; color: var(--color-gray-400);">
-                  No hay tarifas disponibles por el momento.
-                </td>
-              </tr>
-              {% endfor %}
+                </div>
+              </td>
+              <td class="tarifas-tabla__td tarifas-tabla__td--precio">
+                <span class="tarifas-tabla__precio-monto">${{ "{:,.0f}".format(r.precio_base).replace(",", ".")
+                  }}</span>
+                <span class="tarifas-tabla__precio-label">por persona</span>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" style="text-align:center; padding: 24px; color: var(--color-gray-400);">
+                No hay tarifas disponibles por el momento.
+              </td>
+            </tr>
+            {% endfor %}
 
-              <!-- Rutas adicionales con datos planos -->
-              <tr class="tarifas-tabla__fila">
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <span class="tarifas-tabla__ciudad-nombre">Talca</span>
-                  <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <div class="tarifas-tabla__destino">
-                    <span class="tarifas-tabla__flecha-icon">
-                      <i class='bx bx-right-arrow-alt'></i>
-                    </span>
-                    <div>
-                      <span class="tarifas-tabla__ciudad-nombre">San Rafael</span>
-                      <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                    </div>
-                  </div>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--precio">
-                  <span class="tarifas-tabla__precio-monto">$1.500</span>
-                  <span class="tarifas-tabla__precio-label">por persona</span>
-                </td>
-              </tr>
-
-              <tr class="tarifas-tabla__fila">
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <span class="tarifas-tabla__ciudad-nombre">Curicó</span>
-                  <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <div class="tarifas-tabla__destino">
-                    <span class="tarifas-tabla__flecha-icon">
-                      <i class='bx bx-right-arrow-alt'></i>
-                    </span>
-                    <div>
-                      <span class="tarifas-tabla__ciudad-nombre">Molina</span>
-                      <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                    </div>
-                  </div>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--precio">
-                  <span class="tarifas-tabla__precio-monto">$1.000</span>
-                  <span class="tarifas-tabla__precio-label">por persona</span>
-                </td>
-              </tr>
-
-              <tr class="tarifas-tabla__fila">
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <span class="tarifas-tabla__ciudad-nombre">Curicó</span>
-                  <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <div class="tarifas-tabla__destino">
-                    <span class="tarifas-tabla__flecha-icon">
-                      <i class='bx bx-right-arrow-alt'></i>
-                    </span>
-                    <div>
-                      <span class="tarifas-tabla__ciudad-nombre">Itahue</span>
-                      <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                    </div>
-                  </div>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--precio">
-                  <span class="tarifas-tabla__precio-monto">$1.500</span>
-                  <span class="tarifas-tabla__precio-label">por persona</span>
-                </td>
-              </tr>
-
-              <tr class="tarifas-tabla__fila">
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <span class="tarifas-tabla__ciudad-nombre">Talca</span>
-                  <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--ciudad">
-                  <div class="tarifas-tabla__destino">
-                    <span class="tarifas-tabla__flecha-icon">
-                      <i class='bx bx-right-arrow-alt'></i>
-                    </span>
-                    <div>
-                      <span class="tarifas-tabla__ciudad-nombre">Molina</span>
-                      <span class="tarifas-tabla__ciudad-region">Región del Maule</span>
-                    </div>
-                  </div>
-                </td>
-                <td class="tarifas-tabla__td tarifas-tabla__td--precio">
-                  <span class="tarifas-tabla__precio-monto">$2.500</span>
-                  <span class="tarifas-tabla__precio-label">por persona</span>
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pie de tabla -->
-        <p class="tarifas-pie">
-          ¿Tienes dudas? Contáctanos en <a href="mailto:contacto@talmocur.cl">contacto@talmocur.cl</a>
-        </p>
-
+          </tbody>
+        </table>
       </div>
-    </section>
 
-  </main>
+      <!-- Pie de tabla -->
+      <p class="tarifas-pie">
+        ¿Tienes dudas? Contáctanos en <a href="mailto:contacto@talmocur.cl">contacto@talmocur.cl</a>
+      </p>
+
+    </div>
+  </section>
+
+</main>
 
 
-  <!-- Footer -->
-  <footer class="footer">
-    © 2026 Talmocur. Todos los derechos reservados.
-  </footer>
+<!-- Footer -->
+<footer class="footer">
+  © 2026 Talmocur. Todos los derechos reservados.
+</footer>
 
 {% endblock %}

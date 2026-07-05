@@ -23,7 +23,7 @@
       <span>Volver</span>
     </a>
     <div class="sa-topbar__info">
-      <span class="sa-topbar__ruta">Curico <i class='bx bx-right-arrow-alt'></i> Talca</span>
+      <span class="sa-topbar__ruta">{{ viaje.origen }} <i class='bx bx-right-arrow-alt'></i> {{ viaje.destino }}</span>
       <span class="sa-topbar__detalles">
         <span id="top-hora" class="sa-topbar__hora"></span>
         <span class="sa-topbar__sep">·</span>
@@ -46,7 +46,7 @@
 
       <div class="sa-mapa__header">
         <i class='bx bx-map-alt sa-mapa__icono'></i>
-        <h2 class="sa-mapa__titulo">Ruta del viaje - Por Varoli</h2>
+        <h2 class="sa-mapa__titulo">Ruta del viaje</h2>
       </div>
 
       <!-- Mapa interactivo Leaflet + OpenStreetMap-->
@@ -58,35 +58,28 @@
           <i class='bx bx-time'></i>
           <div>
             <span class="sa-mapa__detalle-label">Duracion estimada</span>
-            <span class="sa-mapa__detalle-val">60 minutos</span>
-          </div>
-        </div>
-        <div class="sa-mapa__detalle-item">
-          <i class='bx bx-trip'></i>
-          <div>
-            <span class="sa-mapa__detalle-label">Distancia</span>
-            <span class="sa-mapa__detalle-val">64 km</span>
+            <span class="sa-mapa__detalle-val">45 minutos</span>
           </div>
         </div>
         <div class="sa-mapa__detalle-item">
           <i class='bx bx-bus'></i>
           <div>
             <span class="sa-mapa__detalle-label">Numero de bus</span>
-            <span id="detalle-bus" class="sa-mapa__detalle-val"></span>
+            <span id="detalle-bus" class="sa-mapa__detalle-val">{{ viaje.patente }}</span>
           </div>
         </div>
         <div class="sa-mapa__detalle-item">
           <i class='bx bx-alarm'></i>
           <div>
             <span class="sa-mapa__detalle-label">Hora de salida</span>
-            <span id="detalle-hora" class="sa-mapa__detalle-val"></span>
+            <span id="detalle-hora" class="sa-mapa__detalle-val">{{ viaje.hora_salida }}</span>
           </div>
         </div>
         <div class="sa-mapa__detalle-item">
           <i class='bx bx-time-five'></i>
           <div>
             <span class="sa-mapa__detalle-label">Hora de llegada</span>
-            <span id="detalle-hora-llegada" class="sa-mapa__detalle-val"></span>
+            <span id="detalle-hora-llegada" class="sa-mapa__detalle-val">{{ viaje.hora_llegada }}</span>
           </div>
         </div>
       </div>
@@ -172,7 +165,7 @@
           </div>
           <div class="sa-resumen__fila">
             <span class="sa-resumen__etiqueta">Ruta</span>
-            <span class="sa-resumen__valor">Curico - Talca</span>
+            <span class="sa-resumen__valor">{{ viaje.origen }} - {{ viaje.destino }}</span>
           </div>
           <div class="sa-resumen__fila">
             <span class="sa-resumen__etiqueta">Salida</span>
@@ -196,7 +189,20 @@
 {% endblock %}
 
 {% block extra_js %}
+{# Datos del viaje serializados como JSON — leídos por asientos.js con JSON.parse() #}
+<script id="viaje-data" type="application/json">
+  {
+    "idHorario":        {{ viaje.id_horario }},
+    "origen":           "{{ viaje.origen }}",
+    "destino":          "{{ viaje.destino }}",
+    "patente":          "{{ viaje.patente }}",
+    "hora":             "{{ viaje.hora_salida }}",
+    "precio":           {{ viaje.precio }},
+    "capacidad":        {{ viaje.capacidad }},
+    "asientosOcupados": {{ viaje.asientos_ocupados | tojson }}
+  }
+</script>
 <!-- Leaflet.js (local, con zoom e interactividad) -->
 <script src="/static/leaflet/leaflet.js"></script>
 <script src="/static/js/asientos.js"></script>
-{% endblock %}
+{% endblock %}

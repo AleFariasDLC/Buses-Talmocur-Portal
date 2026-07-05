@@ -147,197 +147,75 @@
     <div class="horarios__header">
       <p class="horarios__etiqueta">Disponibilidad en tiempo real</p>
       <h2 class="horarios__titulo">Pasajes de hoy</h2>
-      <p class="horarios__subtitulo">Curicó → Talca · <span id="fechaHoy"></span></p>
+      <p class="horarios__subtitulo"><span id="fechaHoy">{{ fecha_hoy.strftime('%d de %B de %Y') }}</span></p>
     </div>
 
     <!-- Tabla de horarios -->
     <div class="horarios__lista" role="list">
 
-      <!-- Pasaje 1 -->
-      <article class="tarjeta-pasaje" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">07:00</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A1</span>
-          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 14 asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=A1&hora=07:00&precio=3500&asientos=14"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
+      {% if pasajes_hoy %}
+      {% for p in pasajes_hoy %}
 
-      <!-- Pasaje 2 -->
-      <article class="tarjeta-pasaje" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">08:30</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus B2</span>
-          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 6 asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=B2&hora=08:30&precio=3500&asientos=6"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
-
-      <!-- Pasaje 3 — POCAS PLAZAS -->
-      <article class="tarjeta-pasaje tarjeta-pasaje--pocas" role="listitem">
-        <div class="tarjeta-pasaje__insignia">¡Últimos asientos!</div>
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">10:00</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus C3</span>
-          <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--pocos"><i class='bx bx-chair'></i> 3
-            asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=C3&hora=10:00&precio=3500&asientos=3"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
-
-      <!-- Pasaje 4 -->
-      <article class="tarjeta-pasaje" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">12:15</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A2</span>
-          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 22 asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=A2&hora=12:15&precio=3500&asientos=22"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
-
-      <!-- Pasaje 5 — AGOTADO -->
+      {# Determinar clase y badge según disponibilidad #}
+      {% if p.agotado %}
       <article class="tarjeta-pasaje tarjeta-pasaje--agotado" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">14:00</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus D1</span>
-          <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--agotado"><i class='bx bx-chair'></i>
-            Agotado</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <button class="tarjeta-pasaje__btn tarjeta-pasaje__btn--deshabilitado" type="button" disabled>Agotado</button>
-      </article>
+        {% elif p.pocas_plazas %}
+        <article class="tarjeta-pasaje tarjeta-pasaje--pocas" role="listitem">
+          <div class="tarjeta-pasaje__insignia">¡Últimos asientos!</div>
+          {% else %}
+          <article class="tarjeta-pasaje" role="listitem">
+            {% endif %}
 
-      <!-- Pasaje 6 -->
-      <article class="tarjeta-pasaje" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">16:30</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus B1</span>
-          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 18 asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=B1&hora=16:30&precio=3500&asientos=18"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
+            <div class="tarjeta-pasaje__hora">
+              <span class="tarjeta-pasaje__hora-num">{{ p.hora_salida }}</span>
+              <span class="tarjeta-pasaje__duracion">{{ p.duracion_estimada }} min</span>
+            </div>
 
-      <!-- Pasaje 7 -->
-      <article class="tarjeta-pasaje" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">18:45</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus C1</span>
-          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 30 asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=C1&hora=18:45&precio=3500&asientos=30"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
+            <div class="tarjeta-pasaje__ruta">
+              <span class="tarjeta-pasaje__ciudad">{{ p.origen }}</span>
+              <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
+              <span class="tarjeta-pasaje__ciudad">{{ p.destino }}</span>
+            </div>
 
-      <!-- Pasaje 8 -->
-      <article class="tarjeta-pasaje" role="listitem">
-        <div class="tarjeta-pasaje__hora">
-          <span class="tarjeta-pasaje__hora-num">20:00</span>
-          <span class="tarjeta-pasaje__duracion">~45 min</span>
-        </div>
-        <div class="tarjeta-pasaje__ruta">
-          <span class="tarjeta-pasaje__ciudad">Curicó</span>
-          <span class="tarjeta-pasaje__flecha"><i class='bx bx-right-arrow-alt'></i></span>
-          <span class="tarjeta-pasaje__ciudad">Talca</span>
-        </div>
-        <div class="tarjeta-pasaje__info">
-          <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> Bus A3</span>
-          <span class="tarjeta-pasaje__asientos"><i class='bx bx-chair'></i> 11 asientos</span>
-        </div>
-        <div class="tarjeta-pasaje__precio">
-          <span class="tarjeta-pasaje__monto">$2.800</span>
-          <span class="tarjeta-pasaje__por-persona">por persona</span>
-        </div>
-        <a href="/compra-pasajes-asientos?bus=A3&hora=20:00&precio=3500&asientos=11"
-          class="tarjeta-pasaje__btn">Comprar</a>
-      </article>
+            <div class="tarjeta-pasaje__info">
+              <span class="tarjeta-pasaje__bus"><i class='bx bx-bus'></i> {{ p.patente }}</span>
+              {% if p.agotado %}
+              <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--agotado">
+                <i class='bx bx-chair'></i> Agotado
+              </span>
+              {% elif p.pocas_plazas %}
+              <span class="tarjeta-pasaje__asientos tarjeta-pasaje__asientos--pocos">
+                <i class='bx bx-chair'></i> {{ p.asientos_libres }} asientos
+              </span>
+              {% else %}
+              <span class="tarjeta-pasaje__asientos">
+                <i class='bx bx-chair'></i> {{ p.asientos_libres }} asientos
+              </span>
+              {% endif %}
+            </div>
+
+            <div class="tarjeta-pasaje__precio">
+              <span class="tarjeta-pasaje__monto">${{ "{:,.0f}".format(p.precio).replace(",", ".") }}</span>
+              <span class="tarjeta-pasaje__por-persona">por persona</span>
+            </div>
+
+            {% if p.agotado %}
+            <button class="tarjeta-pasaje__btn tarjeta-pasaje__btn--deshabilitado" type="button"
+              disabled>Agotado</button>
+            {% else %}
+            <a href="/compra-pasajes-asientos?horario={{ p.id_horario }}&bus={{ p.patente }}&hora={{ p.hora_salida }}&precio={{ p.precio }}&asientos={{ p.asientos_libres }}&origen={{ p.origen }}&destino={{ p.destino }}"
+              class="tarjeta-pasaje__btn">Comprar</a>
+            {% endif %}
+
+          </article>
+          {% endfor %}
+
+          {% else %}
+          <div class="horarios__vacio">
+            <i class='bx bx-calendar-x'></i>
+            <p>No hay horarios disponibles para hoy.</p>
+          </div>
+          {% endif %}
 
     </div>
     <!-- /horarios__lista -->

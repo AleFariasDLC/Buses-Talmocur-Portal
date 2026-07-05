@@ -3,57 +3,28 @@
    ================================================================ */
 
 
-/* ── 1. Leer parámetros de la URL ────────────────────────────── */
-const params       = new URLSearchParams(window.location.search);
-const busId        = params.get('bus')    || 'A1';
-const hora         = params.get('hora')   || '07:00';
-const precio       = params.get('precio') || '3500';
-const asientosDisp = parseInt(params.get('asientos') || '20', 10);
+/* Lee los datos del viaje*/
+const VIAJE = JSON.parse(document.getElementById('viaje-data').textContent);
+const busId = VIAJE.patente;
+const hora = VIAJE.hora;
+const precio = VIAJE.precio;
+const TOTAL_ASIENTOS = VIAJE.capacidad;
+const ocupadosSet = new Set(VIAJE.asientosOcupados);
 
-const TOTAL_ASIENTOS = 40;   // capacidad total del bus (10 filas × 4 asientos)
-const PRECIO_FMT     = `$${parseInt(precio).toLocaleString('es-CL')}`;
-
-
-/* ── 2. Rellenar topbar e info del mapa ──────────────────────── */
-document.getElementById('top-hora').textContent    = hora;
-document.getElementById('top-bus').textContent     = `Bus ${busId}`;
-document.getElementById('top-precio').textContent  = PRECIO_FMT;
-document.getElementById('detalle-bus').textContent = `Bus ${busId}`;
-document.getElementById('detalle-hora').textContent = hora;
-
-/* Calcular hora de llegada (salida + 60 minutos) */
-function calcularHoraLlegada(horaSalida, minutosViaje) {
-  const [hh, mm] = horaSalida.split(':').map(Number);
-  const totalMin = hh * 60 + mm + minutosViaje;
-  const horaLlegada = String(Math.floor(totalMin / 60) % 24).padStart(2, '0');
-  const minLlegada  = String(totalMin % 60).padStart(2, '0');
-  return `${horaLlegada}:${minLlegada}`;
-}
-const horaLlegada = calcularHoraLlegada(hora, 60);   // ← cambia 60 por los minutos reales
-document.getElementById('detalle-hora-llegada').textContent = horaLlegada;
+const PRECIO_FMT = `$${parseInt(precio).toLocaleString('es-CL')}`;
 
 
-/* ── 3. Generar estado de cada asiento ───────────────────────── */
-/**
- * Construye un array de 40 asientos.
- * Los asientos "disponibles" (asientosDisp) se marcan como libres,
- * el resto como ocupados. Los ocupados se distribuyen aleatoriamente.
- */
-function generarEstadoAsientos(total, disponibles) {
-  const estados = Array(total).fill('ocupado');
+/* Rellena el topbar con los datos */
+document.getElementById('top-hora').textContent = hora;
+document.getElementById('top-bus').textContent = busId;
+document.getElementById('top-precio').textContent = PRECIO_FMT;
 
-  // Seleccionar índices aleatorios para los asientos libres
-  const indices = [];
-  while (indices.length < disponibles && indices.length < total) {
-    const idx = Math.floor(Math.random() * total);
-    if (!indices.includes(idx)) indices.push(idx);
-  }
-  indices.forEach(i => { estados[i] = 'libre'; });
 
-  return estados;
-}
+/* Estado real de cada asiento */
+const estadoAsientos = Array.from({ length: TOTAL_ASIENTOS }, (_, i) =>
+  ocupadosSet.has(i + 1) ? 'ocupado' : 'libre'
+);
 
-const estadoAsientos = generarEstadoAsientos(TOTAL_ASIENTOS, asientosDisp);
 const asientosSeleccionados = new Set();  // números de asientos seleccionados
 
 
@@ -66,7 +37,10 @@ function renderizarAsientos() {
   const contenedor = document.getElementById('filasAsientos');
   contenedor.innerHTML = '';
 
-  for (let fila = 1; fila <= 10; fila++) {
+  // Calcula cuántas filas necesita este bus según su capacidad
+  const numFilas = Math.ceil(TOTAL_ASIENTOS / 4);
+
+  for (let fila = 1; fila <= numFilas; fila++) {
     const divFila = document.createElement('div');
     divFila.className = 'sa-fila';
     divFila.setAttribute('role', 'row');
@@ -109,12 +83,12 @@ function renderizarAsientos() {
  * @param {number} num - Número del asiento (1–40)
  */
 function crearAsiento(num) {
-  const idx    = num - 1;
+  const idx = num - 1;
   const estado = estadoAsientos[idx];
 
   const btn = document.createElement('button');
-  btn.className    = `sa-asiento sa-asiento--${estado}`;
-  btn.dataset.num  = num;
+  btn.className = `sa-asiento sa-asiento--${estado}`;
+  btn.dataset.num = num;
   btn.dataset.estado = estado;
   btn.setAttribute('role', 'option');
   btn.setAttribute('aria-label', `Asiento ${num} – ${estado}`);
@@ -126,7 +100,7 @@ function crearAsiento(num) {
 
   // Número visible dentro del asiento
   const span = document.createElement('span');
-  span.className   = 'sa-asiento__num';
+  span.className = 'sa-asiento__num';
   span.textContent = num;
   btn.appendChild(span);
 
@@ -163,22 +137,22 @@ function seleccionarAsiento(btn, num) {
 function actualizarResumen() {
   const btnConfirmar = document.getElementById('btnConfirmar');
   const resumenVacio = document.getElementById('resumenVacio');
-  const resumenSel   = document.getElementById('resumenSeleccion');
-  const elLista      = document.getElementById('resumenAsientoNum');
-  const elContador   = document.getElementById('resumenContador');
-  const elPrecio     = document.getElementById('resumenPrecio');
-  const elHora       = document.getElementById('resumenHora');
+  const resumenSel = document.getElementById('resumenSeleccion');
+  const elLista = document.getElementById('resumenAsientoNum');
+  const elContador = document.getElementById('resumenContador');
+  const elPrecio = document.getElementById('resumenPrecio');
+  const elHora = document.getElementById('resumenHora');
 
   if (asientosSeleccionados.size === 0) {
     resumenVacio.style.display = '';
-    resumenSel.style.display   = 'none';
-    btnConfirmar.disabled      = true;
+    resumenSel.style.display = 'none';
+    btnConfirmar.disabled = true;
     return;
   }
 
   resumenVacio.style.display = 'none';
-  resumenSel.style.display   = '';
-  btnConfirmar.disabled      = false;
+  resumenSel.style.display = '';
+  btnConfirmar.disabled = false;
 
   const sorted = Array.from(asientosSeleccionados).sort((a, b) => a - b);
   const precioNum = parseInt(precio);
@@ -191,8 +165,8 @@ function actualizarResumen() {
     .join('');
 
   elContador.textContent = `${asientosSeleccionados.size} asiento${asientosSeleccionados.size > 1 ? 's' : ''}`;
-  elPrecio.textContent   = totalFmt;
-  elHora.textContent     = hora;
+  elPrecio.textContent = totalFmt;
+  elHora.textContent = hora;
 }
 
 
@@ -201,7 +175,7 @@ document.getElementById('btnConfirmar').addEventListener('click', () => {
   if (asientosSeleccionados.size === 0) return;
 
   const sorted = Array.from(asientosSeleccionados).sort((a, b) => a - b);
-  const total  = parseInt(precio) * asientosSeleccionados.size;
+  const total = parseInt(precio) * asientosSeleccionados.size;
   const totalFmt = `$${total.toLocaleString('es-CL')}`;
 
   sessionStorage.setItem('busSeleccionado', busId);
@@ -214,7 +188,7 @@ document.getElementById('btnConfirmar').addEventListener('click', () => {
 
   // Aquí en el futuro se conectará con la API de reserva
   //alert(`✅ Reserva registrada:\n\nBus: ${busId}\nAsientos: ${sorted.join(', ')}\nHora: ${hora}\nTotal: ${totalFmt}\n\n(Funcionalidad de pago próximamente)`);
-  
+
   //Existe ruta de compra de pasajes, redirigir con nombre de ruta de flask
   window.location.assign('/compra-pasajes')
 });
@@ -238,134 +212,129 @@ function initMapaLeaflet() {
   /* Corregir ruta de iconos de Leaflet (apuntar a archivos locales) */
   delete L.Icon.Default.prototype._getIconUrl;
   L.Icon.Default.mergeOptions({
-    iconUrl:       '/static/leaflet/marker-icon.png',
-    shadowUrl:     '/static/leaflet/marker-shadow.png',
+    iconUrl: '/static/leaflet/marker-icon.png',
+    shadowUrl: '/static/leaflet/marker-shadow.png',
     iconRetinaUrl: '/static/leaflet/marker-icon.png',
   });
 
-  /* ── Coordenadas reales de las paradas ── */
-  const paradas = [
-    {
-      latlng: [-34.984800474239314, -71.24580838453566],
-      nombre: 'Terminal de Buses Curicó',
-      detalle: 'Maipú 636, Curicó',
-      tipo: 'origen'
-    },
-    {
-      latlng: [-35.094148495408554, -71.31878667318661],
-      nombre: 'Paradero Molina',
-      detalle: 'Molina, Maule',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.12952611574631, -71.35216713561492],
-      nombre: 'Paradero Itahue',
-      detalle: 'Puente Alto, Molina',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.21930224041522, -71.42243265633414],
-      nombre: 'Paradero Camarico',
-      detalle: 'Camarico, Rio Claro',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.30268971372136, -71.51769771925869],
-      nombre: 'Paradero San Rafael',
-      detalle: 'San Rafael',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.36884174597917, -71.5906332560088],
-      nombre: 'Paradero Panguilemo',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.39938866192725, -71.62046454103272],
-      nombre: 'Paradero Cruze Lircay',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.418717276870936, -71.63192427631867],
-      nombre: 'Paradero Parque Industrial Talca',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.42829759595688, -71.63593351927078],
-      nombre: 'Paradero 2 Norte',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.43157875116553, -71.63719529177065],
-      nombre: 'Paradero Varoli',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.4319090, -71.6443620],
-      nombre: 'Paradero 15 Oriente',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.43177636340633, -71.64541360388556],
-      nombre: 'Paradero Plaza Arturo Prat',
-      detalle: 'Talca',
-      tipo: 'parada'
-    },
-    {
-      latlng: [-35.43016139127286, -71.64699132598537],
-      nombre: 'Terminal de Buses Talca',
-      detalle: 'Talca, Maule',
-      tipo: 'destino'
-    }
-  ];
+  /* ── Coordenadas literales por ruta (Ingresadas manualmente) ── */
+  const RUTAS_MAPA = {
+    // Ruta: Curicó -> Talca
+    "Curicó-Talca": [
+      { latlng: [-34.984800474239314, -71.24580838453566], nombre: 'Terminal De Buses Curicó', detalle: 'Maipú 636, Curicó', tipo: 'origen' },
+      { latlng: [-35.094148495408554, -71.31878667318661], nombre: 'Paradero Molina', detalle: 'Molina, Maule', tipo: 'parada' },
+      { latlng: [-35.12952611574631, -71.35216713561492], nombre: 'Paradero Itahue', detalle: 'Puente Alto, Molina', tipo: 'parada' },
+      { latlng: [-35.21930224041522, -71.42243265633414], nombre: 'Paradero Camarico', detalle: 'Camarico, Rio Claro', tipo: 'parada' },
+      { latlng: [-35.30268971372136, -71.51769771925869], nombre: 'Paradero San Rafael', detalle: 'San Rafael', tipo: 'parada' },
+      { latlng: [-35.36884174597917, -71.5906332560088], nombre: 'Paradero Panguilemo', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.39938866192725, -71.62046454103272], nombre: 'Paradero Cruze Lircay', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.418717276870936, -71.63192427631867], nombre: 'Paradero Parque Industrial Talca', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.42829759595688, -71.63593351927078], nombre: 'Paradero 2 Norte', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.43157875116553, -71.63719529177065], nombre: 'Paradero Varoli', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.4319090, -71.6443620], nombre: 'Paradero 15 Oriente', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.43177636340633, -71.64541360388556], nombre: 'Paradero Plaza Arturo Prat', detalle: 'Talca', tipo: 'parada' },
+      { latlng: [-35.43016139127286, -71.64699132598537], nombre: 'Terminal De Buses Talca', detalle: 'Talca, Maule', tipo: 'destino' }
+    ],
+
+    // Ruta: Talca -> Curicó
+    "Talca-Curicó": [
+      { latlng: [-35.43016139127286, -71.64699132598537], nombre: 'Terminal De Buses Talca', detalle: 'Talca, Maule', tipo: 'origen' },
+      { latlng: [-35.302637184296096, -71.5173192136632], nombre: 'Paradero San Rafael', detalle: 'San Rafael, Maule', tipo: 'parada' },
+      { latlng: [-35.22001267169181, -71.42355664542728], nombre: 'Paradero Camarico', detalle: 'Camarico, Rio Claro', tipo: 'parada' },
+      { latlng: [-35.1355718931921, -71.35766922078334], nombre: 'Paradero Itahue', detalle: 'Itahue, Molina', tipo: 'parada' },
+      { latlng: [-35.09377167333507, -71.31836018809612], nombre: 'Paradero Molina', detalle: 'Molina, Maule', tipo: 'parada' },
+      { latlng: [-35.050460276524845, -71.28213615677292], nombre: 'Paradero Lontué', detalle: 'Lontué, Molina', tipo: 'parada' },
+      { latlng: [-35.0022361244218, -71.23882966018202], nombre: 'Paradero Los Niches', detalle: 'Los Niches, Curicó', tipo: 'parada' },
+      { latlng: [-34.990404772669216, -71.23502633192253], nombre: 'Paradero Hospital Viejo, Curicó', detalle: 'Curicó, Maule', tipo: 'parada' },
+      { latlng: [-34.990783357474804, -71.2396067209356], nombre: 'Paradero Calle Buen Pastor, Curicó', detalle: 'Curicó, Maule', tipo: 'parada' },
+      { latlng: [-34.98962122106106, -71.24236787167128], nombre: 'Paradero Vuelta Calle Manuel Rodriguez, Curicó', detalle: 'Curicó, Maule', tipo: 'parada' },
+      { latlng: [-34.98851934389254, -71.24245310310941], nombre: 'Paradero Esquina Calle Villota, Curicó', detalle: 'Curicó, Maule', tipo: 'parada' },
+      { latlng: [-34.98627373840719, -71.2425522675447], nombre: 'Paradero Esquina Calle Estado, Curicó', detalle: 'Curicó, Maule', tipo: 'parada' },
+      { latlng: [-34.984833609631, -71.24537368461873], nombre: 'Terminal De Buses Curicó', detalle: 'Curicó, Maule', tipo: 'destino' }
+    ],
+
+    // Ruta: Talca -> San Rafael
+    "Talca-San Rafael": [
+      { latlng: [-35.43016139127286, -71.64699132598537], nombre: 'Terminal De Buses Talca', detalle: 'Talca, Maule', tipo: 'origen' },
+      { latlng: [-35.302637184296096, -71.5173192136632], nombre: 'Paradero San Rafael', detalle: 'San Rafael, Maule', tipo: 'destino' }
+    ],
+
+    // Ruta: Curicó -> Molina
+    "Curicó-Molina": [
+      { latlng: [-34.984800474239314, -71.24580838453566], nombre: 'Terminal de Buses Curicó', detalle: 'Maipú 636, Curicó', tipo: 'origen' },
+      { latlng: [-35.094148495408554, -71.31878667318661], nombre: 'Paradero Molina', detalle: 'Molina, Maule', tipo: 'destino' }
+    ],
+
+    // Ruta: Curicó -> Itahue
+    "Curicó-Itahue": [
+      { latlng: [-34.984800474239314, -71.24580838453566], nombre: 'Terminal de Buses Curicó', detalle: 'Maipú 636, Curicó', tipo: 'origen' },
+      { latlng: [-35.094148495408554, -71.31878667318661], nombre: 'Paradero Molina', detalle: 'Molina, Maule', tipo: 'parada' },
+      { latlng: [-35.12952611574631, -71.35216713561492], nombre: 'Paradero Itahue', detalle: 'Puente Alto, Molina', tipo: 'destino' }
+    ],
+
+    // Ruta: Talca -> Molina
+    "Talca-Molina": [
+      { latlng: [-35.43016139127286, -71.64699132598537], nombre: 'Terminal De Buses Talca', detalle: 'Talca, Maule', tipo: 'origen' },
+      { latlng: [-35.302637184296096, -71.5173192136632], nombre: 'Paradero San Rafael', detalle: 'San Rafael, Maule', tipo: 'parada' },
+      { latlng: [-35.22001267169181, -71.42355664542728], nombre: 'Paradero Camarico', detalle: 'Camarico, Rio Claro', tipo: 'parada' },
+      { latlng: [-35.1355718931921, -71.35766922078334], nombre: 'Paradero Itahue', detalle: 'Itahue, Molina', tipo: 'parada' },
+      { latlng: [-35.09377167333507, -71.31836018809612], nombre: 'Paradero Molina', detalle: 'Molina, Maule', tipo: 'destino' }
+    ]
+  };
+
+  // Obtenemos la clave exacta de la ruta seleccionada (Ej: "Curicó-Talca")
+  const claveRuta = `${VIAJE.origen}-${VIAJE.destino}`;
+
+  // Extraemos el array de paradas correspondiente. Si no existe aún o está vacío, evitamos que crashee
+  let paradas = RUTAS_MAPA[claveRuta] || [];
+
+  // Si no hay paradas cargadas aún para esa ruta, usamos Curicó-Talca como fallback para que el mapa no se rompa visualmente
+  if (paradas.length === 0) {
+    console.warn(`No se encontraron coordenadas para la ruta: ${claveRuta}. Usando fallback.`);
+    paradas = RUTAS_MAPA["Curicó-Talca"];
+  }
 
   /* ── Íconos con imágenes PNG descargadas ── */
 
   // Pin inicio (origen): pin_inicio.png
   const iconoInicio = L.icon({
-    iconUrl:    '/static/image/pin_inicio.png',
-    iconSize:   [50, 50],      // ancho x alto en píxeles — ajusta si queda muy grande/pequeño
+    iconUrl: '/static/image/pin_inicio.png',
+    iconSize: [50, 50],      // ancho x alto en píxeles — ajusta si queda muy grande/pequeño
     iconAnchor: [19, 50],      // punto del pin que toca el mapa (centro-abajo)
-    popupAnchor:[0, -54]       // dónde aparece el popup respecto al pin
+    popupAnchor: [0, -54]       // dónde aparece el popup respecto al pin
   });
 
   // Pin parada intermedia: pin_parada.png
   const iconoParada = L.icon({
-    iconUrl:    '/static/image/pin_parada.png',
-    iconSize:   [44, 44],
+    iconUrl: '/static/image/pin_parada.png',
+    iconSize: [44, 44],
     iconAnchor: [17, 44],
-    popupAnchor:[0, -48]
+    popupAnchor: [0, -48]
   });
 
   // Pin fin (destino): pin_fin.png
   const iconoFin = L.icon({
-    iconUrl:    '/static/image/pin_fin.png',
-    iconSize:   [50, 50],
+    iconUrl: '/static/image/pin_fin.png',
+    iconSize: [50, 50],
     iconAnchor: [19, 50],
-    popupAnchor:[0, -54]
+    popupAnchor: [0, -54]
   });
 
   /* ── Inicializar el mapa ── */
   const mapa = L.map('mapaLeaflet', {
-    center:          [-35.2060, -71.4500],
-    zoom:            10,
-    zoomControl:     true,
+    center: [-35.2060, -71.4500],
+    zoom: 10,
+    zoomControl: true,
     scrollWheelZoom: true,
     doubleClickZoom: true,
-    dragging:        true,
+    dragging: true,
   });
 
   /* ── Tiles de OpenStreetMap ── */
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | Ruta: <a href="https://project-osrm.org" target="_blank">OSRM</a>',
     maxZoom: 19,
-    minZoom:  8,
+    minZoom: 8,
   }).addTo(mapa);
 
   /* ─────────────────────────────────────────────────────────────────
@@ -394,29 +363,29 @@ function initMapaLeaflet() {
   function dibujarRuta(latlngs) {
     // Halo exterior (glow azul)
     L.polyline(latlngs, {
-      color:      '#1a73e8',
-      weight:     16,
-      opacity:    0.18,
-      lineJoin:   'round',
-      lineCap:    'round',
+      color: '#1a73e8',
+      weight: 16,
+      opacity: 0.18,
+      lineJoin: 'round',
+      lineCap: 'round',
     }).addTo(mapa);
 
     // Línea principal
     const lineaPrincipal = L.polyline(latlngs, {
-      color:    '#1a73e8',
-      weight:   7,
-      opacity:  0.92,
+      color: '#1a73e8',
+      weight: 7,
+      opacity: 0.92,
       lineJoin: 'round',
-      lineCap:  'round',
+      lineCap: 'round',
     }).addTo(mapa);
 
     // Hilo blanco interior (efecto Google Maps)
     L.polyline(latlngs, {
-      color:   '#ffffff',
-      weight:  2.5,
+      color: '#ffffff',
+      weight: 2.5,
       opacity: 0.55,
       lineJoin: 'round',
-      lineCap:  'round',
+      lineCap: 'round',
     }).addTo(mapa);
 
     return lineaPrincipal;
@@ -426,14 +395,14 @@ function initMapaLeaflet() {
   function agregarMarcadores() {
     paradas.forEach(p => {
       let icono;
-      if      (p.tipo === 'origen')  icono = iconoInicio;
+      if (p.tipo === 'origen') icono = iconoInicio;
       else if (p.tipo === 'destino') icono = iconoFin;
-      else                           icono = iconoParada;
+      else icono = iconoParada;
 
       const etiquetaTipo = {
-        origen:  '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">ORIGEN</span>',
+        origen: '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">ORIGEN</span>',
         destino: '<span style="color:#1a1a1a;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">DESTINO</span>',
-        parada:  '<span style="color:#e53935;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">PARADA</span>',
+        parada: '<span style="color:#e53935;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">PARADA</span>',
       }[p.tipo];
 
       const popupHtml = `

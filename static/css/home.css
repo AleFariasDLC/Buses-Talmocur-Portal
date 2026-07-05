@@ -1223,4 +1223,21 @@ button:disabled {
   .aviso-toast {
     width: 100%;
   }
-}
+}
+
+/* ── Estado vacío: sin horarios disponibles ─────────────────── */
+.horarios__vacio {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 24px;
+  color: var(--color-gray-400);
+  font-size: 1rem;
+}
+.horarios__vacio i {
+  font-size: 3rem;
+  color: var(--color-gray-200);
+}
+
