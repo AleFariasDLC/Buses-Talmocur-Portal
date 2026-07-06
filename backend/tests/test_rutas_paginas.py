@@ -119,6 +119,18 @@ class TestPaginasPublicas:
 #  API DE ORÍGENES Y RECORRIDOS
 # ═══════════════════════════════════════════════════════════════════
 
+class TestHomeBusqueda:
+    """GET / con parámetros de búsqueda desde la portada."""
+
+    def test_home_con_fecha_seleccionada_muestra_la_fecha_en_la_respuesta(self, client):
+        """La portada debe responder al parámetro fecha del buscador."""
+        r = client.get('/?fecha=2026-07-10')
+        assert r.status_code == 200
+        html = r.get_data(as_text=True)
+        assert 'name="fecha"' in html
+        assert 'value="2026-07-10"' in html
+
+
 class TestApiOrigenes:
     """GET /api/origenes — público."""
 

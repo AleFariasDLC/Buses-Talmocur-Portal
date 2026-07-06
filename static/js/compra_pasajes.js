@@ -10,38 +10,57 @@
   const busSeleccionado = sessionStorage.getItem('busSeleccionado') || 'A1';
   const horaSeleccionada = sessionStorage.getItem('horaSeleccionada') || '07:00';
   const precioSeleccionado = sessionStorage.getItem('precioSeleccionado') || '2800';
-  const asientoSeleccionado = sessionStorage.getItem('asientoSeleccionado') || 'Por definir';
+  const asientosSeleccionados = JSON.parse(sessionStorage.getItem('asientosSeleccionados') || '[]');
+  const resumenAsientos = document.getElementById('cp-asientos-resumen');
+  const pasajerosContainer = document.getElementById('pasajerosContainer');
 
   const resumenItems = document.querySelectorAll('.cp-summary__item strong');
   if (resumenItems.length >= 5) {
     resumenItems[0].textContent = 'Curicó → Talca';
     resumenItems[1].textContent = `Bus ${busSeleccionado}`;
     resumenItems[2].textContent = horaSeleccionada;
-    resumenItems[3].textContent = asientoSeleccionado === 'Por definir' ? 'Por definir' : `N.º ${asientoSeleccionado}`;
+    if (resumenAsientos) {
+      resumenAsientos.textContent = asientosSeleccionados.length ? asientosSeleccionados.join(', ') : 'Por definir';
+    }
     resumenItems[4].textContent = `$${parseInt(precioSeleccionado).toLocaleString('es-CL')}`;
   }
+
+  const numerosAsientos = Array.isArray(asientosSeleccionados) && asientosSeleccionados.length
+    ? asientosSeleccionados
+    : [1];
+
+  renderizarPasajeros(numerosAsientos);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const pasajeros = Array.from(pasajerosContainer.querySelectorAll('.cp-pasajero-card')).map((card, index) => {
+      const asiento = card.querySelector('[name="asiento[]"]').value;
+      return {
+        asiento: Number(asiento),
+        nombre: card.querySelector('[name="nombre[]"]').value.trim(),
+        rut: card.querySelector('[name="rut[]"]').value.trim(),
+        email: card.querySelector('[name="email[]"]').value.trim(),
+        telefono: card.querySelector('[name="telefono[]"]').value.trim(),
+        tipoPasaje: card.querySelector('[name="tipo_pasaje[]"]').value,
+        observaciones: card.querySelector('[name="observaciones[]"]').value.trim(),
+      };
+    });
+
     const datosCompra = {
-      nombre: document.getElementById('nombre').value.trim(),
-      rut: document.getElementById('rut').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      telefono: document.getElementById('telefono').value.trim(),
-      tipoPasaje: document.getElementById('tipo-pasaje').value,
-      observaciones: document.getElementById('observaciones').value.trim(),
       origen: 'Curicó',
       destino: 'Talca',
       bus: `Bus ${busSeleccionado}`,
       horaSalida: horaSeleccionada,
       horaLlegada: calcularHoraLlegada(horaSeleccionada, 60),
-      asiento: asientoSeleccionado === 'Por definir' ? 'Por definir' : `N.º ${asientoSeleccionado}`,
-      precio: precioSeleccionado
+      asiento: pasajeros.map((p) => `N.º ${p.asiento}`).join(', '),
+      precio: precioSeleccionado,
+      pasajeros,
     };
 
-    if (!datosCompra.nombre || !datosCompra.rut || !datosCompra.email) {
-      alert('Por favor, completa todos los campos obligatorios.');
+    const invalidos = pasajeros.some((p) => !p.nombre || !p.rut || !p.email);
+    if (invalidos) {
+      alert('Por favor, completa todos los campos obligatorios de cada pasajero.');
       return;
     }
 
@@ -52,15 +71,9 @@
         body: JSON.stringify({
           patente: busSeleccionado,
           horaSalida: horaSeleccionada,
-          asiento: asientoSeleccionado,
-          nombre: datosCompra.nombre,
-          rut: datosCompra.rut,
-          email: datosCompra.email,
-          telefono: datosCompra.telefono,
-          tipoPasaje: datosCompra.tipoPasaje,
-          observaciones: datosCompra.observaciones,
           precio: precioSeleccionado,
           fechaViaje: new Date().toISOString().slice(0, 10),
+          pasajeros,
         }),
       });
       const payload = await response.json();
@@ -78,6 +91,53 @@
       alert(error.message);
     }
   });
+
+  function renderizarPasajeros(asientos) {
+    pasajerosContainer.innerHTML = '';
+    asientos.forEach((asiento, index) => {
+      const card = document.createElement('div');
+      card.className = 'cp-pasajero-card';
+      card.innerHTML = `
+        <div class="cp-pasajero-card__header">
+          <h3>Pasajero ${index + 1}</h3>
+          <span class="cp-pasajero-card__asiento">Asiento ${asiento}</span>
+        </div>
+        <input type="hidden" name="asiento[]" value="${asiento}" />
+        <div class="cp-form__grid">
+          <div class="cp-field cp-field--full">
+            <label>Nombre completo</label>
+            <input type="text" name="nombre[]" placeholder="Ej. María Pérez" required />
+          </div>
+          <div class="cp-field">
+            <label>RUT</label>
+            <input type="text" name="rut[]" placeholder="12.345.678-9" required />
+          </div>
+          <div class="cp-field">
+            <label>Correo electrónico</label>
+            <input type="email" name="email[]" placeholder="correo@ejemplo.cl" required />
+          </div>
+          <div class="cp-field">
+            <label>Teléfono</label>
+            <input type="tel" name="telefono[]" placeholder="+56 9 1234 5678" />
+          </div>
+          <div class="cp-field">
+            <label>Tipo de pasaje</label>
+            <select name="tipo_pasaje[]">
+              <option value="adulto">Adulto</option>
+              <option value="estudiante">Estudiante</option>
+              <option value="tercera-edad">Tercera edad</option>
+              <option value="nino">Niño</option>
+            </select>
+          </div>
+          <div class="cp-field cp-field--full">
+            <label>Observaciones</label>
+            <textarea name="observaciones[]" placeholder="Necesidades especiales, equipaje, etc."></textarea>
+          </div>
+        </div>
+      `;
+      pasajerosContainer.appendChild(card);
+    });
+  }
 
   /**
    * Calcular hora de llegada

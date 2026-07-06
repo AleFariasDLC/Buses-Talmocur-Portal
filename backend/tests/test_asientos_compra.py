@@ -191,3 +191,47 @@ class TestConfirmarCompra:
         })
         assert r.status_code == 200
         assert r.get_json()['compra']['monto_total'] == 4200
+
+    def test_compra_multiple_de_asientos_con_pasajeros(self, client, db_session):
+        """Una compra puede reservar varios asientos y guardar datos del pasajero por asiento."""
+        registrar_y_login_admin(client)
+        crear_bus_test(client, patente='BUS-M1', capacidad=10)
+        rec = crear_recorrido_test(db_session)
+        crear_horario_test(client, 'BUS-M1', rec.id_recorrido, '12:00')
+        client.post('/api/logout')
+
+        registrar_usuario(client)
+        login_usuario(client)
+        r = client.post('/api/confirmar-compra', json={
+            'patente': 'BUS-M1',
+            'horaSalida': '12:00',
+            'precio': 3500,
+            'pasajeros': [
+                {
+                    'asiento': 1,
+                    'nombre': 'Ana Pérez',
+                    'rut': '11111111-1',
+                    'email': 'ana@example.com',
+                    'telefono': '+56 9 1111 1111',
+                    'tipoPasaje': 'adulto',
+                    'observaciones': 'Asiento ventana',
+                },
+                {
+                    'asiento': 2,
+                    'nombre': 'Luis Gómez',
+                    'rut': '22222222-2',
+                    'email': 'luis@example.com',
+                    'telefono': '+56 9 2222 2222',
+                    'tipoPasaje': 'estudiante',
+                    'observaciones': 'Asiento pasillo',
+                },
+            ],
+        })
+
+        assert r.status_code == 200
+        data = r.get_json()
+        assert data['success'] is True
+        assert len(data['compras']) == 2
+        assert [item['asiento']['numero'] for item in data['compras']] == [1, 2]
+        assert data['compras'][0]['pasajero']['nombre'] == 'Ana Pérez'
+        assert data['compras'][1]['pasajero']['rut'] == '22222222-2'

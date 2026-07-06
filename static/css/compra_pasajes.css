@@ -161,6 +161,43 @@
   font-size: .95rem;
 }
 
+.cp-pasajeros {
+  display: grid;
+  gap: 16px;
+}
+
+.cp-pasajero-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 18px;
+  background: #f8fafc;
+}
+
+.cp-pasajero-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cp-pasajero-card__header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.cp-pasajero-card__asiento {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 900px) {
   .cp-layout {
     grid-template-columns: 1fr;

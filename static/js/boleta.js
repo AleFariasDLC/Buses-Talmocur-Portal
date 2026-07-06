@@ -31,39 +31,72 @@
    * Llenar la boleta con los datos de la compra
    */
   function llenarBoleta(datos) {
-    // Generar número de boleta simulado
     const numeroBoleta = `FACT-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}`;
-    
-    // Llenar elementos
+
     document.getElementById('boleta-numero').textContent = numeroBoleta;
     document.getElementById('boleta-fecha').textContent = new Date().toLocaleDateString('es-CL');
-    
-    // Información del viaje
+
     document.getElementById('boleta-origen').textContent = datos.origen || '—';
     document.getElementById('boleta-destino').textContent = datos.destino || '—';
     document.getElementById('boleta-salida').textContent = datos.horaSalida || '—';
     document.getElementById('boleta-llegada').textContent = datos.horaLlegada || '—';
     document.getElementById('boleta-bus').textContent = datos.bus || '—';
     document.getElementById('boleta-asiento').textContent = datos.asiento || '—';
-    
-    // Datos del pasajero
-    document.getElementById('boleta-nombre').textContent = datos.nombre || '—';
-    document.getElementById('boleta-rut').textContent = datos.rut || '—';
-    document.getElementById('boleta-tipo-pasaje').textContent = datos.tipoPasaje || '—';
-    document.getElementById('boleta-email').textContent = datos.email || '—';
-    document.getElementById('boleta-telefono').textContent = datos.telefono || '—';
-    
-    // Observaciones (mostrar solo si existen)
-    if (datos.observaciones && datos.observaciones.trim() !== '') {
-      document.getElementById('boleta-observaciones').textContent = datos.observaciones;
+
+    const pasajeros = Array.isArray(datos.pasajeros) && datos.pasajeros.length
+      ? datos.pasajeros
+      : [{
+          asiento: datos.asiento,
+          nombre: datos.nombre,
+          rut: datos.rut,
+          tipoPasaje: datos.tipoPasaje,
+          email: datos.email,
+          telefono: datos.telefono,
+          observaciones: datos.observaciones,
+        }];
+
+    const contenedorPasajeros = document.getElementById('boleta-pasajeros');
+    contenedorPasajeros.innerHTML = pasajeros.map((pasajero, index) => `
+      <div class="boleta-pasajero-card">
+        <div class="boleta-pasajero-card__header">
+          <h4>Pasajero ${index + 1}</h4>
+          <span>Asiento ${pasajero.asiento || '—'}</span>
+        </div>
+        <div class="boleta-grid">
+          <div class="boleta-item boleta-item--full">
+            <span class="boleta-item__label">Nombre completo</span>
+            <span class="boleta-item__value">${pasajero.nombre || '—'}</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">RUT</span>
+            <span class="boleta-item__value">${pasajero.rut || '—'}</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Tipo de pasaje</span>
+            <span class="boleta-item__value">${pasajero.tipoPasaje || '—'}</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Email</span>
+            <span class="boleta-item__value">${pasajero.email || '—'}</span>
+          </div>
+          <div class="boleta-item">
+            <span class="boleta-item__label">Teléfono</span>
+            <span class="boleta-item__value">${pasajero.telefono || '—'}</span>
+          </div>
+        </div>
+        ${pasajero.observaciones ? `<div class="boleta-observaciones">${pasajero.observaciones}</div>` : ''}
+      </div>
+    `).join('');
+
+    if (pasajeros.some((p) => p.observaciones && p.observaciones.trim() !== '')) {
+      document.getElementById('boleta-observaciones').textContent = pasajeros
+        .filter((p) => p.observaciones && p.observaciones.trim() !== '')
+        .map((p) => `Asiento ${p.asiento}: ${p.observaciones}`).join(' | ');
       document.getElementById('seccion-observaciones').style.display = 'block';
     }
-    
-    // Precio
+
     const precioFormato = `$${parseInt(datos.precio || 0).toLocaleString('es-CL')}`;
     document.getElementById('boleta-precio').textContent = precioFormato;
-    
-    // Código para el QR
     document.getElementById('boleta-codigo').textContent = numeroBoleta;
   }
 

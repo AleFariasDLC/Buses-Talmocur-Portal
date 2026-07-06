@@ -23,7 +23,7 @@
   </div>
 
   <!-- ── BUSCADOR DE PASAJES ── -->
-  <div class="buscador" role="search" aria-label="Buscar pasajes">
+  <form class="buscador" role="search" aria-label="Buscar pasajes" method="get" action="/">
 
     <!-- Desde -->
     <div class="buscador__field">
@@ -64,7 +64,7 @@
       <label for="fecha" class="buscador__etiqueta">
         <i class='bx bx-calendar'></i> Fecha de salida
       </label>
-      <input type="date" id="fecha" class="buscador__input" />
+      <input type="date" id="fecha" name="fecha" class="buscador__input" value="{{ fecha_seleccionada }}" />
     </div>
 
     <!-- Divisor -->
@@ -85,12 +85,12 @@
     </div>
 
     <!-- Botón buscar -->
-    <button class="buscador__btn" type="button" aria-label="Buscar pasajes">
+    <button class="buscador__btn" type="submit" aria-label="Buscar pasajes">
       <i class='bx bx-search'></i>
       <span>Buscar</span>
     </button>
 
-  </div>
+  </form>
   <!-- /buscador -->
 
 </section>

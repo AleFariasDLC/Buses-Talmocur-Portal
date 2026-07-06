@@ -8,9 +8,11 @@
   const el = document.getElementById('fechaHoy');
   if (!el) return;
 
-  const hoy = new Date();
+  const params = new URLSearchParams(window.location.search);
+  const fechaParam = params.get('fecha');
+  const fechaBase = fechaParam ? new Date(`${fechaParam}T00:00:00`) : new Date();
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  el.textContent = hoy.toLocaleDateString('es-CL', opciones);
+  el.textContent = fechaBase.toLocaleDateString('es-CL', opciones);
 })();
 
 
@@ -20,8 +22,12 @@
   if (!input) return;
 
   const hoy = new Date().toISOString().split('T')[0];
+  const params = new URLSearchParams(window.location.search);
+  const fechaParam = params.get('fecha');
+  const valorInicial = fechaParam || input.value || hoy;
+
   input.setAttribute('min', hoy);
-  input.value = hoy;
+  input.value = valorInicial;
 })();
 
 

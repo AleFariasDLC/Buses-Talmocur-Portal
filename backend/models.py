@@ -153,6 +153,12 @@ class AsientoComprado(Base):
     id_compra       = Column(Integer, ForeignKey("compra.id_compra"),   nullable=False)
     id_asiento      = Column(Integer, ForeignKey("asiento.id_asiento"), nullable=False)
     precio_unitario = Column(Float,   nullable=False)
+    nombre_pasajero = Column(String(100), nullable=True)
+    rut_pasajero    = Column(String(20), nullable=True)
+    email_pasajero  = Column(String(100), nullable=True)
+    telefono_pasajero = Column(String(30), nullable=True)
+    tipo_pasaje     = Column(String(30), nullable=True)
+    observaciones   = Column(String(500), nullable=True)
 
     __table_args__ = (
         UniqueConstraint("id_compra", "id_asiento", name="uq_asiento_por_compra"),

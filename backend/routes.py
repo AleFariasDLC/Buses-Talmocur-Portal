@@ -226,16 +226,10 @@ def obtener_asientos():
 def confirmar_compra():
     data = request.get_json(silent=True) or {}
     patente = str(data.get('patente', '')).strip()
-    asiento_numero = data.get('asiento')
     hora_salida = str(data.get('horaSalida', '')).strip()
 
-    if not patente or asiento_numero is None:
+    if not patente:
         return jsonify({'error': 'Faltan datos de la compra.'}), 400
-
-    try:
-        asiento_numero = int(asiento_numero)
-    except (TypeError, ValueError):
-        return jsonify({'error': 'El asiento debe ser un número válido.'}), 400
 
     db_sess = obtener_sesion()
     try:
@@ -245,16 +239,6 @@ def confirmar_compra():
             db_sess.add(bus)
             db_sess.commit()
             db_sess.refresh(bus)
-
-        asiento = db_sess.query(Asiento).filter(
-            Asiento.patente == bus.patente,
-            Asiento.numero == asiento_numero,
-        ).first()
-        if not asiento:
-            asiento = Asiento(numero=asiento_numero, patente=bus.patente)
-            db_sess.add(asiento)
-            db_sess.commit()
-            db_sess.refresh(asiento)
 
         hora_obj = None
         if hora_salida:
@@ -291,15 +275,6 @@ def confirmar_compra():
             db_sess.commit()
             db_sess.refresh(horario)
 
-        asiento_ya_vendido = (
-            db_sess.query(AsientoComprado)
-            .join(Compra, AsientoComprado.id_compra == Compra.id_compra)
-            .filter(AsientoComprado.id_asiento == asiento.id_asiento, Compra.id_horario == horario.id_horario)
-            .first()
-        )
-        if asiento_ya_vendido:
-            return jsonify({'error': 'Ese asiento ya está vendido.'}), 409
-
         usuario_id = session.get('user_id')
         if not usuario_id:
             usuario = db_sess.query(Usuario).filter(Usuario.email == 'invitado@talmocur.local').first()
@@ -324,36 +299,127 @@ def confirmar_compra():
             fecha_viaje_obj = date.today()
 
         monto_total = float(data.get('precio', 2800) or 2800)
-        compra = Compra(
-            id_usuario=usuario_id,
-            id_horario=horario.id_horario,
-            fecha_viaje=fecha_viaje_obj,
-            monto_total=monto_total,
-            metodo_pago='simulado',
-            estado='confirmada',
-        )
-        db_sess.add(compra)
-        db_sess.flush()
+        pasajeros = data.get('pasajeros')
 
-        asiento_comprado = AsientoComprado(
-            id_compra=compra.id_compra,
-            id_asiento=asiento.id_asiento,
-            precio_unitario=monto_total,
-        )
-        db_sess.add(asiento_comprado)
-        db_sess.commit()
-        db_sess.refresh(compra)
+        if pasajeros is None:
+            asiento_numero = data.get('asiento')
+            if asiento_numero is None:
+                return jsonify({'error': 'Faltan datos de la compra.'}), 400
+            try:
+                asiento_numero = int(asiento_numero)
+            except (TypeError, ValueError):
+                return jsonify({'error': 'El asiento debe ser un número válido.'}), 400
+            pasajeros = [{
+                'asiento': asiento_numero,
+                'nombre': data.get('nombre', 'Pasajero'),
+                'rut': data.get('rut', ''),
+                'email': data.get('email', ''),
+                'telefono': data.get('telefono', ''),
+                'tipoPasaje': data.get('tipoPasaje', 'adulto'),
+                'observaciones': data.get('observaciones', ''),
+            }]
 
-        return jsonify({
-            'success': True,
-            'compra': {
+        if not isinstance(pasajeros, list) or not pasajeros:
+            return jsonify({'error': 'Debe enviar al menos un pasajero.'}), 400
+
+        compras_creadas = []
+        for pasajero in pasajeros:
+            asiento_numero = pasajero.get('asiento')
+            if asiento_numero is None:
+                return jsonify({'error': 'Cada pasajero debe incluir un asiento.'}), 400
+            try:
+                asiento_numero = int(asiento_numero)
+            except (TypeError, ValueError):
+                return jsonify({'error': 'El asiento debe ser un número válido.'}), 400
+
+            asiento = db_sess.query(Asiento).filter(
+                Asiento.patente == bus.patente,
+                Asiento.numero == asiento_numero,
+            ).first()
+            if not asiento:
+                asiento = Asiento(numero=asiento_numero, patente=bus.patente)
+                db_sess.add(asiento)
+                db_sess.commit()
+                db_sess.refresh(asiento)
+
+            asiento_ya_vendido = (
+                db_sess.query(AsientoComprado)
+                .join(Compra, AsientoComprado.id_compra == Compra.id_compra)
+                .filter(AsientoComprado.id_asiento == asiento.id_asiento, Compra.id_horario == horario.id_horario)
+                .first()
+            )
+            if asiento_ya_vendido:
+                return jsonify({'error': f'El asiento {asiento_numero} ya está vendido.'}), 409
+
+        for pasajero in pasajeros:
+            asiento_numero = int(pasajero['asiento'])
+            asiento = db_sess.query(Asiento).filter(
+                Asiento.patente == bus.patente,
+                Asiento.numero == asiento_numero,
+            ).first()
+            if not asiento:
+                asiento = Asiento(numero=asiento_numero, patente=bus.patente)
+                db_sess.add(asiento)
+                db_sess.commit()
+                db_sess.refresh(asiento)
+
+            compra = Compra(
+                id_usuario=usuario_id,
+                id_horario=horario.id_horario,
+                fecha_viaje=fecha_viaje_obj,
+                monto_total=monto_total,
+                metodo_pago='simulado',
+                estado='confirmada',
+            )
+            db_sess.add(compra)
+            db_sess.flush()
+
+            asiento_comprado = AsientoComprado(
+                id_compra=compra.id_compra,
+                id_asiento=asiento.id_asiento,
+                precio_unitario=monto_total,
+                nombre_pasajero=str(pasajero.get('nombre', 'Pasajero') or 'Pasajero'),
+                rut_pasajero=str(pasajero.get('rut', '') or ''),
+                email_pasajero=str(pasajero.get('email', '') or ''),
+                telefono_pasajero=str(pasajero.get('telefono', '') or ''),
+                tipo_pasaje=str(pasajero.get('tipoPasaje', 'adulto') or 'adulto'),
+                observaciones=str(pasajero.get('observaciones', '') or ''),
+            )
+            db_sess.add(asiento_comprado)
+            db_sess.flush()
+            compras_creadas.append({
                 'id': compra.id_compra,
                 'estado': compra.estado,
                 'monto_total': compra.monto_total,
-                'asiento': asiento.numero,
-            },
+                'asiento': {
+                    'numero': asiento.numero,
+                    'estado': 'ocupado',
+                },
+                'pasajero': {
+                    'nombre': asiento_comprado.nombre_pasajero,
+                    'rut': asiento_comprado.rut_pasajero,
+                    'email': asiento_comprado.email_pasajero,
+                    'telefono': asiento_comprado.telefono_pasajero,
+                    'tipoPasaje': asiento_comprado.tipo_pasaje,
+                    'observaciones': asiento_comprado.observaciones,
+                },
+            })
+
+        db_sess.commit()
+
+        if len(compras_creadas) == 1:
+            return jsonify({
+                'success': True,
+                'compra': compras_creadas[0],
+                'compras': compras_creadas,
+                'asiento': compras_creadas[0]['asiento'],
+            })
+
+        return jsonify({
+            'success': True,
+            'compras': compras_creadas,
             'asiento': {
-                'numero': asiento.numero,
+                'numero': None,
                 'estado': 'ocupado',
             },
         })

@@ -49,55 +49,59 @@ def index():
         recorridos = db.query(Recorrido).all()
         origenes = sorted({r.origen for r in recorridos})
 
-        # ── Horarios de hoy ──────────────────────────────────────────
         hoy = date.today()
+        fecha_param = request.args.get('fecha', '').strip()
+        try:
+            fecha_consulta = date.fromisoformat(fecha_param) if fecha_param else hoy
+        except ValueError:
+            fecha_consulta = hoy
 
         # Hora actual local del servidor (sin zona horaria, para comparar con time())
-        # Se aplica un margen de 10 minutos: si el bus sale en menos de 10 min, ya no se muestra.
+        # En la fecha seleccionada hoy se aplica un margen de 10 minutos; para otras fechas
+        # se muestran todos los horarios activos porque el viaje aún no ha ocurrido.
         ahora = datetime.now()
-        hora_minima = ahora.time()   # solo horarios que salen despues de la hora actual
+        hora_minima = ahora.time() if fecha_consulta == hoy else None
 
-        # IDs de horarios suspendidos para hoy
-        suspendidos_hoy = {
+        # IDs de horarios suspendidos para la fecha consultada
+        suspendidos = {
             s.id_horario
             for s in db.query(Suspension).filter(
-                Suspension.fecha_inicio <= hoy,
-                Suspension.fecha_fin   >= hoy
+                Suspension.fecha_inicio <= fecha_consulta,
+                Suspension.fecha_fin   >= fecha_consulta
             ).all()
         }
 
-        # Contar asientos ya comprados por horario para hoy
-        compras_hoy = (
+        # Contar asientos ya comprados por horario para la fecha consultada
+        compras = (
             db.query(
                 Compra.id_horario,
                 func.count(AsientoComprado.id).label('ocupados')
             )
             .join(AsientoComprado, AsientoComprado.id_compra == Compra.id_compra)
             .filter(
-                Compra.fecha_viaje == hoy,
+                Compra.fecha_viaje == fecha_consulta,
                 Compra.estado == 'confirmada'
             )
             .group_by(Compra.id_horario)
             .all()
         )
-        ocupados_por_horario = {fila.id_horario: fila.ocupados for fila in compras_hoy}
+        ocupados_por_horario = {fila.id_horario: fila.ocupados for fila in compras}
 
-        # Obtener solo horarios activos cuya hora de salida aún no ha pasado
-        # (filtrando en Python para comparar time() directamente)
+        filtros_horarios = [HorarioViaje.activo == True]
+        if hora_minima is not None:
+            filtros_horarios.append(HorarioViaje.hora_salida >= hora_minima)
+
         horarios_raw = (
             db.query(HorarioViaje)
-            .filter(
-                HorarioViaje.activo == True,
-                HorarioViaje.hora_salida >= hora_minima   # solo horarios futuros
-            )
+            .filter(*filtros_horarios)
             .order_by(HorarioViaje.hora_salida)
             .all()
         )
 
         pasajes_hoy = []
         for h in horarios_raw:
-            if h.id_horario in suspendidos_hoy:
-                continue  # saltar suspendidos
+            if h.id_horario in suspendidos:
+                continue
 
             capacidad        = h.bus.capacidad
             ocupados         = ocupados_por_horario.get(h.id_horario, 0)
@@ -115,12 +119,17 @@ def index():
                 'capacidad':      capacidad,
                 'agotado':        asientos_libres <= 0,
                 'pocas_plazas':   0 < asientos_libres <= 5,
-                #'duracion_estimada': h.duracion_estimada,
             })
 
     finally:
         db.close()
-    return render_template('home.html', origenes=origenes, pasajes_hoy=pasajes_hoy, fecha_hoy=hoy)
+    return render_template(
+        'home.html',
+        origenes=origenes,
+        pasajes_hoy=pasajes_hoy,
+        fecha_hoy=fecha_consulta,
+        fecha_seleccionada=fecha_consulta.strftime('%Y-%m-%d')
+    )
 
 
 @app.route('/login')

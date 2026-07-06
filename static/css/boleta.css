@@ -134,6 +134,32 @@
   border-bottom: 2px solid #e2e8f0;
 }
 
+.boleta-pasajero-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  margin-bottom: 16px;
+}
+
+.boleta-pasajero-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.boleta-pasajero-card__header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.boleta-pasajero-card__header span {
+  font-weight: 700;
+  color: #1a73e8;
+}
+
 /* ── Grid de items ────────────────────────────────────────────── */
 .boleta-grid {
   display: grid;
