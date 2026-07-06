@@ -53,11 +53,15 @@ def index():
         destino_seleccionado = request.args.get('destino', '').strip()
 
         hoy = date.today()
+        max_fecha = hoy + timedelta(days=30)
         fecha_param = request.args.get('fecha', '').strip()
         try:
             fecha_consulta = date.fromisoformat(fecha_param) if fecha_param else hoy
         except ValueError:
             fecha_consulta = hoy
+
+        if fecha_consulta > max_fecha:
+            fecha_consulta = max_fecha
 
         # Hora actual local del servidor (sin zona horaria, para comparar con time())
         # En la fecha seleccionada hoy se aplica un margen de 10 minutos; para otras fechas
@@ -99,7 +103,12 @@ def index():
         if hora_minima is not None:
             filtros_horarios.append(HorarioViaje.hora_salida >= hora_minima)
 
-        query_horarios = db.query(HorarioViaje).join(Recorrido, HorarioViaje.id_recorrido == Recorrido.id_recorrido)
+        query_horarios = (
+            db.query(HorarioViaje)
+            .join(Recorrido, HorarioViaje.id_recorrido == Recorrido.id_recorrido)
+            .join(Bus, HorarioViaje.patente == Bus.patente)
+            .filter(Bus.estado == 'Activo')
+        )
         if origen_seleccionado:
             query_horarios = query_horarios.filter(Recorrido.origen == origen_seleccionado)
         if destino_seleccionado:
@@ -108,7 +117,7 @@ def index():
         horarios_raw = (
             query_horarios
             .filter(*filtros_horarios)
-            .order_by(HorarioViaje.hora_salida)
+            .order_by(HorarioViaje.hora_salida, HorarioViaje.patente)
             .all()
         )
 
@@ -142,6 +151,7 @@ def index():
         'home.html',
         origenes=origenes,
         pasajes_hoy=pasajes_hoy,
+        hoy=hoy,
         fecha_hoy=fecha_consulta,
         fecha_seleccionada=fecha_consulta.strftime('%Y-%m-%d'),
         origen_seleccionado=origen_seleccionado,
@@ -242,7 +252,7 @@ def compra_pasajes_asientos():
             HorarioViaje.id_horario == id_horario
         ).first()
 
-        if not horario:
+        if not horario or horario.bus.estado == 'En mantención':
             return redirect('/')
 
         fecha_param = request.args.get('fecha', '').strip()
@@ -435,10 +445,61 @@ def listar_recorridos():
         return jsonify({'recorridos': [
             {'id': r.id_recorrido,
              'nombre': f"{r.origen} → {r.destino}",
+             'origen': r.origen,
+             'destino': r.destino,
              'precio_base': r.precio_base,
              'duracion_estimada': r.duracion_estimada}
             for r in recorridos
         ]}), 200
+    finally:
+        db.close()
+
+
+@app.route('/api/recorridos/<int:id_recorrido>', methods=['PUT'])
+def editar_tarifa_recorrido(id_recorrido):
+    if session.get('user_rol') != 'admin':
+        return jsonify({'error': 'Acceso denegado.'}), 403
+
+    data = request.get_json() or {}
+    precio_base = data.get('precio_base')
+
+    if precio_base is None:
+        return jsonify({'error': 'El precio base es obligatorio.'}), 400
+
+    try:
+        precio_base = float(precio_base)
+        if precio_base <= 0:
+            raise ValueError()
+    except (TypeError, ValueError):
+        return jsonify({'error': 'El precio base debe ser un número positivo.'}), 400
+
+    db = obtener_sesion()
+    try:
+        recorrido = db.query(Recorrido).filter(Recorrido.id_recorrido == id_recorrido).first()
+        if not recorrido:
+            return jsonify({'error': 'Recorrido no encontrado.'}), 404
+
+        # Actualizar precio base del recorrido
+        recorrido.precio_base = precio_base
+
+        # Actualizar todos los horarios de viaje asociados a este recorrido
+        horarios = db.query(HorarioViaje).filter(HorarioViaje.id_recorrido == id_recorrido).all()
+        for h in horarios:
+            h.precio_base = precio_base
+
+        db.commit()
+        return jsonify({
+            'message': 'Tarifa general actualizada correctamente para todos los buses.',
+            'recorrido': {
+                'id': recorrido.id_recorrido,
+                'origen': recorrido.origen,
+                'destino': recorrido.destino,
+                'precio_base': recorrido.precio_base
+            }
+        }), 200
+    except Exception as e:
+        db.rollback()
+        return jsonify({'error': f'Error al actualizar tarifa: {str(e)}'}), 500
     finally:
         db.close()
 
@@ -470,6 +531,11 @@ def check_horario_conflict(db, patente, id_recorrido, hora_salida, ignore_id_hor
         
         # Permitir mismo bus en el mismo horario si son sub-recorridos compartidos
         if diff_minutos == 0:
+            if h.id_recorrido == id_recorrido:
+                return True, (
+                    f"El bus ya tiene asignado este recorrido ({h.recorrido.origen} → {h.recorrido.destino}) "
+                    f"a las {h.hora_salida.strftime('%H:%M')}."
+                )
             if h.recorrido.origen == new_rec.origen:
                 continue
             else:
@@ -706,6 +772,9 @@ def avisos_activos():
       - activo == True
       - fecha_creacion + duracion_dias > hoy
     """
+    if session.get('avisos_mostrados') is True:
+        return jsonify({'avisos': []}), 200
+
     db = obtener_sesion()
     try:
         from datetime import timedelta
@@ -721,6 +790,10 @@ def avisos_activos():
                     'mensaje':  a.mensaje,
                     'tipo':     a.tipo,
                 })
+        
+        if 'user_id' in session:
+            session['avisos_mostrados'] = True
+
         return jsonify({'avisos': resultado}), 200
     finally:
         db.close()

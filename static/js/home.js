@@ -16,18 +16,65 @@
 })();
 
 
-/* ── 2. FECHA MÍNIMA en el input de fecha (no permite fechas pasadas) */
+/* ── 2. FECHA MÍNIMA Y MÁXIMA (Máximo 30 días de antelación) ── */
 (function setMinFecha() {
   const input = document.getElementById('fecha');
   if (!input) return;
 
-  const hoy = new Date().toISOString().split('T')[0];
+  const hoyDate = new Date();
+  hoyDate.setHours(0, 0, 0, 0);
+  const hoyStr = hoyDate.toISOString().split('T')[0];
+
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 30);
+  maxDate.setHours(23, 59, 59, 999);
+  const maxStr = maxDate.toISOString().split('T')[0];
+
   const params = new URLSearchParams(window.location.search);
   const fechaParam = params.get('fecha');
-  const valorInicial = fechaParam || input.value || hoy;
+  let valorInicial = fechaParam || input.value || hoyStr;
 
-  input.setAttribute('min', hoy);
+  // Si la fecha que viene de la URL supera el máximo, avisar y clamp
+  if (fechaParam) {
+    const fParamDate = new Date(`${fechaParam}T00:00:00`);
+    if (fParamDate > maxDate) {
+      alert(`⚠️ La fecha ingresada supera el límite permitido de 30 días de anticipación. Mostrando pasajes para la fecha límite.`);
+      valorInicial = maxStr;
+      params.set('fecha', maxStr);
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    }
+  }
+
+  input.setAttribute('min', hoyStr);
+  input.setAttribute('max', maxStr);
   input.value = valorInicial;
+
+  // Validación dinámica al cambiar el valor
+  input.addEventListener('change', () => {
+    const val = input.value;
+    if (!val) return;
+    const selected = new Date(`${val}T00:00:00`);
+    if (selected > maxDate) {
+      alert(`⚠️ Lo sentimos, solo se permite comprar pasajes con un máximo de 30 días de anticipación (hasta el ${maxDate.toLocaleDateString('es-CL')}).`);
+      input.value = maxStr;
+    } else if (selected < hoyDate) {
+      input.value = hoyStr;
+    }
+  });
+
+  // Hacer que hacer click en cualquier parte del div contenedor abra el selector
+  const field = input.closest('.buscador__field');
+  if (field) {
+    field.addEventListener('click', (e) => {
+      if (e.target !== input) {
+        try {
+          input.showPicker();
+        } catch (err) {
+          input.focus();
+        }
+      }
+    });
+  }
 })();
 
 
@@ -263,5 +310,19 @@
       // Si falla silenciosamente, simplemente no se muestran avisos
     });
 
+})();
+
+
+/* ── 8. AUTO SCROLL A PASAJES AL BUSCAR ──────────────────────── */
+(function initAutoScroll() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('origen') || params.has('destino') || params.has('fecha')) {
+    const section = document.querySelector('.horarios');
+    if (section) {
+      setTimeout(() => {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }
+  }
 })();
 

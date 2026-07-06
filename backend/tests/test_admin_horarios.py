@@ -155,6 +155,16 @@ class TestConflictoHorario:
         assert r1.status_code == 201
         assert r2.status_code == 201
 
+    def test_mismo_recorrido_mismo_horario_rechazado(self, client, db_session):
+        """Mismo recorrido a la misma hora para el mismo bus: rechazado."""
+        registrar_y_login_admin(client)
+        crear_bus_test(client, patente='BUS-REPETIDO')
+        rec = crear_recorrido_test(db_session)
+        crear_horario_test(client, 'BUS-REPETIDO', rec.id_recorrido, '10:00')
+        r = crear_horario_test(client, 'BUS-REPETIDO', rec.id_recorrido, '10:00')
+        assert r.status_code == 400
+        assert 'ya tiene asignado este recorrido' in r.get_json()['error'].lower()
+
 
 # ═══════════════════════════════════════════════════════════════════
 #  EDITAR HORARIO

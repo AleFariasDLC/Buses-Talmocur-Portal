@@ -73,6 +73,8 @@
   </form>
   <!-- /buscador -->
 
+  <p class="buscador__limit-notice">Solo se permiten compras con un máximo de 30 días de anticipación.</p>
+
 </section>
 
 
@@ -126,7 +128,13 @@
 
     <div class="horarios__header">
       <p class="horarios__etiqueta">Disponibilidad en tiempo real</p>
-      <h2 class="horarios__titulo">Pasajes de hoy</h2>
+      <h2 class="horarios__titulo">
+        {% if fecha_hoy == hoy %}
+          Pasajes de hoy
+        {% else %}
+          Pasajes disponibles
+        {% endif %}
+      </h2>
       <p class="horarios__subtitulo"><span id="fechaHoy">{{ fecha_hoy.strftime('%d de %B de %Y') }}</span></p>
     </div>
 

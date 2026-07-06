@@ -133,6 +133,67 @@ class TestPaginasPublicas:
         r = client.get(f'/compra-pasajes-asientos?horario={horario.id_horario}')
         assert r.status_code == 200
 
+    def test_compra_pasajes_asientos_bus_mantenimiento_redirige(self, client, db_session):
+        """/compra-pasajes-asientos redirige a / si el bus está en mantención."""
+        from models import Recorrido, Bus, HorarioViaje
+        from datetime import time
+
+        rec = Recorrido(origen="Curicó", destino="Talca", tipo="ida", precio_base=3500, duracion_estimada=60)
+        bus = Bus(patente="CGKR-15", capacidad=40, estado="En mantención")
+        db_session.add_all([rec, bus])
+        db_session.commit()
+
+        horario = HorarioViaje(
+            id_recorrido=rec.id_recorrido,
+            patente=bus.patente,
+            hora_salida=time(8, 0),
+            hora_llegada=time(9, 0),
+            precio_base=3500,
+            activo=True
+        )
+        db_session.add(horario)
+        db_session.commit()
+
+        r = client.get(f'/compra-pasajes-asientos?horario={horario.id_horario}')
+        assert r.status_code == 302
+        assert '/' in r.headers['Location']
+
+    def test_bus_mantenimiento_excluido_de_home(self, client, db_session):
+        """Los horarios de buses en mantención no se muestran en el listado del home."""
+        from models import Recorrido, Bus, HorarioViaje
+        from datetime import time
+
+        rec = Recorrido(origen="Curicó", destino="Talca", tipo="ida", precio_base=3500, duracion_estimada=60)
+        bus_mantenimiento = Bus(patente="CGKR-99", capacidad=40, estado="En mantención")
+        bus_activo = Bus(patente="CGKR-15", capacidad=40, estado="Activo")
+        db_session.add_all([rec, bus_mantenimiento, bus_activo])
+        db_session.commit()
+
+        h_mantenimiento = HorarioViaje(
+            id_recorrido=rec.id_recorrido,
+            patente=bus_mantenimiento.patente,
+            hora_salida=time(8, 0),
+            hora_llegada=time(9, 0),
+            precio_base=3500,
+            activo=True
+        )
+        h_activo = HorarioViaje(
+            id_recorrido=rec.id_recorrido,
+            patente=bus_activo.patente,
+            hora_salida=time(10, 0),
+            hora_llegada=time(11, 0),
+            precio_base=3500,
+            activo=True
+        )
+        db_session.add_all([h_mantenimiento, h_activo])
+        db_session.commit()
+
+        r = client.get('/?origen=Curicó&destino=Talca&fecha=2026-07-10')
+        assert r.status_code == 200
+        html = r.get_data(as_text=True)
+        assert "CGKR-15" in html  # el bus activo debe aparecer
+        assert "CGKR-99" not in html  # el bus en mantención no debe aparecer
+
 
 # ═══════════════════════════════════════════════════════════════════
 #  API DE ORÍGENES Y RECORRIDOS

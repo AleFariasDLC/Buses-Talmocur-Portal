@@ -1145,3 +1145,58 @@
   }
 }
 
+/* ── Tarifas Generales ───────────────────────────────────────── */
+.tarifas-generales-tabla {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-white);
+  margin-bottom: 24px;
+}
+
+.tarifas-generales-tabla__header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 100px;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--color-gray-100);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.tarifas-generales-tabla__fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 100px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-gray-100);
+  font-size: 0.88rem;
+  color: var(--color-gray-700);
+  transition: background-color 0.2s;
+}
+
+.tarifas-generales-tabla__fila:last-child {
+  border-bottom: none;
+}
+
+.tarifas-generales-tabla__fila:hover {
+  background: var(--color-gray-50);
+}
+
+.tarifas-generales-tabla__ciudad {
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+.tarifas-generales-tabla__precio {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+

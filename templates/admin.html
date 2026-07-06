@@ -73,6 +73,28 @@
     <div class="admin-cuerpo">
 
       <!-- ===========================================================
+           SECCIÓN 0: TARIFAS GENERALES
+           =========================================================== -->
+      <section class="admin-seccion" id="tarifas-generales">
+        <!-- Encabezado de sección -->
+        <div class="admin-seccion__header">
+          <div class="admin-seccion__header-texto">
+            <h2 class="admin-seccion__titulo">
+              <i class='bx bx-dollar-circle'></i>
+              Tarifas Generales
+            </h2>
+            <p class="admin-seccion__subtitulo">
+              Modifica la tarifa base de un recorrido para aplicarla a todos los buses asociados.
+            </p>
+          </div>
+        </div>
+
+        <div class="tarifas-lista" id="tarifasGeneralesLista">
+          <!-- Cargado dinámicamente -->
+        </div>
+      </section>
+
+      <!-- ===========================================================
            SECCIÓN 1: FLOTA DE BUSES
            =========================================================== -->
       <section class="admin-seccion" id="flota">
@@ -165,6 +187,47 @@
           <div class="modal-card__pie">
             <button class="admin-btn admin-btn--ghost" id="btnModalBusCancelar">Cancelar</button>
             <button class="admin-btn admin-btn--primario" id="btnModalBusGuardar">
+              <i class='bx bx-save'></i> Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================================================
+           MODAL — EDITAR TARIFA GENERAL
+           ============================================================ -->
+      <div class="modal-overlay" id="modalTarifaOverlay">
+        <div class="modal-card" id="modalTarifa" role="dialog" aria-modal="true"
+             aria-labelledby="modalTarifaTitulo">
+
+          <div class="modal-card__cabecera">
+            <h3 class="modal-card__titulo" id="modalTarifaTitulo">Editar Tarifa General</h3>
+            <button class="modal-card__cerrar" id="modalTarifaCerrarBtn" aria-label="Cerrar">
+              <i class='bx bx-x'></i>
+            </button>
+          </div>
+
+          <div class="modal-card__cuerpo">
+            <div class="modal-form__grupo">
+              <label class="modal-form__label">Ruta</label>
+              <input class="modal-form__input" type="text" id="tarifaRutaNombre" disabled />
+            </div>
+
+            <div class="modal-form__grupo">
+              <label class="modal-form__label" for="tarifaPrecioBase">Tarifa Base ($)</label>
+              <input class="modal-form__input" type="number" id="tarifaPrecioBase"
+                     min="1" placeholder="Ej: 3500" />
+            </div>
+            <p class="modal-form__nota">
+              <i class='bx bx-info-circle'></i>
+              Al guardar, la nueva tarifa se aplicará a todos los buses asociados a este recorrido.
+            </p>
+          </div>
+
+          <div class="modal-card__pie">
+            <button class="admin-btn admin-btn--ghost" id="btnModalTarifaCancelar">Cancelar</button>
+            <button class="admin-btn admin-btn--primario" id="btnModalTarifaGuardar">
               <i class='bx bx-save'></i> Guardar
             </button>
           </div>
@@ -662,10 +725,6 @@
     const btnCancelarHor = document.getElementById('btnModalHorarioCancelar');
     const btnCerrarHor   = document.getElementById('modalHorarioCerrarBtn');
 
-    // ── Inicialización ────────────────────────────────────────────
-    cargarBuses();
-    cargarRecorridos();
-
     // ── CARGAR BUSES ──────────────────────────────────────────────
     async function cargarBuses() {
       lista.innerHTML = '<div class="buses-cargando"><i class="bx bx-loader-alt bx-spin"></i> Cargando buses…</div>';
@@ -902,6 +961,100 @@
       } catch {}
     }
 
+    // ── GESTIÓN DE TARIFAS GENERALES ─────────────────────────────
+    const tarifasLista = document.getElementById('tarifasGeneralesLista');
+    const overlayTarifa = document.getElementById('modalTarifaOverlay');
+    const inpTarifaRuta = document.getElementById('tarifaRutaNombre');
+    const inpTarifaPrecio = document.getElementById('tarifaPrecioBase');
+    const btnCerrarTarifa = document.getElementById('modalTarifaCerrarBtn');
+    const btnCancelarTarifa = document.getElementById('btnModalTarifaCancelar');
+    const btnGuardarTarifa = document.getElementById('btnModalTarifaGuardar');
+    let idRecorridoEditar = null;
+
+    async function cargarTarifasGenerales() {
+      if (!tarifasLista) return;
+      try {
+        const res = await fetch('/api/recorridos');
+        const data = await res.json();
+        const recorridosList = data.recorridos || [];
+        
+        if (recorridosList.length === 0) {
+          tarifasLista.innerHTML = '<p class="tarifas-vacio">No hay tarifas registradas.</p>';
+          return;
+        }
+
+        tarifasLista.innerHTML = `
+          <div class="tarifas-generales-tabla">
+            <div class="tarifas-generales-tabla__header">
+              <span>Desde</span>
+              <span>Hacia</span>
+              <span>Tarifa Base</span>
+              <span>Acción</span>
+            </div>
+            ${recorridosList.map(r => `
+              <div class="tarifas-generales-tabla__fila">
+                <span class="tarifas-generales-tabla__ciudad">${r.origen}</span>
+                <span class="tarifas-generales-tabla__ciudad">${r.destino}</span>
+                <span class="tarifas-generales-tabla__precio">$${Number(r.precio_base).toLocaleString('es-CL')}</span>
+                <div>
+                  <button class="admin-btn admin-btn--secundario" onclick="window.__editarTarifaGeneral(${r.id}, '${r.origen} → ${r.destino}', ${r.precio_base})">
+                    <i class='bx bx-edit'></i> Editar
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch {
+        tarifasLista.innerHTML = '<p class="tarifas-vacio">Error al cargar las tarifas generales.</p>';
+      }
+    }
+
+    window.__editarTarifaGeneral = function(id, nombreRuta, precioBase) {
+      idRecorridoEditar = id;
+      inpTarifaRuta.value = nombreRuta;
+      inpTarifaPrecio.value = precioBase;
+      overlayTarifa.classList.add('modal-overlay--visible');
+    };
+
+    function cerrarModalTarifa() {
+      overlayTarifa.classList.remove('modal-overlay--visible');
+      idRecorridoEditar = null;
+    }
+
+    if (btnCerrarTarifa) btnCerrarTarifa.addEventListener('click', cerrarModalTarifa);
+    if (btnCancelarTarifa) btnCancelarTarifa.addEventListener('click', cerrarModalTarifa);
+    if (overlayTarifa) overlayTarifa.addEventListener('click', e => { if (e.target === overlayTarifa) cerrarModalTarifa(); });
+
+    if (btnGuardarTarifa) {
+      btnGuardarTarifa.addEventListener('click', async () => {
+        if (idRecorridoEditar === null) return;
+        const precio = parseFloat(inpTarifaPrecio.value);
+        if (isNaN(precio) || precio <= 0) {
+          alert('El precio debe ser un número positivo.');
+          return;
+        }
+
+        try {
+          const res = await fetch(`/api/recorridos/${idRecorridoEditar}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ precio_base: precio })
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            alert(data.error || 'Error al guardar.');
+            return;
+          }
+          cerrarModalTarifa();
+          cargarTarifasGenerales();
+          cargarBuses(); // refresca los horarios asignados de los buses
+        } catch {
+          alert('Error de red.');
+        }
+      });
+    }
+
     // ── MODAL HORARIO ─────────────────────────────────────────────
     window.__abrirModalHorario = function(patente) {
       patenteHorario = patente;
@@ -949,6 +1102,11 @@
         } catch { alert('Error de red.'); }
       });
     }
+
+    // ── Inicialización Diferida ───────────────────────────────────
+    cargarBuses();
+    cargarRecorridos();
+    cargarTarifasGenerales();
 
   })();
   </script>

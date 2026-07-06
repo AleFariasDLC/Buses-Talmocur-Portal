@@ -103,6 +103,7 @@ def login():
     session['user_nombre'] = usuario['nombre']
     session['user_email'] = usuario['email']
     session['user_rol'] = usuario['rol']
+    session['avisos_mostrados'] = False
 
     return jsonify({
         'message': 'Sesión iniciada correctamente.',
@@ -318,6 +319,12 @@ def confirmar_compra():
             fecha_viaje_obj = date.fromisoformat(str(fecha_viaje))
         except ValueError:
             fecha_viaje_obj = date.today()
+
+        hoy_limite = date.today()
+        if fecha_viaje_obj < hoy_limite:
+            return jsonify({'error': 'No se pueden comprar pasajes para fechas pasadas.'}), 400
+        if fecha_viaje_obj > (hoy_limite + timedelta(days=30)):
+            return jsonify({'error': 'Solo se permite comprar pasajes con un máximo de 30 días de anticipación.'}), 400
 
         monto_total = float(data.get('precio', 2800) or 2800)
         pasajeros = data.get('pasajeros')
