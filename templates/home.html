@@ -30,10 +30,10 @@
       <label for="origen" class="buscador__etiqueta">
         <i class='bx bx-map-pin'></i> Desde
       </label>
-      <select id="origen" class="buscador__select">
+      <select id="origen" name="origen" class="buscador__select">
         <option value="">Seleccionar origen</option>
         {% for ciudad in origenes %}
-        <option value="{{ ciudad }}">{{ ciudad }}</option>
+        <option value="{{ ciudad }}" {% if ciudad == origen_seleccionado %}selected{% endif %}>{{ ciudad }}</option>
         {% endfor %}
       </select>
     </div>
@@ -48,11 +48,8 @@
       <label for="destino" class="buscador__etiqueta">
         <i class='bx bx-map'></i> Hacia
       </label>
-      <select id="destino" class="buscador__select">
+      <select id="destino" name="destino" class="buscador__select" data-selected="{{ destino_seleccionado }}">
         <option value="">Seleccionar destino</option>
-        {% for ciudad in origenes %}
-        <option value="{{ ciudad }}">{{ ciudad }}</option>
-        {% endfor %}
       </select>
     </div>
 
@@ -65,23 +62,6 @@
         <i class='bx bx-calendar'></i> Fecha de salida
       </label>
       <input type="date" id="fecha" name="fecha" class="buscador__input" value="{{ fecha_seleccionada }}" />
-    </div>
-
-    <!-- Divisor -->
-    <div class="buscador__divisor" aria-hidden="true"></div>
-
-    <!-- Pasajeros -->
-    <div class="buscador__field">
-      <label for="pasajeros" class="buscador__etiqueta">
-        <i class='bx bx-group'></i> Pasajeros
-      </label>
-      <select id="pasajeros" class="buscador__select">
-        <option value="adulto">1 Adulto</option>
-        <option value="adulto2">2 Adultos</option>
-        <option value="adulto_nino">1 Adulto + 1 Niño</option>
-        <option value="familia">Familia (2A + 2N)</option>
-        <option value="nino">1 Niño</option>
-      </select>
     </div>
 
     <!-- Botón buscar -->
@@ -203,7 +183,7 @@
             <button class="tarjeta-pasaje__btn tarjeta-pasaje__btn--deshabilitado" type="button"
               disabled>Agotado</button>
             {% else %}
-            <a href="/compra-pasajes-asientos?horario={{ p.id_horario }}&bus={{ p.patente }}&hora={{ p.hora_salida }}&precio={{ p.precio }}&asientos={{ p.asientos_libres }}&origen={{ p.origen }}&destino={{ p.destino }}"
+            <a href="/compra-pasajes-asientos?horario={{ p.id_horario }}&bus={{ p.patente }}&hora={{ p.hora_salida }}&precio={{ p.precio }}&asientos={{ p.asientos_libres }}&origen={{ p.origen }}&destino={{ p.destino }}&fecha={{ fecha_seleccionada }}"
               class="tarjeta-pasaje__btn">Comprar</a>
             {% endif %}
 

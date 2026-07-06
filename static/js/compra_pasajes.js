@@ -14,9 +14,14 @@
   const resumenAsientos = document.getElementById('cp-asientos-resumen');
   const pasajerosContainer = document.getElementById('pasajerosContainer');
 
+  const idHorarioSeleccionado = sessionStorage.getItem('idHorarioSeleccionado');
+  const origenSeleccionado = sessionStorage.getItem('origenSeleccionado') || 'Curicó';
+  const destinoSeleccionado = sessionStorage.getItem('destinoSeleccionado') || 'Talca';
+  const fechaSeleccionada = sessionStorage.getItem('fechaSeleccionada') || new Date().toISOString().slice(0, 10);
+
   const resumenItems = document.querySelectorAll('.cp-summary__item strong');
   if (resumenItems.length >= 5) {
-    resumenItems[0].textContent = 'Curicó → Talca';
+    resumenItems[0].textContent = `${origenSeleccionado} → ${destinoSeleccionado}`;
     resumenItems[1].textContent = `Bus ${busSeleccionado}`;
     resumenItems[2].textContent = horaSeleccionada;
     if (resumenAsientos) {
@@ -48,8 +53,8 @@
     });
 
     const datosCompra = {
-      origen: 'Curicó',
-      destino: 'Talca',
+      origen: origenSeleccionado,
+      destino: destinoSeleccionado,
       bus: `Bus ${busSeleccionado}`,
       horaSalida: horaSeleccionada,
       horaLlegada: calcularHoraLlegada(horaSeleccionada, 60),
@@ -69,10 +74,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          idHorario: idHorarioSeleccionado,
           patente: busSeleccionado,
           horaSalida: horaSeleccionada,
           precio: precioSeleccionado,
-          fechaViaje: new Date().toISOString().slice(0, 10),
+          fechaViaje: fechaSeleccionada,
           pasajeros,
         }),
       });

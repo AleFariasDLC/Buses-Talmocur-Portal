@@ -147,6 +147,7 @@ def me():
 def obtener_asientos():
     patente = request.args.get('bus', '').strip()
     hora_salida = request.args.get('hora', '').strip()
+    fecha_param = request.args.get('fecha', '').strip()
 
     if not patente:
         return jsonify({'error': 'Falta el parámetro bus.'}), 400
@@ -182,6 +183,12 @@ def obtener_asientos():
         if not horario:
             horario = db_sess.query(HorarioViaje).filter(HorarioViaje.patente == bus.patente).first()
 
+        hoy = date.today()
+        try:
+            fecha_consulta = date.fromisoformat(fecha_param) if fecha_param else hoy
+        except ValueError:
+            fecha_consulta = hoy
+
         sold_ids = set()
         if horario:
             sold_ids = {
@@ -189,7 +196,13 @@ def obtener_asientos():
                 for item in (
                     db_sess.query(AsientoComprado)
                     .join(Compra, AsientoComprado.id_compra == Compra.id_compra)
-                    .filter(Compra.id_horario == horario.id_horario)
+                    .join(HorarioViaje, Compra.id_horario == HorarioViaje.id_horario)
+                    .filter(
+                        HorarioViaje.patente == bus.patente,
+                        HorarioViaje.hora_salida == horario.hora_salida,
+                        Compra.fecha_viaje == fecha_consulta,
+                        Compra.estado == 'confirmada'
+                    )
                     .all()
                 )
             }
@@ -247,8 +260,16 @@ def confirmar_compra():
             except ValueError:
                 hora_obj = None
 
+        id_horario_req = data.get('idHorario')
         horario = None
-        if hora_obj:
+        if id_horario_req:
+            try:
+                id_horario_req = int(id_horario_req)
+                horario = db_sess.query(HorarioViaje).filter(HorarioViaje.id_horario == id_horario_req).first()
+            except (TypeError, ValueError):
+                horario = None
+
+        if not horario and hora_obj:
             horario = (
                 db_sess.query(HorarioViaje)
                 .filter(HorarioViaje.patente == bus.patente, HorarioViaje.hora_salida == hora_obj)
@@ -345,7 +366,14 @@ def confirmar_compra():
             asiento_ya_vendido = (
                 db_sess.query(AsientoComprado)
                 .join(Compra, AsientoComprado.id_compra == Compra.id_compra)
-                .filter(AsientoComprado.id_asiento == asiento.id_asiento, Compra.id_horario == horario.id_horario)
+                .join(HorarioViaje, Compra.id_horario == HorarioViaje.id_horario)
+                .filter(
+                    AsientoComprado.id_asiento == asiento.id_asiento,
+                    HorarioViaje.patente == bus.patente,
+                    HorarioViaje.hora_salida == horario.hora_salida,
+                    Compra.fecha_viaje == fecha_viaje_obj,
+                    Compra.estado == 'confirmada'
+                )
                 .first()
             )
             if asiento_ya_vendido:

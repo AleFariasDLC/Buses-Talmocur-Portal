@@ -52,12 +52,12 @@ def seed(quiet=False):
         # ── 2. Recorridos iniciales ──────────────────────────────────
         if db.query(Recorrido).count() == 0:
             recorridos = [
-                Recorrido(origen="Curicó", destino="Talca",  tipo="ida", precio_base=3500.0),
-                Recorrido(origen="Talca",  destino="Curicó", tipo="ida", precio_base=3500.0),
-                Recorrido(origen="Talca",  destino="San Rafael",tipo="ida", precio_base=1500.0),
-                Recorrido(origen="Curicó", destino="Molina",tipo="ida", precio_base=1500.0),
-                Recorrido(origen="Curicó", destino="Itahue",tipo="ida", precio_base=2000.0),
-                Recorrido(origen="Talca",  destino="Molina",tipo="ida", precio_base=2500.0),
+                Recorrido(origen="Curicó", destino="Talca",      tipo="ida", precio_base=3500.0, duracion_estimada=60),
+                Recorrido(origen="Talca",  destino="Curicó",     tipo="ida", precio_base=3500.0, duracion_estimada=60),
+                Recorrido(origen="Talca",  destino="San Rafael", tipo="ida", precio_base=1500.0, duracion_estimada=30),
+                Recorrido(origen="Curicó", destino="Molina",     tipo="ida", precio_base=1500.0, duracion_estimada=20),
+                Recorrido(origen="Curicó", destino="Itahue",     tipo="ida", precio_base=2000.0, duracion_estimada=30),
+                Recorrido(origen="Talca",  destino="Molina",     tipo="ida", precio_base=2500.0, duracion_estimada=45),
             ]
             db.add_all(recorridos)
             db.commit()
@@ -125,6 +125,10 @@ def seed(quiet=False):
             # Obtener recorridos (ya insertados arriba o en ejecuciones previas)
             rec_ct = db.query(Recorrido).filter_by(origen="Curicó", destino="Talca").first()
             rec_tc = db.query(Recorrido).filter_by(origen="Talca",  destino="Curicó").first()
+            rec_cm = db.query(Recorrido).filter_by(origen="Curicó", destino="Molina").first()
+            rec_ci = db.query(Recorrido).filter_by(origen="Curicó", destino="Itahue").first()
+            rec_tsr = db.query(Recorrido).filter_by(origen="Talca",  destino="San Rafael").first()
+            rec_tm = db.query(Recorrido).filter_by(origen="Talca",  destino="Molina").first()
 
             # Rotación regular:
             # - Bus 1 alternando C->T y T->C cada 1h.
@@ -160,15 +164,42 @@ def seed(quiet=False):
                 if not rec:
                     continue
                 for h, m in slots:
-                    salida, llegada = _hacer_hora(h, m, duracion_min=45)
+                    salida, llegada = _hacer_hora(h, m, duracion_min=rec.duracion_estimada)
                     nuevos_horarios.append(HorarioViaje(
                         id_recorrido=rec.id_recorrido,
                         patente=patente,
                         hora_salida=salida,
                         hora_llegada=llegada,
-                        precio_base=PRECIO_BASE,
+                        precio_base=rec.precio_base,
                         activo=True,
                     ))
+
+                    # Si es la ruta principal Curicó -> Talca, agregar sub-rutas (tramos)
+                    if rec == rec_ct:
+                        for sub_rec in [rec_cm, rec_ci]:
+                            if sub_rec:
+                                sub_salida, sub_llegada = _hacer_hora(h, m, duracion_min=sub_rec.duracion_estimada)
+                                nuevos_horarios.append(HorarioViaje(
+                                    id_recorrido=sub_rec.id_recorrido,
+                                    patente=patente,
+                                    hora_salida=sub_salida,
+                                    hora_llegada=sub_llegada,
+                                    precio_base=sub_rec.precio_base,
+                                    activo=True,
+                                ))
+                    # Si es la ruta principal Talca -> Curicó, agregar sub-rutas (tramos)
+                    elif rec == rec_tc:
+                        for sub_rec in [rec_tsr, rec_tm]:
+                            if sub_rec:
+                                sub_salida, sub_llegada = _hacer_hora(h, m, duracion_min=sub_rec.duracion_estimada)
+                                nuevos_horarios.append(HorarioViaje(
+                                    id_recorrido=sub_rec.id_recorrido,
+                                    patente=patente,
+                                    hora_salida=sub_salida,
+                                    hora_llegada=sub_llegada,
+                                    precio_base=sub_rec.precio_base,
+                                    activo=True,
+                                ))
 
             db.add_all(nuevos_horarios)
             db.commit()
@@ -177,7 +208,7 @@ def seed(quiet=False):
             if not is_reloader_parent:
                 print(f"[Seed] {len(buses_data)} buses creados ({total_asientos} asientos en total).")
                 print(f"[Seed] {len(nuevos_horarios)} horarios de viaje insertados "
-                      f"(Curico <-> Talca alternados, 8:00-21:00 cada 30 min sin conflictos).")
+                      f"(Curico <-> Talca y sus tramos intermedios alternados).")
 
         elif not quiet and not is_reloader_parent:
             print(f"[Seed] Buses ya existentes ({db.query(Bus).count()}) — sin cambios.")

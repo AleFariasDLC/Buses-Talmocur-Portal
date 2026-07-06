@@ -178,6 +178,10 @@ document.getElementById('btnConfirmar').addEventListener('click', () => {
   const total = parseInt(precio) * asientosSeleccionados.size;
   const totalFmt = `$${total.toLocaleString('es-CL')}`;
 
+  sessionStorage.setItem('idHorarioSeleccionado', VIAJE.idHorario);
+  sessionStorage.setItem('origenSeleccionado', VIAJE.origen);
+  sessionStorage.setItem('destinoSeleccionado', VIAJE.destino);
+  sessionStorage.setItem('fechaSeleccionada', VIAJE.fecha);
   sessionStorage.setItem('busSeleccionado', busId);
   sessionStorage.setItem('horaSeleccionada', hora);
   sessionStorage.setItem('precioSeleccionado', precio);
