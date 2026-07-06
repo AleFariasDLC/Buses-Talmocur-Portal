@@ -109,9 +109,28 @@ class TestPaginasPublicas:
         r = client.get('/perfil')
         assert r.status_code == 200
 
-    def test_compra_pasajes_asientos_retorna_html(self, client):
+    def test_compra_pasajes_asientos_retorna_html(self, client, db_session):
         """/compra-pasajes-asientos retorna 200."""
-        r = client.get('/compra-pasajes-asientos')
+        from models import Recorrido, Bus, HorarioViaje
+        from datetime import time
+
+        rec = Recorrido(origen="Curicó", destino="Talca", tipo="ida", precio_base=3500, duracion_estimada=60)
+        bus = Bus(patente="CGKR-15", capacidad=40, estado="Activo")
+        db_session.add_all([rec, bus])
+        db_session.commit()
+
+        horario = HorarioViaje(
+            id_recorrido=rec.id_recorrido,
+            patente=bus.patente,
+            hora_salida=time(8, 0),
+            hora_llegada=time(9, 0),
+            precio_base=3500,
+            activo=True
+        )
+        db_session.add(horario)
+        db_session.commit()
+
+        r = client.get(f'/compra-pasajes-asientos?horario={horario.id_horario}')
         assert r.status_code == 200
 
 

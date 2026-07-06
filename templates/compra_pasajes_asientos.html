@@ -58,7 +58,14 @@
           <i class='bx bx-time'></i>
           <div>
             <span class="sa-mapa__detalle-label">Duracion estimada</span>
-            <span class="sa-mapa__detalle-val">45 minutos</span>
+            <span class="sa-mapa__detalle-val">{{ viaje.duracion_estimada }} minutos</span>
+          </div>
+        </div>
+        <div class="sa-mapa__detalle-item">
+          <i class='bx bx-dollar-circle'></i>
+          <div>
+            <span class="sa-mapa__detalle-label">Precio del pasaje</span>
+            <span id="detalle-precio" class="sa-mapa__detalle-val">${{ "{:,.0f}".format(viaje.precio).replace(",", ".") }}</span>
           </div>
         </div>
         <div class="sa-mapa__detalle-item">
@@ -199,7 +206,8 @@
     "hora":             "{{ viaje.hora_salida }}",
     "precio":           {{ viaje.precio }},
     "capacidad":        {{ viaje.capacidad }},
-    "asientosOcupados": {{ viaje.asientos_ocupados | tojson }}
+    "asientosOcupados": {{ viaje.asientos_ocupados | tojson }},
+    "fecha":            "{{ viaje.fecha }}"
   }
 </script>
 <!-- Leaflet.js (local, con zoom e interactividad) -->

@@ -47,7 +47,10 @@ def index():
     try:
         # Obtener ciudades únicas de origen para el buscador
         recorridos = db.query(Recorrido).all()
-        origenes = sorted({r.origen for r in recorridos})
+        origenes = sorted({r.origen for r in recorridos if r.precio_base > 0})
+
+        origen_seleccionado = request.args.get('origen', '').strip()
+        destino_seleccionado = request.args.get('destino', '').strip()
 
         hoy = date.today()
         fecha_param = request.args.get('fecha', '').strip()
@@ -71,28 +74,39 @@ def index():
             ).all()
         }
 
-        # Contar asientos ya comprados por horario para la fecha consultada
-        compras = (
+        # Contar asientos ya comprados por bus físico y hora (corrida compartida) para la fecha consultada
+        compras_raw = (
             db.query(
-                Compra.id_horario,
+                HorarioViaje.patente,
+                HorarioViaje.hora_salida,
                 func.count(AsientoComprado.id).label('ocupados')
             )
+            .join(Compra, Compra.id_horario == HorarioViaje.id_horario)
             .join(AsientoComprado, AsientoComprado.id_compra == Compra.id_compra)
             .filter(
                 Compra.fecha_viaje == fecha_consulta,
                 Compra.estado == 'confirmada'
             )
-            .group_by(Compra.id_horario)
+            .group_by(HorarioViaje.patente, HorarioViaje.hora_salida)
             .all()
         )
-        ocupados_por_horario = {fila.id_horario: fila.ocupados for fila in compras}
+        ocupados_por_corrida = {
+            (fila.patente, fila.hora_salida): fila.ocupados
+            for fila in compras_raw
+        }
 
         filtros_horarios = [HorarioViaje.activo == True]
         if hora_minima is not None:
             filtros_horarios.append(HorarioViaje.hora_salida >= hora_minima)
 
+        query_horarios = db.query(HorarioViaje).join(Recorrido, HorarioViaje.id_recorrido == Recorrido.id_recorrido)
+        if origen_seleccionado:
+            query_horarios = query_horarios.filter(Recorrido.origen == origen_seleccionado)
+        if destino_seleccionado:
+            query_horarios = query_horarios.filter(Recorrido.destino == destino_seleccionado)
+
         horarios_raw = (
-            db.query(HorarioViaje)
+            query_horarios
             .filter(*filtros_horarios)
             .order_by(HorarioViaje.hora_salida)
             .all()
@@ -104,7 +118,7 @@ def index():
                 continue
 
             capacidad        = h.bus.capacidad
-            ocupados         = ocupados_por_horario.get(h.id_horario, 0)
+            ocupados         = ocupados_por_corrida.get((h.patente, h.hora_salida), 0)
             asientos_libres  = capacidad - ocupados
 
             pasajes_hoy.append({
@@ -119,6 +133,7 @@ def index():
                 'capacidad':      capacidad,
                 'agotado':        asientos_libres <= 0,
                 'pocas_plazas':   0 < asientos_libres <= 5,
+                'duracion_estimada': h.recorrido.duracion_estimada,
             })
 
     finally:
@@ -128,7 +143,9 @@ def index():
         origenes=origenes,
         pasajes_hoy=pasajes_hoy,
         fecha_hoy=fecha_consulta,
-        fecha_seleccionada=fecha_consulta.strftime('%Y-%m-%d')
+        fecha_seleccionada=fecha_consulta.strftime('%Y-%m-%d'),
+        origen_seleccionado=origen_seleccionado,
+        destino_seleccionado=destino_seleccionado
     )
 
 
@@ -228,13 +245,21 @@ def compra_pasajes_asientos():
         if not horario:
             return redirect('/')
 
+        fecha_param = request.args.get('fecha', '').strip()
         hoy = date.today()
+        try:
+            fecha_consulta = date.fromisoformat(fecha_param) if fecha_param else hoy
+        except ValueError:
+            fecha_consulta = hoy
 
-        # Obtener los números de asiento ya ocupados para este horario y fecha
-        compras_confirmadas = db.query(Compra).filter(
-            Compra.id_horario  == id_horario,
-            Compra.fecha_viaje == hoy,
-            Compra.estado      == 'confirmada'
+        # Obtener los números de asiento ya ocupados para este recorrido físico (mismo bus y hora) y fecha
+        compras_confirmadas = db.query(Compra).join(
+            HorarioViaje, Compra.id_horario == HorarioViaje.id_horario
+        ).filter(
+            HorarioViaje.patente == horario.patente,
+            HorarioViaje.hora_salida == horario.hora_salida,
+            Compra.fecha_viaje == fecha_consulta,
+            Compra.estado == 'confirmada'
         ).all()
 
         asientos_ocupados = []
@@ -252,6 +277,8 @@ def compra_pasajes_asientos():
             'precio':            int(horario.precio_base),
             'capacidad':         horario.bus.capacidad,
             'asientos_ocupados': asientos_ocupados,  # lista de números [3, 7, 12, ...]
+            'duracion_estimada': horario.recorrido.duracion_estimada,
+            'fecha':             fecha_consulta.isoformat(),
         }
 
     finally:
@@ -408,7 +435,8 @@ def listar_recorridos():
         return jsonify({'recorridos': [
             {'id': r.id_recorrido,
              'nombre': f"{r.origen} → {r.destino}",
-             'precio_base': r.precio_base}
+             'precio_base': r.precio_base,
+             'duracion_estimada': r.duracion_estimada}
             for r in recorridos
         ]}), 200
     finally:
@@ -420,6 +448,7 @@ def listar_recorridos():
 def check_horario_conflict(db, patente, id_recorrido, hora_salida, ignore_id_horario=None):
     """
     Verifica si existe un conflicto de horario para un bus según las reglas:
+    - Permitir exactamente la misma hora si comparten origen (tramos/sub-rutas).
     - 2 horas de diferencia si es el mismo recorrido.
     - 1 hora de diferencia si cambia de recorrido.
     Retorna (boolean_conflicto, mensaje_error)
@@ -431,14 +460,24 @@ def check_horario_conflict(db, patente, id_recorrido, hora_salida, ignore_id_hor
         query = query.filter(HorarioViaje.id_horario != ignore_id_horario)
     
     horarios_existentes = query.all()
+    new_rec = db.query(Recorrido).filter(Recorrido.id_recorrido == id_recorrido).first()
+    if not new_rec:
+        return True, "Recorrido no encontrado."
 
     for h in horarios_existentes:
         exist_minutos = h.hora_salida.hour * 60 + h.hora_salida.minute
         diff_minutos = abs(prop_minutos - exist_minutos)
         
-        # Como opera en el mismo día, si la diferencia es de más de 12 horas,
-        # puede ser por dar la vuelta (ej: 08:00 vs 21:00).
-        # Pero mantendremos el cálculo directo ya que los viajes son dentro del mismo día.
+        # Permitir mismo bus en el mismo horario si son sub-recorridos compartidos
+        if diff_minutos == 0:
+            if h.recorrido.origen == new_rec.origen:
+                continue
+            else:
+                return True, (
+                    f"Conflicto físico: El bus ya tiene una salida a las {h.hora_salida.strftime('%H:%M')} "
+                    f"desde un origen diferente ({h.recorrido.origen})."
+                )
+
         if h.id_recorrido == id_recorrido:
             # Mismo recorrido -> requiere 2 horas (120 minutos)
             if diff_minutos < 120:
@@ -479,13 +518,15 @@ def crear_horario():
     try:
         if not db.query(Bus).filter(Bus.patente == patente).first():
             return jsonify({'error': 'Bus no encontrado.'}), 404
-        if not db.query(Recorrido).filter(Recorrido.id_recorrido == id_recorrido).first():
+        
+        recorrido = db.query(Recorrido).filter(Recorrido.id_recorrido == id_recorrido).first()
+        if not recorrido:
             return jsonify({'error': 'Recorrido no encontrado.'}), 404
 
         partes = hora_str.split(':')
         h, m = int(partes[0]), int(partes[1])
         base    = datetime(2000, 1, 1, h, m)
-        llegada = (base + timedelta(minutes=45)).time()
+        llegada = (base + timedelta(minutes=recorrido.duracion_estimada)).time()
 
         # Validar conflicto de horarios
         conflicto, msg = check_horario_conflict(db, patente, id_recorrido, base.time())
@@ -531,13 +572,15 @@ def editar_horario(id_horario):
             
             # Recorrido a evaluar: el actual o el nuevo si viniera
             rec_eval = int(data.get('id_recorrido', h.id_recorrido))
+            recorrido = db.query(Recorrido).filter(Recorrido.id_recorrido == rec_eval).first()
+            duracion = recorrido.duracion_estimada if recorrido else 45
             
             conflicto, msg = check_horario_conflict(db, h.patente, rec_eval, new_time, ignore_id_horario=id_horario)
             if conflicto:
                 return jsonify({'error': msg}), 400
                 
             h.hora_salida  = new_time
-            h.hora_llegada = (base + timedelta(minutes=45)).time()
+            h.hora_llegada = (base + timedelta(minutes=duracion)).time()
 
         if 'precio_base' in data:
             h.precio_base = float(data['precio_base'])

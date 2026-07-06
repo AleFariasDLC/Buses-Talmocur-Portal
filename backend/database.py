@@ -54,6 +54,8 @@ def _migrar_tablas(conn):
         "ALTER TABLE aviso ADD COLUMN duracion_dias INTEGER      NOT NULL DEFAULT 1",
         # Tabla bus
         "ALTER TABLE bus   ADD COLUMN chofer        VARCHAR(100)",
+        # Tabla recorrido
+        "ALTER TABLE recorrido ADD COLUMN duracion_estimada INTEGER NOT NULL DEFAULT 45",
     ]
     for sql in migraciones:
         try:

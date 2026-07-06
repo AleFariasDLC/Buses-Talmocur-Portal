@@ -38,23 +38,33 @@
   const destino = document.getElementById('destino');
   if (!btn || !origen || !destino) return;
 
+  const mappingDestinos = {
+    'Curicó': ['Talca', 'Molina', 'Itahue'],
+    'Talca': ['Curicó', 'San Rafael', 'Molina']
+  };
+
   /**
-   * Sincroniza las opciones del select destino para que no incluya
-   * la ciudad actualmente seleccionada como origen.
+   * Sincroniza las opciones del select destino para que correspondan
+   * con las ciudades destino permitidas según el origen seleccionado.
    */
   function sincronizarDestino() {
     const valorOrigen  = origen.value;
-    const valorDestino = destino.value;
+    const selectedDest = destino.getAttribute('data-selected') || destino.value;
+    destino.removeAttribute('data-selected'); // Limpiar para futuros cambios
 
-    // Recorrer las opciones del destino y ocultar la que coincide con origen
-    Array.from(destino.options).forEach(opt => {
-      if (opt.value === '' ) { opt.hidden = false; return; }
-      opt.hidden = (opt.value === valorOrigen);
-    });
+    // Limpiar opciones
+    destino.innerHTML = '<option value="">Seleccionar destino</option>';
 
-    // Si el destino actual es el mismo que el origen, limpiar la selección
-    if (destino.value === valorOrigen) {
-      destino.value = '';
+    if (valorOrigen && mappingDestinos[valorOrigen]) {
+      mappingDestinos[valorOrigen].forEach(ciudad => {
+        const opt = document.createElement('option');
+        opt.value = ciudad;
+        opt.textContent = ciudad;
+        if (ciudad === selectedDest) {
+          opt.selected = true;
+        }
+        destino.appendChild(opt);
+      });
     }
   }
 
@@ -63,9 +73,11 @@
 
   // Botón intercambiar
   btn.addEventListener('click', () => {
-    const temp    = origen.value;
-    origen.value  = destino.value;
-    destino.value = temp;
+    const tempOrigen = origen.value;
+    const tempDestino = destino.value;
+
+    origen.value = tempDestino;
+    destino.setAttribute('data-selected', tempOrigen);
     sincronizarDestino();
   });
 
