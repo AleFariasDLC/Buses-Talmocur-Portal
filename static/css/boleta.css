@@ -334,14 +334,25 @@
 
 /* ── Print styles ────────────────────────────────────────────── */
 @media print {
+  @page {
+    margin: 8mm;
+  }
+
   body,
   .boleta-page {
     background: #fff;
+    margin: 0;
   }
 
+  .barra-navegacion,
   .boleta-hero,
   .boleta-acciones {
-    display: none;
+    display: none !important;
+  }
+
+  .boleta-page {
+    max-width: none;
+    padding: 0;
   }
 
   .boleta-card {
@@ -349,6 +360,7 @@
     border: none;
     padding: 20px;
     max-width: 100%;
+    border-radius: 0;
   }
 
   .boleta-header {

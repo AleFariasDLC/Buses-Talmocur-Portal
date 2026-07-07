@@ -10,9 +10,13 @@
   const busSeleccionado = sessionStorage.getItem('busSeleccionado') || 'A1';
   const horaSeleccionada = sessionStorage.getItem('horaSeleccionada') || '07:00';
   const precioSeleccionado = sessionStorage.getItem('precioSeleccionado') || '2800';
+  const totalSeleccionado = sessionStorage.getItem('totalSeleccionado');
   const asientosSeleccionados = JSON.parse(sessionStorage.getItem('asientosSeleccionados') || '[]');
   const resumenAsientos = document.getElementById('cp-asientos-resumen');
   const pasajerosContainer = document.getElementById('pasajerosContainer');
+  const cantidadPasajes = Array.isArray(asientosSeleccionados) && asientosSeleccionados.length ? asientosSeleccionados.length : 1;
+  const precioUnitario = parseInt(precioSeleccionado, 10) || 0;
+  const precioTotal = totalSeleccionado ? parseInt(totalSeleccionado, 10) : (precioUnitario * cantidadPasajes);
 
   const idHorarioSeleccionado = sessionStorage.getItem('idHorarioSeleccionado');
   const origenSeleccionado = sessionStorage.getItem('origenSeleccionado') || 'Curicó';
@@ -27,7 +31,7 @@
     if (resumenAsientos) {
       resumenAsientos.textContent = asientosSeleccionados.length ? asientosSeleccionados.join(', ') : 'Por definir';
     }
-    resumenItems[4].textContent = `$${parseInt(precioSeleccionado).toLocaleString('es-CL')}`;
+    resumenItems[4].textContent = `$${precioTotal.toLocaleString('es-CL')}`;
   }
 
   const numerosAsientos = Array.isArray(asientosSeleccionados) && asientosSeleccionados.length
@@ -59,7 +63,7 @@
       horaSalida: horaSeleccionada,
       horaLlegada: calcularHoraLlegada(horaSeleccionada, 60),
       asiento: pasajeros.map((p) => `N.º ${p.asiento}`).join(', '),
-      precio: precioSeleccionado,
+      precio: String(precioTotal),
       pasajeros,
     };
 
@@ -77,7 +81,7 @@
           idHorario: idHorarioSeleccionado,
           patente: busSeleccionado,
           horaSalida: horaSeleccionada,
-          precio: precioSeleccionado,
+          precio: String(precioTotal),
           fechaViaje: fechaSeleccionada,
           pasajeros,
         }),
