@@ -215,11 +215,17 @@ def quienes_somos():
 
 @app.route('/compra-pasajes')
 def compra_pasajes():
-    return render_template('compra_pasajes.html')
+    # no-store: evita que el navegador cachee esta página
+    response = make_response(render_template('compra_pasajes.html'))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 @app.route('/boleta')
 def boleta():
-    return render_template('boleta.html')
+    # no-store: la boleta no debe quedar en el historial de caché.
+    response = make_response(render_template('boleta.html'))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 
 @app.route('/api/origenes')
@@ -294,7 +300,10 @@ def compra_pasajes_asientos():
     finally:
         db.close()
 
-    return render_template('compra_pasajes_asientos.html', viaje=datos_viaje)
+    # no-store: los asientos ocupados deben obtenerse frescos del servidor
+    response = make_response(render_template('compra_pasajes_asientos.html', viaje=datos_viaje))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 @app.route('/admin')
 def admin_dashboard():

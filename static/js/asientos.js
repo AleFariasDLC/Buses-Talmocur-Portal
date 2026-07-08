@@ -2,6 +2,13 @@
    ASIENTOS.JS  –  Talmocur · Selección de asientos
    ================================================================ */
 
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) {
+    // La página viene del BFCache (historial): recargar para datos actualizados y evitar falsas selecciones
+    window.location.reload();
+  }
+});
+
 
 /* Lee los datos del viaje*/
 const VIAJE = JSON.parse(document.getElementById('viaje-data').textContent);

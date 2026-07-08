@@ -93,9 +93,17 @@
 
       localStorage.setItem('datosCompra', JSON.stringify(datosCompra));
       localStorage.setItem('compraConfirmada', JSON.stringify(payload));
+
+      // Reemplazar la entrada actual del historial con la URL actual marcada como "procesada".
+      // De este modo, si el usuario presiona Atrás desde la boleta, el navegador
+      // no puede volver a este formulario con el modal de compra bloqueando.
+      history.replaceState({ compraRealizada: true }, '', window.location.href);
+
       mostrarMensajeExito();
       setTimeout(() => {
-        window.location.href = '/boleta';
+        // Usar replace para que /boleta sustituya /compra-pasajes en el historial;
+        // así el botón Atrás desde la boleta va directo al home.
+        window.location.replace('/boleta');
       }, 1500);
     } catch (error) {
       alert(error.message);
