@@ -4,13 +4,6 @@
    ================================================================ */
 
 
-/* ── Link activo en navbar ───────────────────────────────────── */
-.barra-navegacion__link--activo {
-  color: var(--color-white) !important;
-  font-weight: 600;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.7);
-  padding-bottom: 2px;
-}
 
 
 /* ── Hero compacto ───────────────────────────────────────────── */
