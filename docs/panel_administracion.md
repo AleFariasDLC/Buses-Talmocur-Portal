@@ -24,7 +24,7 @@ Permite controlar los vehículos de transporte de la empresa.
 *   **Campos del Bus:** Patente (clave primaria única), Chofer, Modelo, Capacidad (asientos) y Estado (`Activo` o `En mantención`).
 *   **Generación de Asientos:** Al crear un bus (`POST /api/buses`), el sistema genera automáticamente `N` registros de asientos en la tabla `asiento` (donde `N` es la capacidad especificada, numerados del 1 al N).
 *   **Reglas de Edición:** Una vez creado el bus, la **patente** y la **capacidad** de asientos quedan bloqueadas por motivos de integridad referencial. Solo se permite actualizar el nombre del chofer, el modelo del bus y su estado.
-*   **Eliminación Segura:** Al eliminar un bus, el sistema remueve en cascada sus asientos asociados, todos los horarios de viaje asignados y sus suspensiones vigentes en la base de datos.
+*   **Eliminación Segura:** Al eliminar un bus, el sistema remueve en cascada sus asientos asociados, todos los horarios de viaje asignados, las suspensiones y cualquier compra o pasaje emitido en la base de datos para garantizar la integridad referencial.
 
 ---
 
@@ -38,6 +38,7 @@ Permite programar las salidas diarias de cada bus y asignar el precio de sus pas
     Para evitar que un mismo bus sea programado de forma físicamente imposible, el sistema aplica las siguientes reglas de negocio antes de registrar o editar un horario:
     1.  **Mismo recorrido:** Si el bus tiene otro viaje programado en la misma ruta, debe haber una diferencia mínima de **2 horas** (120 minutos) entre las salidas.
     2.  **Diferente recorrido:** Si el bus tiene programado un viaje en una ruta distinta, debe haber una diferencia mínima de **1 hora** (60 minutos).
+*   **Eliminación Segura de Horarios:** Al eliminar un horario de forma individual, el sistema remueve en cascada todas las suspensiones asociadas y las compras registradas para dicho viaje, impidiendo que queden registros huérfanos o con errores de integridad.
 
 ---
 

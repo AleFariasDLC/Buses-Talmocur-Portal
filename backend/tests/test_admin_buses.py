@@ -12,7 +12,7 @@ Requisito: Solo accesible por administradores (rol 'admin').
 
 from tests.helpers import (
     registrar_usuario, login_usuario, registrar_y_login_admin,
-    crear_bus_test, USUARIO_VALIDO,
+    crear_bus_test, USUARIO_VALIDO, crear_recorrido_test, crear_horario_test,
 )
 
 
@@ -209,3 +209,32 @@ class TestEliminarBus:
         login_usuario(client)
         r = client.delete('/api/buses/UV-6666')
         assert r.status_code == 403
+
+    def test_eliminar_bus_con_compras(self, client, db_session):
+        """Eliminar un bus con compras activas elimina también las compras en cascada."""
+        from models import Compra, AsientoComprado, HorarioViaje, Bus
+        registrar_y_login_admin(client)
+        crear_bus_test(client, patente='BUS-X9', capacidad=5)
+        rec = crear_recorrido_test(db_session)
+        crear_horario_test(client, 'BUS-X9', rec.id_recorrido, '10:00')
+        
+        # Realizar compra
+        r_compra = client.post('/api/confirmar-compra', json={
+            'patente': 'BUS-X9', 'asiento': 2,
+            'horaSalida': '10:00', 'precio': 3500,
+        })
+        assert r_compra.status_code == 200
+        
+        # Verificar que la compra existe en base de datos
+        assert db_session.query(Compra).count() == 1
+        assert db_session.query(AsientoComprado).count() == 1
+        
+        # Intentar eliminar el bus
+        r_del = client.delete('/api/buses/BUS-X9')
+        assert r_del.status_code == 200
+        
+        # Verificar que el bus, horario, compras y asientos comprados se eliminaron
+        assert db_session.query(Bus).filter(Bus.patente == 'BUS-X9').first() is None
+        assert db_session.query(HorarioViaje).filter(HorarioViaje.patente == 'BUS-X9').count() == 0
+        assert db_session.query(Compra).count() == 0
+        assert db_session.query(AsientoComprado).count() == 0

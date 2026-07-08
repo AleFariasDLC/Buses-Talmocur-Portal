@@ -427,8 +427,10 @@ def eliminar_bus(patente):
         if not bus:
             return jsonify({'error': 'Bus no encontrado.'}), 404
 
-        # Eliminar horarios vinculados (y suspensiones internas)
+        # Eliminar horarios vinculados (y sus compras y suspensiones asociadas)
         for h in list(bus.horarios):
+            for c in list(h.compras):
+                db.delete(c)
             for s in list(h.suspensiones):
                 db.delete(s)
             db.delete(h)
@@ -679,6 +681,11 @@ def eliminar_horario(id_horario):
         h = db.query(HorarioViaje).filter(HorarioViaje.id_horario == id_horario).first()
         if not h:
             return jsonify({'error': 'Horario no encontrado.'}), 404
+        # Eliminar compras y suspensiones asociadas
+        for c in list(h.compras):
+            db.delete(c)
+        for s in list(h.suspensiones):
+            db.delete(s)
         db.delete(h)
         db.commit()
         return jsonify({'message': 'Horario eliminado.'}), 200

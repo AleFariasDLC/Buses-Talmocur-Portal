@@ -244,3 +244,44 @@ class TestEliminarHorario:
         registrar_y_login_admin(client)
         r = client.delete('/api/horarios/99999')
         assert r.status_code == 404
+
+    def test_eliminar_horario_con_compras(self, client, db_session):
+        """Eliminar un horario con compras y suspensiones activas limpia todo en cascada."""
+        from models import Compra, AsientoComprado, HorarioViaje, Suspension
+        registrar_y_login_admin(client)
+        crear_bus_test(client, patente='BUS-D2', capacidad=5)
+        rec = crear_recorrido_test(db_session)
+        r_crear = crear_horario_test(client, 'BUS-D2', rec.id_recorrido, '11:00')
+        id_h = r_crear.get_json()['id_horario']
+        
+        # Crear una suspensión directamente en la BD
+        susp = Suspension(
+            id_horario=id_h,
+            fecha_inicio=rec.precio_base, # date value placeholder or actual date
+            fecha_fin=rec.precio_base,    # let's use actual date objects
+        )
+        from datetime import date
+        susp.fecha_inicio = date(2026, 7, 20)
+        susp.fecha_fin = date(2026, 7, 22)
+        susp.motivo = 'Prueba'
+        db_session.add(susp)
+        db_session.commit()
+        
+        # Crear una compra
+        client.post('/api/confirmar-compra', json={
+            'patente': 'BUS-D2', 'asiento': 3,
+            'horaSalida': '11:00', 'precio': 3500,
+        })
+        
+        # Verificar DB
+        assert db_session.query(Compra).count() == 1
+        assert db_session.query(Suspension).count() == 1
+        
+        # Eliminar horario
+        r_del = client.delete(f'/api/horarios/{id_h}')
+        assert r_del.status_code == 200
+        
+        # Verificar todo limpio
+        assert db_session.query(HorarioViaje).filter(HorarioViaje.id_horario == id_h).first() is None
+        assert db_session.query(Compra).count() == 0
+        assert db_session.query(Suspension).count() == 0
