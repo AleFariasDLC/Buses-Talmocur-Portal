@@ -68,7 +68,6 @@
               Cerrar sesión
             </button>
           </div>
-
         </div>
         {% else %}
         <!-- ── No logueado: botón login ── -->
@@ -77,15 +76,55 @@
           Iniciar sesión
         </a>
         {% endif %}
-
       </nav>
 
+      <!-- Acciones lado derecho en version de móviles -->
+      <div class="barra-navegacion__movil-acciones">
+        {% if usuario_logueado %}
+        <a href="/perfil" class="barra-navegacion__movil-usuario" aria-label="Perfil">
+          <i class='bx bx-user'></i>
+        </a>
+        {% else %}
+        <a href="/login" class="barra-navegacion__btn-login barra-navegacion__btn-login--movil">
+          <i class='bx bx-user'></i>
+          Iniciar sesión
+        </a>
+        {% endif %}
+
+        <!-- Botón de menú -->
+        <button class="barra-navegacion__btn-menu" id="btnMenuMovil" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuMovil">
+          <span class="barra-navegacion__menu-movil-linea"></span>
+          <span class="barra-navegacion__menu-movil-linea"></span>
+          <span class="barra-navegacion__menu-movil-linea"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Panel de menú móvil -->
+    <div class="barra-navegacion__menu-movil" id="menuMovil" aria-hidden="true">
+      <nav aria-label="Navegación móvil">
+        <a href="/#beneficios" class="barra-navegacion__menu-movil-link">Beneficios</a>
+        <a href="/quienes-somos" class="barra-navegacion__menu-movil-link">Quiénes somos</a>
+        <a href="/tarifas" class="barra-navegacion__menu-movil-link">Tarifas</a>
+        {% if usuario_logueado %}
+        <a href="/perfil" class="barra-navegacion__menu-movil-link">Mi perfil</a>
+        {% if usuario_rol == 'admin' %}
+        <a href="/admin" class="barra-navegacion__menu-movil-link">Panel Admin</a>
+        {% endif %}
+        <button class="barra-navegacion__menu-movil-link barra-navegacion__menu-movil-link--logout" id="btnCerrarSesionMovil">
+          Cerrar sesión
+        </button>
+        {% else %}
+        <a href="/login" class="barra-navegacion__menu-movil-link">Iniciar sesión</a>
+        {% endif %}
+      </nav>
     </div>
   </header>
 
 
   <!-- ============================================================
-       CONTENIDO PRINCIPAL (cada template lo define)
+       CONTENIDO PRINCIPAL
        ============================================================ -->
   {% block content %}{% endblock %}
 

@@ -173,6 +173,137 @@ button {
 }
 
 
+/* ── Acciones móviles───────────── */
+.barra-navegacion__movil-acciones {
+  display: none; /* solo visible en móvil */
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Botón menú móvil */
+.barra-navegacion__btn-menu {
+  background: none;
+  border: none;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background var(--transition);
+}
+
+.barra-navegacion__btn-menu:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.barra-navegacion__menu-movil-linea {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--color-white);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animación X al abrir */
+.barra-navegacion__btn-menu[aria-expanded="true"] .barra-navegacion__menu-movil-linea:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.barra-navegacion__btn-menu[aria-expanded="true"] .barra-navegacion__menu-movil-linea:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.barra-navegacion__btn-menu[aria-expanded="true"] .barra-navegacion__menu-movil-linea:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Icono usuario móvil (cuando está logueado) */
+.barra-navegacion__movil-usuario {
+  color: var(--color-white);
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Botón login compacto en móvil */
+.barra-navegacion__btn-login--movil {
+  font-size: 0.8rem;
+  padding: 6px 14px;
+}
+
+/* ── Panel de menú móvil ─────────────────────────────────────── */
+.barra-navegacion__menu-movil {
+  background-color: var(--color-primary-dark);
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 24px;
+}
+
+.barra-navegacion__menu-movil.abierto {
+  max-height: 400px;
+  padding: 12px 24px 20px;
+}
+
+.barra-navegacion__menu-movil nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.barra-navegacion__menu-movil-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  padding: 12px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.barra-navegacion__menu-movil-link:last-child {
+  border-bottom: none;
+}
+
+.barra-navegacion__menu-movil-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-white);
+}
+
+.barra-navegacion__menu-movil-link--logout {
+  color: rgba(255, 160, 160, 0.9);
+  margin-top: 4px;
+}
+
+/* ── Responsive: activar hamburguesa en ≤768px ───────────────── */
+@media (max-width: 768px) {
+  /* Ocultar nav de escritorio */
+  .barra-navegacion__menu {
+    display: none;
+  }
+
+  /* Mostrar acciones móvil */
+  .barra-navegacion__movil-acciones {
+    display: flex;
+  }
+
+  /* Distribuir logo y acciones a los extremos */
+  .barra-navegacion__interior {
+    justify-content: space-between;
+  }
+}
+
 /* ── 3b. Menú de usuario (logueado) ─────────────────────────── */
 .usuario-menu {
   position: relative;
@@ -1286,4 +1417,4 @@ button:disabled {
   font-size: 3rem;
   color: var(--color-gray-200);
 }
-
+
