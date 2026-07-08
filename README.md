@@ -149,12 +149,16 @@ Buses-Talmocur-Portal/
 │   ├── css/                # Hojas de estilo
 │   ├── js/                 # Scripts del frontend
 │   └── image/              # Logos e imágenes
-├── requisitos.md           # Requisitos funcionales y no funcionales
-├── trazabilidad.md         # Matriz de trazabilidad de requisitos implementados
-├── panel_administracion.md # Documentación detallada del funcionamiento del Panel de Administrador
-├── diagramaER_baseDeDatos.md  # Diagrama entidad-relación
-├── docs_bd.md              # Documentación detallada de la base de datos
-├── esquema_relacional_v2.md   # Esquema relacional actualizado
+├── docs/                   # Documentación detallada del proyecto
+│   ├── autenticacion_y_usuarios.md # Registro, Login, roles y recuperación de claves
+│   ├── base_datos_y_seguridad.md   # Base de datos, tablas, inicialización y bcrypt
+│   ├── compras_y_boletas.md        # Flujo de compras, interactividad y boletas
+│   ├── home.md                     # Barra de búsqueda, resultados y avisos (toasts)
+│   ├── mapa.md                     # Integración con Leaflet.js, OpenStreetMap y OSRM
+│   ├── panel_administracion.md    # Funcionamiento, reglas y APIs del panel administrativo
+│   ├── requisitos.md               # Requisitos funcionales y no funcionales del sistema
+│   └── trazabilidad.md             # Matriz de trazabilidad de requisitos vs desarrollo
+├── diagramaER_baseDeDatos.md  # Diagrama entidad-relación (conceptual)
 ├── requirements.txt        # Dependencias de Python
 └── README.md
 ```
@@ -187,7 +191,7 @@ El proyecto se encuentra en fase de **pruebas y estabilización de característi
 * **Diferenciación de Roles:** Redirecciones inteligentes del portal y restricciones estrictas de API basadas en rol (`admin` y `pasajero`).
 * **Base de Datos Dinámica:** SQLite con SQLAlchemy, generación automática de tablas e inicialización de datos de prueba al arranque.
 * **Buscador & Tarifas:** Carga dinámica de rutas y orígenes/destinos desde la BD; visualización de tarifas en tiempo real.
-* **Panel de Administración:** Gestión integral de buses (autogeneración de asientos), control estricto de horarios y sus reglas de conflicto de tiempos, y publicación de avisos globales según vigencia. Ver [panel\_administracion.md](file:///c:/Users/dipez/OneDrive/Documentos/Universidad/Metodoogias/Proyecto/panel_administracion.md).
+* **Panel de Administración:** Gestión integral de buses (autogeneración de asientos), control estricto de horarios y sus reglas de conflicto de tiempos, y publicación de avisos globales según vigencia. Ver [panel_administracion.md](file:///c:/Users/dipez/OneDrive/Documentos/Universidad/Metodoogias/Proyecto/docs/panel_administracion.md).
 * **Flujo de Compra e Interactividad:** Selección interactiva de asientos según disponibilidad real y persistencia de transacciones con emisión de boletas.
 * **Recuperación de Contraseñas:** Mecanismo seguro de restablecimiento de contraseñas mediante tokens por correo electrónico.
 
