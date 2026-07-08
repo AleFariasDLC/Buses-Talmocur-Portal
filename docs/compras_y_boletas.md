@@ -74,3 +74,32 @@ Una vez confirmada e insertada la compra en la base de datos con éxito:
    - **Datos de Origen y Destino**: Despliega con claridad los puntos de partida y llegada del viaje.
    - **Monto y Pago**: Detalla el precio unitario del pasaje y el método de pago utilizado.
    - **Información del Pasajero**: Muestra el nombre y RUT del pasajero asociado a ese asiento para fines de control de abordaje en el bus.
+
+---
+
+## 6. Control del Historial de Navegación y Caché del Navegador
+
+Para prevenir anomalías en la experiencia de usuario y fallos de lógica al usar los botones de "Atrás" y "Adelante" del navegador web (que podrían reenviar formularios de pago o cargar asientos desactualizados), el sistema implementa tres mecanismos de control:
+
+### 6.1. Políticas de Caché en Endpoints Críticos (Evitación de Caché en HTTP)
+En [app.py](file:///c:/Users/dipez/OneDrive/Documentos/Universidad/Metodoogias/Proyecto/backend/app.py), las rutas `/compra-pasajes`, `/boleta` y `/compra-pasajes/asientos` retornan la respuesta HTML adjuntando la cabecera HTTP de control de caché:
+```http
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+```
+Esto fuerza al navegador a solicitar siempre una versión fresca del servidor, garantizando que el mapa de asientos disponibles se calcule con datos de compras actualizados en tiempo real en lugar de cargarse desde la caché local del disco.
+
+### 6.2. Recarga en BFCache (Back-Forward Cache)
+En el frontend de [asientos.js](file:///c:/Users/dipez/OneDrive/Documentos/Universidad/Metodoogias/Proyecto/static/js/asientos.js), se añade un oyente del evento `pageshow`:
+```javascript
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+```
+Si el navegador carga la página de selección de asientos recuperándola desde la memoria BFCache (historial de retroceso/avance rápido), se fuerza de forma automática la recarga del documento (`window.location.reload()`) para refrescar las ocupaciones de asientos y borrar cualquier selección previa huérfana.
+
+### 6.3. Reemplazo del Historial y Redirección Limpia
+Durante el proceso de confirmación de la compra en [compra_pasajes.js](file:///c:/Users/dipez/OneDrive/Documentos/Universidad/Metodoogias/Proyecto/static/js/compra_pasajes.js):
+1. **Reemplazo de Estado**: Antes de redireccionar, se llama a `history.replaceState({ compraRealizada: true }, '', window.location.href)`. De esta forma, si el usuario intenta retroceder, el estado del historial marca que la compra ya fue procesada.
+2. **Redirección No Retornable**: La redirección hacia la boleta de compra se realiza mediante `window.location.replace('/boleta')` en lugar de modificar `window.location.href`. Esto sustituye la entrada del formulario de compra por la boleta en el historial del navegador. De esta manera, si el usuario pulsa el botón "Atrás" desde la pantalla de la boleta, el navegador vuelve directamente a la pantalla de búsqueda de pasajes del home en vez de retornar al formulario de compra ya procesado.
